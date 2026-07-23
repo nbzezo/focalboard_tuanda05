@@ -5,7 +5,6 @@ import '@testing-library/jest-dom'
 import {act, render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {mocked} from 'jest-mock'
 
@@ -23,9 +22,9 @@ jest.mock('../octoClient')
 jest.mock('../utils')
 jest.mock('draft-js/lib/generateRandomKey', () => () => '123')
 
-const mockedUtils = mocked(Utils, true)
-const mockedMutator = mocked(mutator, true)
-const mockedOctoClient = mocked(octoClient, true)
+const mockedUtils = mocked(Utils, {shallow: true})
+const mockedMutator = mocked(mutator, {shallow: true})
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 mockedUtils.createGuid.mockReturnValue('test-id')
 
 beforeAll(() => {

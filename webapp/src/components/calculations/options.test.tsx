@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 
 import {render} from '@testing-library/react'
-import React from 'react'
 
 import {IPropertyTemplate} from '../../blocks/board'
 

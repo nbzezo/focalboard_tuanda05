@@ -1,8 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
-
 import {Block} from '../../blocks/block'
 import {useAppSelector} from '../../store/hooks'
 import {getLastCardContent} from '../../store/contents'

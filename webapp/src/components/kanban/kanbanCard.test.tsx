@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 import {render, screen, within} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {MemoryRouter} from 'react-router-dom'
@@ -23,8 +22,8 @@ import KanbanCard from './kanbanCard'
 jest.mock('../../mutator')
 jest.mock('../../utils')
 jest.mock('../../telemetry/telemetryClient')
-const mockedUtils = mocked(Utils, true)
-const mockedMutator = mocked(Mutator, true)
+const mockedUtils = mocked(Utils, {shallow: true})
+const mockedMutator = mocked(Mutator, {shallow: true})
 
 describe('src/components/kanban/kanbanCard', () => {
     const board = TestBlockFactory.createBoard()

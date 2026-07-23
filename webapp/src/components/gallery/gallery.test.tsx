@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {render, screen, fireEvent} from '@testing-library/react'
 
 import {Provider as ReduxProvider} from 'react-redux'
@@ -19,7 +18,7 @@ import mutator from '../../mutator'
 import Gallery from './gallery'
 
 jest.mock('../../mutator')
-const mockedMutator = mocked(mutator, true)
+const mockedMutator = mocked(mutator, {shallow: true})
 
 describe('src/components/gallery/Gallery', () => {
     const board = TestBlockFactory.createBoard()

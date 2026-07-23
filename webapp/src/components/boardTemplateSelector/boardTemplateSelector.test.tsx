@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 import {render, screen, act, waitFor, within} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
 import {MockStoreEnhanced} from 'redux-mock-store'
 import {createMemoryHistory} from 'history'
 
@@ -44,11 +43,11 @@ jest.mock('../../utils')
 jest.mock('../../mutator')
 
 jest.mock('../../telemetry/telemetryClient')
-const mockedTelemetry = mocked(TelemetryClient, true)
+const mockedTelemetry = mocked(TelemetryClient, {shallow: true})
 
 describe('components/boardTemplateSelector/boardTemplateSelector', () => {
-    const mockedMutator = mocked(Mutator, true)
-    const mockedOctoClient = mocked(client, true)
+    const mockedMutator = mocked(Mutator, {shallow: true})
+    const mockedOctoClient = mocked(client, {shallow: true})
     const team1: Team = {
         id: 'team-1',
         title: 'Team 1',

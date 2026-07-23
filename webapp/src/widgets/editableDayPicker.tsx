@@ -1,6 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React, {useState} from 'react'
+import {useState} from 'react'
 import {IntlShape, useIntl} from 'react-intl'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 import MomentLocaleUtils from 'react-day-picker/moment'

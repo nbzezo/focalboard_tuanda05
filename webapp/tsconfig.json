@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "jsx": "react",
+        "jsx": "react-jsx",
         "target": "es2019",
+        "skipLibCheck": true,
         "module": "commonjs",
         "esModuleInterop": true,
         "noImplicitAny": true,
@@ -24,6 +25,7 @@
         "**/node_modules/*",
         "dist",
         "pack",
-        "cypress"
+        "cypress",
+        "cypress.config.ts"
     ]
 }

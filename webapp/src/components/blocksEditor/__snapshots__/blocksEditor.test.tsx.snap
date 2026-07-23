@@ -14,7 +14,24 @@ exports[`components/blocksEditor/blocksEditor should match snapshot on empty 1`]
         <span
           class="css-1f43avz-a11yText-A11yText"
           id="react-select-2-live-region"
-        />
+        >
+          <span
+            id="aria-selection"
+          >
+            option , selected.
+          </span>
+          <span
+            id="aria-focused"
+          />
+          <span
+            id="aria-results"
+          />
+          <span
+            id="aria-guidance"
+          >
+            Select is focused ,type to refine list, press Down to open the menu, 
+          </span>
+        </span>
         <span
           aria-atomic="false"
           aria-live="polite"
@@ -23,7 +40,7 @@ exports[`components/blocksEditor/blocksEditor should match snapshot on empty 1`]
           role="log"
         />
         <div
-          class=" css-1haocjs-control"
+          class=" css-a5687m-control"
         >
           <div
             class=" css-b2z5qd-ValueContainer"
@@ -396,7 +413,24 @@ exports[`components/blocksEditor/blocksEditor should match snapshot with blocks 
         <span
           class="css-1f43avz-a11yText-A11yText"
           id="react-select-3-live-region"
-        />
+        >
+          <span
+            id="aria-selection"
+          >
+            option , selected.
+          </span>
+          <span
+            id="aria-focused"
+          />
+          <span
+            id="aria-results"
+          />
+          <span
+            id="aria-guidance"
+          >
+            Select is focused ,type to refine list, press Down to open the menu, 
+          </span>
+        </span>
         <span
           aria-atomic="false"
           aria-live="polite"
@@ -405,7 +439,7 @@ exports[`components/blocksEditor/blocksEditor should match snapshot with blocks 
           role="log"
         />
         <div
-          class=" css-1haocjs-control"
+          class=" css-a5687m-control"
         >
           <div
             class=" css-b2z5qd-ValueContainer"

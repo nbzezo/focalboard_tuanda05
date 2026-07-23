@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 import {render, screen, within} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
@@ -15,7 +14,7 @@ import {IPropertyOption} from '../../blocks/board'
 import KanbanHiddenColumnItem from './kanbanHiddenColumnItem'
 
 jest.mock('../../mutator')
-const mockedMutator = mocked(Mutator, true)
+const mockedMutator = mocked(Mutator, {shallow: true})
 
 describe('src/components/kanban/kanbanHiddenColumnItem', () => {
     const intl = createIntl({locale: 'en-us'})

@@ -1,6 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React, {FC} from 'react'
+import {FC} from 'react'
 
 import 'emoji-mart/css/emoji-mart.css'
 import {Picker, BaseEmoji} from 'emoji-mart'

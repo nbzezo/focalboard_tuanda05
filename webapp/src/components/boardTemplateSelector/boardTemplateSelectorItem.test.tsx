@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 import {render, within, act, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
 import {MockStoreEnhanced} from 'redux-mock-store'
 import {Provider as ReduxProvider} from 'react-redux'
 

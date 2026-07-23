@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 import {act, fireEvent, render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 
 import {mockDOM, wrapDNDIntl, mockStateStore} from '../testUtils'
@@ -90,51 +89,49 @@ describe('components/markdownEditor', () => {
     })
 
     test('should match snapshot with on click on preview element', async () => {
-        let container
-        await act(async () => {
-            const result = render(wrapDNDIntl(
-                <ReduxProvider store={store}>
-                    <MarkdownEditor
-                        id={'test-id'}
-                        text={'some initial text already set'}
-                        placeholderText={'placeholder'}
-                        className={'classname-test'}
-                        readonly={false}
-                        onChange={jest.fn()}
-                        onFocus={jest.fn()}
-                        onBlur={jest.fn()}
-                    />
-                </ReduxProvider>,
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <MarkdownEditor
+                    id={'test-id'}
+                    text={'some initial text already set'}
+                    placeholderText={'placeholder'}
+                    className={'classname-test'}
+                    readonly={false}
+                    onChange={jest.fn()}
+                    onFocus={jest.fn()}
+                    onBlur={jest.fn()}
+                />
+            </ReduxProvider>,
 
-            ))
-            container = result.container
-            const previewElement = screen.getByTestId('preview-element')
+        ))
+        const previewElement = screen.getByTestId('preview-element')
+        await act(async () => {
             userEvent.click(previewElement)
         })
         expect(container).toMatchSnapshot()
     })
 
     test('should match snapshot with on click on preview element and then click out of it', async () => {
-        let container
-        await act(async () => {
-            const result = render(wrapDNDIntl(
-                <ReduxProvider store={store}>
-                    <MarkdownEditor
-                        id={'test-id'}
-                        text={'some initial text already set'}
-                        placeholderText={'placeholder'}
-                        className={'classname-test'}
-                        readonly={false}
-                        onChange={jest.fn()}
-                        onFocus={jest.fn()}
-                        onBlur={jest.fn()}
-                    />
-                </ReduxProvider>,
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <MarkdownEditor
+                    id={'test-id'}
+                    text={'some initial text already set'}
+                    placeholderText={'placeholder'}
+                    className={'classname-test'}
+                    readonly={false}
+                    onChange={jest.fn()}
+                    onFocus={jest.fn()}
+                    onBlur={jest.fn()}
+                />
+            </ReduxProvider>,
 
-            ))
-            container = result.container
-            const previewElement = screen.getByTestId('preview-element')
+        ))
+        const previewElement = screen.getByTestId('preview-element')
+        await act(async () => {
             userEvent.click(previewElement)
+        })
+        await act(async () => {
             fireEvent.keyDown(container, {
                 key: 'Escape',
                 code: 'Escape',

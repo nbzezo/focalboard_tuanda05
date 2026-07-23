@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {render, screen, fireEvent} from '@testing-library/react'
 import {mocked} from 'jest-mock'
 
@@ -13,7 +12,7 @@ jest.mock('../../../../octoClient')
 
 describe('components/blocksEditor/blocks/video', () => {
     test('should match Display snapshot', async () => {
-        const mockedOcto = mocked(octoClient, true)
+        const mockedOcto = mocked(octoClient, {shallow: true})
         mockedOcto.getFileAsDataUrl.mockResolvedValue({url: 'test.jpg'})
         const Component = VideoBlock.Display
         const {container} = render(

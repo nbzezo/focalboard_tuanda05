@@ -1,11 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import {act, render, screen} from '@testing-library/react'
+import {act, fireEvent, render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {Provider as ReduxProvider} from 'react-redux'
 import thunk from 'redux-thunk'
 
-import React from 'react'
 import {MemoryRouter} from 'react-router'
 import {mocked} from 'jest-mock'
 
@@ -28,8 +27,8 @@ const viewId = boardId
 jest.mock('../../octoClient')
 jest.mock('../../utils')
 
-const mockedOctoClient = mocked(client, true)
-const mockedUtils = mocked(Utils, true)
+const mockedOctoClient = mocked(client, {shallow: true})
+const mockedUtils = mocked(Utils, {shallow: true})
 
 let params = {}
 jest.mock('react-router', () => {
@@ -393,43 +392,46 @@ describe('src/components/shareBoard/shareBoard', () => {
         }
         mockedOctoClient.getSharing.mockResolvedValue(sharing)
         mockedUtils.createGuid.mockReturnValue('aToken')
-        let container: Element | undefined
-        await act(async () => {
-            const result = render(
-                wrapDNDIntl(
-                    <ReduxProvider store={store}>
-                        <ShareBoard
-                            onClose={jest.fn()}
-                            enableSharedBoards={true}
-                        />
-                    </ReduxProvider>),
-                {wrapper: MemoryRouter},
-            )
-            container = result.container
-            mockedOctoClient.getSharing.mockResolvedValue({
-                id: boardId,
-                enabled: true,
-                token: 'aToken',
-            })
-
-            const publishButton = screen.getByRole('button', {name: 'Publish'})
-            expect(publishButton).toBeDefined()
-            userEvent.click(publishButton)
-            jest.runOnlyPendingTimers()
-
-            const switchElement = container?.querySelector('.Switch')
-            expect(switchElement).toBeDefined()
-            userEvent.click(switchElement!)
-            jest.runOnlyPendingTimers()
-            result.rerender(
-                wrapDNDIntl(
-                    <ReduxProvider store={store}>
-                        <ShareBoard
-                            onClose={jest.fn()}
-                            enableSharedBoards={true}
-                        />
-                    </ReduxProvider>))
+        const result = render(
+            wrapDNDIntl(
+                <ReduxProvider store={store}>
+                    <ShareBoard
+                        onClose={jest.fn()}
+                        enableSharedBoards={true}
+                    />
+                </ReduxProvider>),
+            {wrapper: MemoryRouter},
+        )
+        const container: Element = result.container
+        mockedOctoClient.getSharing.mockResolvedValue({
+            id: boardId,
+            enabled: true,
+            token: 'aToken',
         })
+
+        const publishButton = screen.getByRole('button', {name: 'Publish'})
+        expect(publishButton).toBeDefined()
+
+        // Both clicks must happen before the initial getSharing promise
+        // resolves, so onShareChanged still sees sharing === undefined and
+        // generates a fresh token (fireEvent is synchronous; the async act
+        // below drains the pending promises and timers afterwards).
+        fireEvent.click(publishButton)
+        const switchElement = container.querySelector('.Switch')
+        expect(switchElement).toBeDefined()
+        fireEvent.click(switchElement!)
+
+        await act(async () => {
+            jest.runOnlyPendingTimers()
+        })
+        result.rerender(
+            wrapDNDIntl(
+                <ReduxProvider store={store}>
+                    <ShareBoard
+                        onClose={jest.fn()}
+                        enableSharedBoards={true}
+                    />
+                </ReduxProvider>))
 
         expect(mockedOctoClient.setSharing).toBeCalledTimes(1)
         expect(mockedOctoClient.getSharing).toBeCalledTimes(2)

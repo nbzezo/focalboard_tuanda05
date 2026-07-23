@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {act, render, screen} from '@testing-library/react'
 
 import {Provider as ReduxProvider} from 'react-redux'
@@ -29,9 +28,9 @@ jest.mock('../../utils')
 jest.mock('../../octoClient')
 
 describe('src/components/gallery/GalleryCard', () => {
-    const mockedMutator = mocked(mutator, true)
-    const mockedUtils = mocked(Utils, true)
-    const mockedOcto = mocked(octoClient, true)
+    const mockedMutator = mocked(mutator, {shallow: true})
+    const mockedUtils = mocked(Utils, {shallow: true})
+    const mockedOcto = mocked(octoClient, {shallow: true})
     mockedOcto.getFileAsDataUrl.mockResolvedValue({url: 'test.jpg'})
 
     const board = TestBlockFactory.createBoard()

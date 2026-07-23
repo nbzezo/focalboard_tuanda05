@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 
 import 'isomorphic-fetch'
 import {act, render} from '@testing-library/react'
@@ -26,7 +25,7 @@ import CardDetail from './cardDetail'
 global.fetch = FetchMock.fn
 jest.mock('../../octoClient')
 
-const mockedOctoClient = mocked(octoClient, true)
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 
 beforeEach(() => {
     FetchMock.fn.mockReset()

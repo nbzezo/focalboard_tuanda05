@@ -52,7 +52,7 @@ const BoardTemplateSelector = (props: Props) => {
 
     useHotkeys('esc', () => props.onClose?.())
 
-    const showBoard = useCallback(async (boardId) => {
+    const showBoard = useCallback(async (boardId: string) => {
         Utils.showBoard(boardId, match, history)
         if (onClose) {
             onClose()
@@ -107,7 +107,7 @@ const BoardTemplateSelector = (props: Props) => {
             TelemetryClient.trackEvent(TelemetryCategory, TelemetryActions.CreateBoardViaTemplate, {boardTemplateId: activeTemplate.properties.trackingTemplateId as string, channelID: props.channelId})
         }
 
-        const boardsAndBlocks = await mutator.addBoardFromTemplate(currentTeam?.id || Constants.globalTeamId, intl, showBoard, () => showBoard(currentBoardId), activeTemplate.id, currentTeam?.id)
+        const boardsAndBlocks = await mutator.addBoardFromTemplate(currentTeam?.id || Constants.globalTeamId, intl, showBoard, () => showBoard(currentBoardId!), activeTemplate.id, currentTeam?.id)
         const board = boardsAndBlocks.boards[0]
         await mutator.updateBoard({...board, channelId: props.channelId || ''}, board, 'linked channel')
         if (activeTemplate.title === OnboardingBoardTitle) {
@@ -170,7 +170,7 @@ const BoardTemplateSelector = (props: Props) => {
                                 size='medium'
                                 icon={<CompassIcon icon='plus'/>}
                                 className='new-template'
-                                onClick={() => mutator.addEmptyBoardTemplate(currentTeam?.id || '', intl, showBoard, () => showBoard(currentBoardId))}
+                                onClick={() => mutator.addEmptyBoardTemplate(currentTeam?.id || '', intl, showBoard, () => showBoard(currentBoardId!))}
                             >
                                 <FormattedMessage
                                     id='BoardTemplateSelector.add-template'
@@ -194,7 +194,7 @@ const BoardTemplateSelector = (props: Props) => {
                                 size={'medium'}
                                 icon={<CompassIcon icon='kanban'/>}
                                 onClick={async () => {
-                                    const boardsAndBlocks = await mutator.addEmptyBoard(currentTeam?.id || '', intl, showBoard, () => showBoard(currentBoardId))
+                                    const boardsAndBlocks = await mutator.addEmptyBoard(currentTeam?.id || '', intl, showBoard, () => showBoard(currentBoardId!))
                                     const board = boardsAndBlocks.boards[0]
                                     await mutator.updateBoard({...board, channelId: props.channelId || ''}, board, 'linked channel')
                                 }}

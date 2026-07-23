@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import moment from 'moment'
 
@@ -17,7 +16,7 @@ import mutator from '../../mutator'
 import Comment from './comment'
 
 jest.mock('../../mutator')
-const mockedMutator = mocked(mutator, true)
+const mockedMutator = mocked(mutator, {shallow: true})
 
 const board = TestBlockFactory.createBoard()
 const card = TestBlockFactory.createCard(board)

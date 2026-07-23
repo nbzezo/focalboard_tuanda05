@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {render, screen} from '@testing-library/react'
 import {Provider as ReduxProvider} from 'react-redux'
 
@@ -23,8 +22,8 @@ import ViewHeaderActionsMenu from './viewHeaderActionsMenu'
 jest.mock('../../archiver')
 jest.mock('../../csvExporter')
 jest.mock('../../mutator')
-const mockedArchiver = mocked(Archiver, true)
-const mockedCsvExporter = mocked(CsvExporter, true)
+const mockedArchiver = mocked(Archiver, {shallow: true})
+const mockedCsvExporter = mocked(CsvExporter, {shallow: true})
 
 const board = TestBlockFactory.createBoard()
 const activeView = TestBlockFactory.createBoardView(board)

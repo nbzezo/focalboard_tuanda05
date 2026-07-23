@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 
 import {render, screen} from '@testing-library/react'
@@ -21,7 +20,7 @@ import {versionProperty} from '../../store/users'
 import VersionMessage from './versionMessage'
 
 jest.mock('../../octoClient')
-const mockedOctoClient = mocked(client, true)
+const mockedOctoClient = mocked(client, {shallow: true})
 
 describe('components/messages/VersionMessage', () => {
     beforeEach(() => {

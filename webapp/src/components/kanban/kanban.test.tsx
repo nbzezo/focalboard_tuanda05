@@ -3,7 +3,6 @@
 
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {MemoryRouter} from 'react-router-dom'
 import {mocked} from 'jest-mock'
@@ -19,7 +18,7 @@ import Kanban from './kanban'
 
 global.fetch = jest.fn()
 jest.mock('../../utils')
-const mockedUtils = mocked(Utils, true)
+const mockedUtils = mocked(Utils, {shallow: true})
 const mockedchangePropertyOptionValue = jest.spyOn(mutator, 'changePropertyOptionValue')
 const mockedChangeViewCardOrder = jest.spyOn(mutator, 'changeViewCardOrder')
 const mockedinsertPropertyOption = jest.spyOn(mutator, 'insertPropertyOption')

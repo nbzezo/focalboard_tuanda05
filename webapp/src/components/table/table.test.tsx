@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {render, screen} from '@testing-library/react'
 import configureStore from 'redux-mock-store'
@@ -34,7 +33,7 @@ beforeEach(() => {
 jest.mock('../../mutator')
 jest.mock('../../utils')
 jest.mock('../../telemetry/telemetryClient')
-const mockedMutator = mocked(Mutator, true)
+const mockedMutator = mocked(Mutator, {shallow: true})
 
 describe('components/table/Table', () => {
     const board = TestBlockFactory.createBoard()

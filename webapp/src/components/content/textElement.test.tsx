@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {render, act} from '@testing-library/react'
 import {Provider as ReduxProvider} from 'react-redux'
 
@@ -22,7 +21,7 @@ import TextElement from './textElement'
 jest.mock('../../utils')
 jest.mock('../../mutator')
 jest.mock('draft-js/lib/generateRandomKey', () => () => '123')
-const mockedUtils = mocked(Utils, true)
+const mockedUtils = mocked(Utils, {shallow: true})
 mockedUtils.createGuid.mockReturnValue('test-id')
 const defaultBlock: TextBlock = {
     id: 'test-id',

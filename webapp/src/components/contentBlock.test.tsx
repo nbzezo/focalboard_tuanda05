@@ -4,7 +4,7 @@
 import '@testing-library/jest-dom'
 import {act, render, screen} from '@testing-library/react'
 
-import React, {ReactNode, ReactElement} from 'react'
+import {ReactNode, ReactElement} from 'react'
 import {mocked} from 'jest-mock'
 import {Provider as ReduxProvider} from 'react-redux'
 
@@ -29,9 +29,9 @@ jest.mock('draft-js/lib/generateRandomKey', () => () => '123')
 beforeAll(mockDOM)
 
 describe('components/contentBlock', () => {
-    const mockedMutator = mocked(mutator, true)
-    const mockedUtils = mocked(Utils, true)
-    const mockedOcto = mocked(octoClient, true)
+    const mockedMutator = mocked(mutator, {shallow: true})
+    const mockedUtils = mocked(Utils, {shallow: true})
+    const mockedOcto = mocked(octoClient, {shallow: true})
 
     mockedUtils.createGuid.mockReturnValue('test-id')
     mockedOcto.getFileAsDataUrl.mockResolvedValue({url: 'test.jpg'})

@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 
 import {render, act} from '@testing-library/react'
@@ -20,7 +19,7 @@ import TelemetryClient, {TelemetryCategory, TelemetryActions} from '../../teleme
 import SidebarSettingsMenu from './sidebarSettingsMenu'
 
 jest.mock('../../telemetry/telemetryClient')
-const mockedTelemetry = mocked(TelemetryClient, true)
+const mockedTelemetry = mocked(TelemetryClient, {shallow: true})
 
 describe('components/sidebar/SidebarSettingsMenu', () => {
     const mockStore = configureStore([])

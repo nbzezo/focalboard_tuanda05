@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 import {fireEvent, render, screen, within, act} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
 import {mocked} from 'jest-mock'
 import {Provider as ReduxProvider} from 'react-redux'
 
@@ -32,9 +31,9 @@ jest.mock('../octoClient')
 jest.mock('../mutator')
 jest.mock('../telemetry/telemetryClient')
 jest.mock('draft-js/lib/generateRandomKey', () => () => '123')
-const mockedUtils = mocked(Utils, true)
-const mockedMutator = mocked(Mutator, true)
-const mockedOctoClient = mocked(octoClient, true)
+const mockedUtils = mocked(Utils, {shallow: true})
+const mockedMutator = mocked(Mutator, {shallow: true})
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 mockedUtils.createGuid.mockReturnValue('test-id')
 mockedUtils.generateClassName = jest.requireActual('../utils').Utils.generateClassName
 describe('components/centerPanel', () => {

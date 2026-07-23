@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {createMemoryHistory} from 'history'
 
@@ -22,8 +21,8 @@ import GlobalHeaderSettingsMenu from './globalHeaderSettingsMenu'
 
 jest.mock('../../telemetry/telemetryClient')
 jest.mock('../../octoClient')
-const mockedTelemetry = mocked(TelemetryClient, true)
-const mockedOctoClient = mocked(client, true)
+const mockedTelemetry = mocked(TelemetryClient, {shallow: true})
+const mockedOctoClient = mocked(client, {shallow: true})
 
 describe('components/sidebar/GlobalHeaderSettingsMenu', () => {
     const mockStore = configureStore([])

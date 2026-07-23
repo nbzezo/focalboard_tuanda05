@@ -49,6 +49,9 @@
     ],
     "no-undefined": 0,
     "react/jsx-filename-extension": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-uses-react": 0,
+    "cypress/unsafe-to-chain-command": 0,
     "react/prop-types": [
       2,
       {

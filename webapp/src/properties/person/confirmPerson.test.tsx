@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {mocked} from 'jest-mock'
 
@@ -30,8 +29,8 @@ import ConfirmPerson from './confirmPerson'
 jest.mock('../../mutator')
 jest.mock('../../octoClient')
 
-const mockedMutator = mocked(mutator, true)
-const mockedOctoClient = mocked(client, true)
+const mockedMutator = mocked(mutator, {shallow: true})
+const mockedOctoClient = mocked(client, {shallow: true})
 
 const board = TestBlockFactory.createBoard()
 board.teamId = 'team-id-1'

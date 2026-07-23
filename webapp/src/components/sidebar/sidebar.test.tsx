@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 import configureStore from 'redux-mock-store'
 
 import {createMemoryHistory} from 'history'
@@ -22,7 +21,7 @@ import octoClient from '../../../../webapp/src/octoClient'
 import Sidebar from './sidebar'
 
 jest.mock('../../../../webapp/src/octoClient')
-const mockedOctoClient = mocked(octoClient, true)
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 
 beforeAll(() => {
     mockMatchMedia({matches: true})

@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {render} from '@testing-library/react'
 import {act} from 'react-dom/test-utils'
@@ -16,7 +15,7 @@ import {IUser} from '../../user'
 import AttachmentElement from './attachmentElement'
 
 jest.mock('../../octoClient')
-const mockedOcto = mocked(octoClient, true)
+const mockedOcto = mocked(octoClient, {shallow: true})
 mockedOcto.getFileAsDataUrl.mockResolvedValue({url: 'test.txt'})
 mockedOcto.getFileInfo.mockResolvedValue({
     name: 'test.txt',

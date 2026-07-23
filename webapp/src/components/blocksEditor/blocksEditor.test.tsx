@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {render, screen, fireEvent, act} from '@testing-library/react'
 
@@ -118,22 +117,22 @@ describe('components/blocksEditor/blocksEditor', () => {
 
     test('should call onBlockModified after introduce text and hit enter', async () => {
         const onBlockModified = jest.fn()
+        render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <BlocksEditor
+                    boardId='test-board'
+                    onBlockCreated={jest.fn()}
+                    onBlockModified={onBlockModified}
+                    onBlockMoved={jest.fn()}
+                    blocks={blocks}
+                />
+            </ReduxProvider>,
+        ))
+        const input = screen.getByTestId('checkbox-check')
+        expect(onBlockModified).not.toBeCalled()
         await act(async () => {
-            render(wrapDNDIntl(
-                <ReduxProvider store={store}>
-                    <BlocksEditor
-                        boardId='test-board'
-                        onBlockCreated={jest.fn()}
-                        onBlockModified={onBlockModified}
-                        onBlockMoved={jest.fn()}
-                        blocks={blocks}
-                    />
-                </ReduxProvider>,
-            ))
-            const input = screen.getByTestId('checkbox-check')
-            expect(onBlockModified).not.toBeCalled()
             fireEvent.click(input)
-            expect(onBlockModified).toBeCalledWith(expect.objectContaining({value: {checked: false, value: 'Checkbox'}}))
         })
+        expect(onBlockModified).toBeCalledWith(expect.objectContaining({value: {checked: false, value: 'Checkbox'}}))
     })
 })

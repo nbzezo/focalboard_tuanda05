@@ -1,6 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React, {useState, useCallback} from 'react'
+import {useState, useCallback} from 'react'
 import {useIntl} from 'react-intl'
 import {DateUtils} from 'react-day-picker'
 import MomentLocaleUtils from 'react-day-picker/moment'
@@ -52,7 +52,7 @@ function DateFilter(props: Props): JSX.Element {
     const [value, setValue] = useState(dateValue)
     const intl = useIntl()
 
-    const onChange = useCallback((newValue) => {
+    const onChange = useCallback((newValue: Date | undefined) => {
         if (value !== newValue) {
             const adjustedValue = newValue ? new Date(newValue.getTime() - timeZoneOffset(newValue.getTime())) : undefined
             setValue(adjustedValue)

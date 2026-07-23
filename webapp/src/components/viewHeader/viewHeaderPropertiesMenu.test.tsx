@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 import {render, screen} from '@testing-library/react'
 import {Provider as ReduxProvider} from 'react-redux'
 
@@ -22,7 +21,7 @@ import {Constants} from '../../constants'
 import ViewHeaderPropertiesMenu from './viewHeaderPropertiesMenu'
 
 jest.mock('../../mutator')
-const mockedMutator = mocked(mutator, true)
+const mockedMutator = mocked(mutator, {shallow: true})
 
 const board = TestBlockFactory.createBoard()
 let activeView: BoardView

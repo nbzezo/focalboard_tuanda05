@@ -8,7 +8,24 @@ exports[`components/blocksEditor/rootInput should match Display snapshot 1`] = `
     <span
       class="css-1f43avz-a11yText-A11yText"
       id="react-select-2-live-region"
-    />
+    >
+      <span
+        id="aria-selection"
+      >
+        option , selected.
+      </span>
+      <span
+        id="aria-focused"
+      />
+      <span
+        id="aria-results"
+      />
+      <span
+        id="aria-guidance"
+      >
+        Select is focused ,type to refine list, press Down to open the menu, 
+      </span>
+    </span>
     <span
       aria-atomic="false"
       aria-live="polite"
@@ -17,7 +34,7 @@ exports[`components/blocksEditor/rootInput should match Display snapshot 1`] = `
       role="log"
     />
     <div
-      class=" css-1haocjs-control"
+      class=" css-a5687m-control"
     >
       <div
         class=" css-b2z5qd-ValueContainer"
@@ -62,7 +79,24 @@ exports[`components/blocksEditor/rootInput should match Input snapshot 1`] = `
     <span
       class="css-1f43avz-a11yText-A11yText"
       id="react-select-3-live-region"
-    />
+    >
+      <span
+        id="aria-selection"
+      >
+        option , selected.
+      </span>
+      <span
+        id="aria-focused"
+      />
+      <span
+        id="aria-results"
+      />
+      <span
+        id="aria-guidance"
+      >
+        Select is focused ,type to refine list, press Down to open the menu, 
+      </span>
+    </span>
     <span
       aria-atomic="false"
       aria-live="polite"
@@ -71,7 +105,7 @@ exports[`components/blocksEditor/rootInput should match Input snapshot 1`] = `
       role="log"
     />
     <div
-      class=" css-1haocjs-control"
+      class=" css-a5687m-control"
     >
       <div
         class=" css-b2z5qd-ValueContainer"
@@ -123,9 +157,26 @@ exports[`components/blocksEditor/rootInput should match Input snapshot with menu
       aria-relevant="additions text"
       class="css-1f43avz-a11yText-A11yText"
       role="log"
-    />
+    >
+      <span
+        id="aria-selection"
+      />
+      <span
+        id="aria-focused"
+      />
+      <span
+        id="aria-results"
+      >
+        11 results available.
+      </span>
+      <span
+        id="aria-guidance"
+      >
+        Use Up and Down to choose options, press Enter to select the currently focused option, press Escape to exit the menu, press Tab to select the option and exit the menu.
+      </span>
+    </span>
     <div
-      class=" css-1haocjs-control"
+      class=" css-a5687m-control"
     >
       <div
         class=" css-b2z5qd-ValueContainer"

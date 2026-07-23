@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import {act, render, waitFor} from '@testing-library/react'
-import React from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 import {MemoryRouter} from 'react-router-dom'
 import {mocked} from 'jest-mock'
@@ -24,8 +23,8 @@ jest.useFakeTimers()
 jest.mock('../utils')
 jest.mock('../octoClient')
 jest.mock('draft-js/lib/generateRandomKey', () => () => '123')
-const mockedUtils = mocked(Utils, true)
-const mockedOctoClient = mocked(octoClient, true)
+const mockedUtils = mocked(Utils, {shallow: true})
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 const board = TestBlockFactory.createBoard()
 board.id = 'board1'
 board.teamId = 'team-id'
@@ -211,36 +210,36 @@ describe('src/components/workspace', () => {
     })
 
     test('return workspace and showcard', async () => {
-        let container: Element | undefined
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <Workspace readonly={false}/>
+            </ReduxProvider>,
+        ), {wrapper: MemoryRouter})
         await act(async () => {
-            const result = render(wrapDNDIntl(
-                <ReduxProvider store={store}>
-                    <Workspace readonly={false}/>
-                </ReduxProvider>,
-            ), {wrapper: MemoryRouter})
-            container = result.container
             jest.runOnlyPendingTimers()
-            const cardElements = container!.querySelectorAll('.KanbanCard')
-            expect(cardElements).toBeDefined()
-            const cardElement = cardElements[0]
+        })
+        const cardElements = container.querySelectorAll('.KanbanCard')
+        expect(cardElements).toBeDefined()
+        const cardElement = cardElements[0]
+        await act(async () => {
             userEvent.click(cardElement)
         })
         expect(container).toMatchSnapshot()
     })
 
     test('return workspace readonly and showcard', async () => {
-        let container: Element | undefined
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <Workspace readonly={true}/>
+            </ReduxProvider>,
+        ), {wrapper: MemoryRouter})
         await act(async () => {
-            const result = render(wrapDNDIntl(
-                <ReduxProvider store={store}>
-                    <Workspace readonly={true}/>
-                </ReduxProvider>,
-            ), {wrapper: MemoryRouter})
-            container = result.container
             jest.runOnlyPendingTimers()
-            const cardElements = container!.querySelectorAll('.KanbanCard')
-            expect(cardElements).toBeDefined()
-            const cardElement = cardElements[0]
+        })
+        const cardElements = container.querySelectorAll('.KanbanCard')
+        expect(cardElements).toBeDefined()
+        const cardElement = cardElements[0]
+        await act(async () => {
             userEvent.click(cardElement)
         })
         expect(container).toMatchSnapshot()
@@ -403,7 +402,9 @@ describe('src/components/workspace', () => {
             ), {wrapper: MemoryRouter})
         })
 
-        jest.runOnlyPendingTimers()
+        await act(async () => {
+            jest.runOnlyPendingTimers()
+        })
 
         await waitFor(() => expect(document.querySelectorAll('.AddViewTourStep')).toBeDefined(), {timeout: 5000})
 

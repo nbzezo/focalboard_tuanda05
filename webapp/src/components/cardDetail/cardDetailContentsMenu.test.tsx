@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 import {act, render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React, {ReactElement, ReactNode} from 'react'
+import {ReactElement, ReactNode} from 'react'
 import {Provider as ReduxProvider} from 'react-redux'
 
 import {wrapIntl, mockStateStore} from '../../testUtils'

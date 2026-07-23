@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event'
 import {Provider as ReduxProvider} from 'react-redux'
 import thunk from 'redux-thunk'
 
-import React from 'react'
 import {MemoryRouter} from 'react-router'
 
 import {IUser} from '../../user'

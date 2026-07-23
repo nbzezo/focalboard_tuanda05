@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 import {fireEvent, render, screen, within} from '@testing-library/react'
 import {createIntl} from 'react-intl'
 import userEvent from '@testing-library/user-event'
@@ -14,7 +13,7 @@ import {IPropertyOption} from '../../blocks/board'
 
 import KanbanColumnHeader from './kanbanColumnHeader'
 jest.mock('../../mutator')
-const mockedMutator = mocked(Mutator, true)
+const mockedMutator = mocked(Mutator, {shallow: true})
 describe('src/components/kanban/kanbanColumnHeader', () => {
     const intl = createIntl({locale: 'en-us'})
     const board = TestBlockFactory.createBoard()

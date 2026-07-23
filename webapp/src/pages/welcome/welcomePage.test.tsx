@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
 
 import {render, screen, waitFor} from '@testing-library/react'
 
@@ -32,10 +31,10 @@ const w = (window as any)
 const oldBaseURL = w.baseURL
 
 jest.mock('../../mutator')
-const mockedMutator = mocked(mutator, true)
+const mockedMutator = mocked(mutator, {shallow: true})
 
 jest.mock('../../octoClient')
-const mockedOctoClient = mocked(octoClient, true)
+const mockedOctoClient = mocked(octoClient, {shallow: true})
 
 beforeEach(() => {
     jest.resetAllMocks()
