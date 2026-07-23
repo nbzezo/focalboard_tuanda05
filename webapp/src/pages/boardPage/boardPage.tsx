@@ -3,7 +3,8 @@
 import {useEffect, useState, useMemo, useCallback} from 'react'
 import {batch} from 'react-redux'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {useRouteMatch, useHistory} from 'react-router-dom'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import Workspace from '../../components/workspace'
 import VersionMessage from '../../components/messages/versionMessage'
@@ -71,7 +72,7 @@ const BoardPage = (props: Props): JSX.Element => {
     const activeBoardId = useAppSelector(getCurrentBoardId)
     const activeViewId = useAppSelector(getCurrentViewId)
     const dispatch = useAppDispatch()
-    const match = useRouteMatch<{boardId: string, viewId: string, cardId?: string, teamId?: string}>()
+    const match = useAppRouteMatch<{boardId: string, viewId: string, cardId?: string, teamId?: string}>()
     const [mobileWarningClosed, setMobileWarningClosed] = useState(UserSettings.mobileWarningClosed)
     const teamId = match.params.teamId || UserSettings.lastTeamId || Constants.globalTeamId
     const viewId = match.params.viewId
@@ -79,7 +80,7 @@ const BoardPage = (props: Props): JSX.Element => {
     const hiddenBoardIDs = useAppSelector(getHiddenBoardIDs)
     const category = useAppSelector(getCategoryOfBoard(activeBoardId))
     const [showJoinBoardDialog, setShowJoinBoardDialog] = useState<boolean>(false)
-    const history = useHistory()
+    const history = useAppNavigation()
 
     // if we're in a legacy route and not showing a shared board,
     // redirect to the new URL schema equivalent

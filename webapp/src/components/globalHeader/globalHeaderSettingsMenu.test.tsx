@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 
 import {Provider as ReduxProvider} from 'react-redux'
-import {createMemoryHistory} from 'history'
 
 import {render, act} from '@testing-library/react'
 
@@ -26,7 +25,7 @@ const mockedOctoClient = mocked(client, {shallow: true})
 
 describe('components/sidebar/GlobalHeaderSettingsMenu', () => {
     const mockStore = configureStore([])
-    const history = createMemoryHistory()
+    const history = {push: jest.fn(), replace: jest.fn(), goBack: jest.fn()}
     let store = mockStore({})
     beforeEach(() => {
         store = mockStore({

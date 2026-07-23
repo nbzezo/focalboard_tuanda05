@@ -1,7 +1,9 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import {useEffect} from 'react'
-import {generatePath, useHistory, useRouteMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import {getBoards, getCurrentBoardId} from '../../store/boards'
 import {setCurrent as setCurrentView, getCurrentBoardViews} from '../../store/views'
@@ -15,8 +17,8 @@ const TeamToBoardAndViewRedirect = (): null => {
     const boardId = useAppSelector(getCurrentBoardId)
     const boardViews = useAppSelector(getCurrentBoardViews)
     const dispatch = useAppDispatch()
-    const history = useHistory()
-    const match = useRouteMatch<{boardId: string, viewId: string, cardId?: string, teamId?: string}>()
+    const history = useAppNavigation()
+    const match = useAppRouteMatch<{boardId: string, viewId: string, cardId?: string, teamId?: string}>()
     const categories = useAppSelector(getSidebarCategories)
     const boards = useAppSelector(getBoards)
     const teamId = match.params.teamId || UserSettings.lastTeamId || Constants.globalTeamId

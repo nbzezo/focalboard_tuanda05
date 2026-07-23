@@ -10,13 +10,13 @@ import {mockStateStore, wrapIntl} from '../../testUtils'
 
 import ViewHeaderSearch from './viewHeaderSearch'
 
-jest.mock('react-router-dom', () => {
-    const originalModule = jest.requireActual('react-router-dom')
+jest.mock('../../routeCompat', () => {
+    const actual = jest.requireActual('../../routeCompat')
 
     return {
-        ...originalModule,
-        useRouteMatch: jest.fn(() => {
-            return {url: '/board/view'}
+        ...actual,
+        useAppRouteMatch: jest.fn(() => {
+            return {params: {}, path: '', url: '/board/view'}
         }),
     }
 })

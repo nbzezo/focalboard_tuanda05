@@ -3,7 +3,8 @@
 
 import React, {useState} from 'react'
 import {useIntl} from 'react-intl'
-import {useHistory} from 'react-router-dom'
+
+import {useAppNavigation} from '../../routeCompat'
 
 import {Constants} from '../../constants'
 import octoClient from '../../octoClient'
@@ -26,7 +27,7 @@ declare let window: IAppWindow
 
 const SidebarUserMenu = () => {
     const dispatch = useAppDispatch()
-    const history = useHistory()
+    const history = useAppNavigation()
     const [showRegistrationLinkDialog, setShowRegistrationLinkDialog] = useState(false)
     const user = useAppSelector<IUser|null>(getMe)
     const intl = useIntl()

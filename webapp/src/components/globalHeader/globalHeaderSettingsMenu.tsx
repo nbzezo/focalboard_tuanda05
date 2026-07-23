@@ -2,7 +2,8 @@
 // See LICENSE.txt for license information.
 import React, {useState} from 'react'
 import {useIntl} from 'react-intl'
-import {History} from 'history'
+
+import {AppHistory} from '../../routeCompat'
 
 import {Archiver} from '../../archiver'
 import Menu from '../../widgets/menu'
@@ -23,7 +24,7 @@ import TelemetryClient, {TelemetryCategory, TelemetryActions} from '../../teleme
 import './globalHeaderSettingsMenu.scss'
 
 type Props = {
-    history: History<unknown>
+    history: AppHistory
 }
 
 const GlobalHeaderSettingsMenu = (props: Props) => {

@@ -1,8 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import React, {useCallback} from 'react'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import {FormattedMessage} from 'react-intl'
+
+import {useAppNavigation} from '../routeCompat'
 
 import ErrorIllustration from '../svg/error-illustration'
 
@@ -12,7 +14,7 @@ import './errorPage.scss'
 import {errorDefFromId, ErrorId} from '../errors'
 
 const ErrorPage = () => {
-    const history = useHistory()
+    const history = useAppNavigation()
     const queryParams = new URLSearchParams(useLocation().search)
     const errid = queryParams.get('id')
     const errorDef = errorDefFromId(errid as ErrorId)

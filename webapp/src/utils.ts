@@ -2,11 +2,12 @@
 // See LICENSE.txt for license information.
 import {marked} from 'marked'
 import {IntlShape} from 'react-intl'
-import moment from 'moment'
 
-import {generatePath, match as routerMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
 
-import {History} from 'history'
+import {relativeDate} from './dateHelpers'
+
+import {AppHistory, AppRouteMatch} from './routeCompat'
 
 import {IUser} from './user'
 
@@ -361,7 +362,7 @@ class Utils {
     }
 
     static relativeDisplayDateTime(date: Date, intl: IntlShape): string {
-        return moment(date).locale(intl.locale.toLowerCase()).fromNow()
+        return relativeDate(date, intl.locale.toLowerCase())
     }
 
     static sleep(miliseconds: number): Promise<void> {
@@ -764,8 +765,8 @@ class Utils {
 
     static showBoard(
         boardId: string,
-        match: routerMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>,
-        history: History,
+        match: AppRouteMatch<{boardId?: string, viewId?: string, cardId?: string, teamId?: string}>,
+        history: AppHistory,
     ) {
         // if the same board, reuse the match params
         // otherwise remove viewId and cardId, results in first view being selected

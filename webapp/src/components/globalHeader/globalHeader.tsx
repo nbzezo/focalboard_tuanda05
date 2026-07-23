@@ -3,7 +3,8 @@
 //
 import {Provider as ReduxProvider} from 'react-redux'
 import {IntlProvider} from 'react-intl'
-import {History} from 'history'
+
+import {AppHistory} from '../../routeCompat'
 
 import HelpIcon from '../../widgets/icons/help'
 import store from '../../store'
@@ -18,7 +19,7 @@ import GlobalHeaderSettingsMenu from './globalHeaderSettingsMenu'
 import './globalHeader.scss'
 
 type HeaderItemProps = {
-    history: History<unknown>
+    history: AppHistory
 }
 
 const HeaderItems = (props: HeaderItemProps) => {
@@ -47,7 +48,7 @@ const HeaderItems = (props: HeaderItemProps) => {
 }
 
 type Props = {
-    history: History<unknown>
+    history: AppHistory
 }
 
 const GlobalHeader = (props: Props): JSX.Element => {

@@ -3,7 +3,9 @@
 import React from 'react'
 import {FormattedMessage} from 'react-intl'
 
-import {useLocation, useHistory} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
+
+import {useAppNavigation} from '../../routeCompat'
 
 import BoardWelcomePNG from '../../../static/boards-welcome.png'
 import BoardWelcomeSmallPNG from '../../../static/boards-welcome-small.png'
@@ -24,7 +26,7 @@ import TelemetryClient, {TelemetryActions, TelemetryCategory} from '../../teleme
 import {UserSettingKey} from '../../userSettings'
 
 const WelcomePage = () => {
-    const history = useHistory()
+    const history = useAppNavigation()
     const queryString = new URLSearchParams(useLocation().search)
     const me = useAppSelector<IUser|null>(getMe)
     const myConfig = useAppSelector(getMyConfig)

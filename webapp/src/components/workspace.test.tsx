@@ -93,19 +93,22 @@ const categoryAttribute1 = TestBlockFactory.createCategoryBoards()
 categoryAttribute1.name = 'Category 1'
 categoryAttribute1.boardMetadata = [{boardID: board.id, hidden: false}]
 
-jest.mock('react-router-dom', () => {
-    const originalModule = jest.requireActual('react-router-dom')
+jest.mock('../routeCompat', () => {
+    const actual = jest.requireActual('../routeCompat')
 
     return {
-        ...originalModule,
-        useRouteMatch: jest.fn(() => {
+        ...actual,
+        useAppRouteMatch: jest.fn(() => {
             return {
                 params: {
-                    boardId: board.id,
-                    viewId: activeView.id,
+                    boardId: 'board1',
+                    viewId: 'view1',
                 },
+                path: '/:boardId?/:viewId?/:cardId?',
+                url: '/',
             }
         }),
+        useAppNavigation: jest.fn(() => ({push: jest.fn(), replace: jest.fn(), goBack: jest.fn()})),
     }
 })
 
@@ -181,6 +184,10 @@ describe('src/components/workspace', () => {
     beforeEach(() => {
         jest.clearAllMocks()
         mockedUtils.createGuid.mockReturnValue('test-id')
+
+        // Utils is auto-mocked; getBoardPagePath must echo the route pattern
+        // so v6 generatePath receives a valid path (v5 tolerated undefined).
+        mockedUtils.getBoardPagePath.mockImplementation((p: string) => p)
     })
     test('should match snapshot', async () => {
         let container

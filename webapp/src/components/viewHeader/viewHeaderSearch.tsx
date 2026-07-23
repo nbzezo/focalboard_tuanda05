@@ -1,10 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import {useState, useRef, useEffect, useMemo} from 'react'
-import {useRouteMatch} from 'react-router-dom'
 import {useIntl} from 'react-intl'
 import {useHotkeys} from 'react-hotkeys-hook'
 import {debounce} from 'lodash'
+
+import {useAppRouteMatch} from '../../routeCompat'
 
 import CompassIcon from '../../widgets/icons/compassIcon'
 import Editable from '../../widgets/editable'
@@ -16,7 +17,7 @@ const ViewHeaderSearch = (): JSX.Element => {
     const searchText = useAppSelector<string>(getSearchText)
     const dispatch = useAppDispatch()
     const intl = useIntl()
-    const match = useRouteMatch<{viewId?: string}>()
+    const match = useAppRouteMatch<{viewId?: string}>()
 
     const searchFieldRef = useRef<{focus(selectAll?: boolean): void}>(null)
     const [searchValue, setSearchValue] = useState(searchText)

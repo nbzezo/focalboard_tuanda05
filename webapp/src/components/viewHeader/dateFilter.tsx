@@ -2,11 +2,7 @@
 // See LICENSE.txt for license information.
 import {useState, useCallback} from 'react'
 import {useIntl} from 'react-intl'
-import {DateUtils} from 'react-day-picker'
-import MomentLocaleUtils from 'react-day-picker/moment'
-import DayPicker from 'react-day-picker/DayPicker'
-
-import moment from 'moment'
+import {DayPicker} from 'react-day-picker'
 
 import mutator from '../../mutator'
 
@@ -17,8 +13,9 @@ import {BoardView} from '../../blocks/boardView'
 import Modal from '../../components/modal'
 import ModalWrapper from '../../components/modalWrapper'
 import {Utils} from '../../utils'
+import {getDateFnsLocale, localeDateFormat, parseInputDate} from '../../dateHelpers'
 
-import 'react-day-picker/lib/style.css'
+import 'react-day-picker/dist/style.css'
 import './dateFilter.scss'
 
 import {FilterClause} from '../../blocks/filterClause'
@@ -35,8 +32,6 @@ type Props = {
     view: BoardView
     filter: FilterClause
 }
-
-const loadedLocales: Record<string, moment.Locale> = {}
 
 function DateFilter(props: Props): JSX.Element {
     const {filter, view} = props
@@ -91,17 +86,16 @@ function DateFilter(props: Props): JSX.Element {
     const [input, setInput] = useState<string>(getDisplayDate(offsetDate))
 
     const locale = intl.locale.toLowerCase()
-    if (locale && locale !== 'en' && !loadedLocales[locale]) {
-        // eslint-disable-next-line global-require
-        loadedLocales[locale] = require(`moment/locale/${locale}`)
-    }
 
     const handleTodayClick = (day: Date) => {
-        day.setHours(12)
+        day.setHours(12, 0, 0, 0)
         saveValue(day)
     }
 
     const handleDayClick = (day: Date) => {
+        // react-day-picker v8 delivers days at local midnight; normalize to
+        // noon (v7 behaviour) so stored dates stay DST-safe and consistent.
+        day.setHours(12, 0, 0, 0)
         saveValue(day)
     }
 
@@ -149,7 +143,7 @@ function DateFilter(props: Props): JSX.Element {
                             <div className={'inputContainer'}>
                                 <Editable
                                     value={input}
-                                    placeholderText={moment.localeData(locale).longDateFormat('L')}
+                                    placeholderText={localeDateFormat(locale)}
                                     onFocus={() => {
                                         if (offsetDate) {
                                             return setInput(Utils.inputDate(offsetDate, intl))
@@ -158,8 +152,8 @@ function DateFilter(props: Props): JSX.Element {
                                     }}
                                     onChange={setInput}
                                     onSave={() => {
-                                        const newDate = MomentLocaleUtils.parseDate(input, 'L', intl.locale)
-                                        if (newDate && DateUtils.isDate(newDate)) {
+                                        const newDate = parseInputDate(input, intl.locale)
+                                        if (newDate) {
                                             newDate.setHours(12)
                                             saveValue(newDate)
                                         } else {
@@ -173,14 +167,18 @@ function DateFilter(props: Props): JSX.Element {
                             </div>
                             <DayPicker
                                 onDayClick={handleDayClick}
-                                initialMonth={offsetDate || new Date()}
+                                defaultMonth={offsetDate || new Date()}
                                 showOutsideDays={false}
-                                locale={locale}
-                                localeUtils={MomentLocaleUtils}
-                                todayButton={intl.formatMessage({id: 'DateRange.today', defaultMessage: 'Today'})}
-                                onTodayButtonClick={handleTodayClick}
-                                month={offsetDate}
-                                selectedDays={offsetDate}
+                                locale={getDateFnsLocale(locale)}
+                                selected={offsetDate}
+                                footer={
+                                    <Button
+                                        className='rdp-today_button'
+                                        onClick={() => handleTodayClick(new Date())}
+                                    >
+                                        {intl.formatMessage({id: 'DateRange.today', defaultMessage: 'Today'})}
+                                    </Button>
+                                }
                             />
                             <hr/>
                             <div

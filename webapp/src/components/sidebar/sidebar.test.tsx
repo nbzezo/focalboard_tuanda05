@@ -2,9 +2,8 @@
 // See LICENSE.txt for license information.
 import configureStore from 'redux-mock-store'
 
-import {createMemoryHistory} from 'history'
 import {Provider as ReduxProvider} from 'react-redux'
-import {Router} from 'react-router-dom'
+import {MemoryRouter} from 'react-router-dom'
 
 import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -84,14 +83,13 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container} = render(component)
@@ -153,14 +151,13 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container} = render(component)
@@ -221,14 +218,13 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container, getAllByText} = render(component)
@@ -288,14 +284,13 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container} = render(component)
@@ -346,16 +341,15 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         mockedOctoClient.moveBoardToCategory.mockResolvedValueOnce({} as Response)
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container} = render(component)
@@ -410,14 +404,13 @@ describe('components/sidebarSidebar', () => {
             },
         })
 
-        const history = createMemoryHistory()
         const onBoardTemplateSelectorOpen = jest.fn()
 
         const component = wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
         const {container} = render(component)
@@ -457,13 +450,11 @@ describe('components/sidebarSidebar', () => {
     //         },
     //     })
 
-    //     const history = createMemoryHistory()
-
     //     const component = wrapIntl(
     //         <ReduxProvider store={store}>
-    //             <Router history={history}>
+    //             <MemoryRouter>
     //                 <Sidebar onBoardTemplateSelectorOpen={onBoardTemplateSelectorOpen}/>
-    //             </Router>
+    //             </MemoryRouter>
     //         </ReduxProvider>,
     //     )
     //     const {container} = render(component)

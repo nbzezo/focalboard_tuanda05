@@ -2,7 +2,9 @@
 // See LICENSE.txt for license information.
 import React, {useCallback} from 'react'
 import {injectIntl, IntlShape} from 'react-intl'
-import {generatePath, useHistory, useRouteMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
+
+import {useAppNavigation, useAppRouteMatch} from '../routeCompat'
 
 import {Board, IPropertyTemplate} from '../blocks/board'
 import {BoardView, createBoardView, IViewType} from '../blocks/boardView'
@@ -32,8 +34,8 @@ type Props = {
 }
 
 const ViewMenu = (props: Props) => {
-    const history = useHistory()
-    const match = useRouteMatch()
+    const history = useAppNavigation()
+    const match = useAppRouteMatch()
 
     const showView = useCallback((viewId: string) => {
         let newPath = generatePath(Utils.getBoardPagePath(match.path), {...match.params, viewId: viewId || ''})

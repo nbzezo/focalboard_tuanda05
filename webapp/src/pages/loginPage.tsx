@@ -1,8 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import React, {useState} from 'react'
-import {Link, Redirect, useLocation, useHistory} from 'react-router-dom'
+import {Link, Navigate, useLocation} from 'react-router-dom'
 import {FormattedMessage} from 'react-intl'
+
+import {useAppNavigation} from '../routeCompat'
 
 import {useAppDispatch, useAppSelector} from '../store/hooks'
 import {fetchMe, getLoggedIn} from '../store/users'
@@ -18,7 +20,7 @@ const LoginPage = () => {
     const dispatch = useAppDispatch()
     const loggedIn = useAppSelector<boolean|null>(getLoggedIn)
     const queryParams = new URLSearchParams(useLocation().search)
-    const history = useHistory()
+    const history = useAppNavigation()
 
     const handleLogin = async (): Promise<void> => {
         const logged = await client.login(username, password)
@@ -35,7 +37,12 @@ const LoginPage = () => {
     }
 
     if (loggedIn) {
-        return <Redirect to={'/'}/>
+        return (
+            <Navigate
+                to='/'
+                replace={true}
+            />
+        )
     }
 
     return (

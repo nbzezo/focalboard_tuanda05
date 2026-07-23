@@ -1,8 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import React, {useCallback, useEffect, useState} from 'react'
-import {generatePath, useRouteMatch, useHistory} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
 import {FormattedMessage} from 'react-intl'
+
+import {useAppNavigation, useAppRouteMatch} from '../routeCompat'
 
 import {DatePropertyType} from '../properties/types'
 
@@ -43,7 +45,7 @@ type Props = {
 
 function CenterContent(props: Props) {
     const isLoading = useAppSelector(isLoadingBoard)
-    const match = useRouteMatch<{boardId: string, viewId: string, cardId?: string, channelId?: string}>()
+    const match = useAppRouteMatch<{boardId: string, viewId: string, cardId?: string, channelId?: string}>()
     const board = useAppSelector(getCurrentBoard)
     const templates = useAppSelector(getTemplates)
     const cards = useAppSelector(getCurrentViewCardsSortedFilteredAndGrouped)
@@ -54,7 +56,7 @@ function CenterContent(props: Props) {
     const clientConfig = useAppSelector(getClientConfig)
     const hiddenCardsCount = useAppSelector(getCurrentBoardHiddenCardsCount)
     const cardLimitTimestamp = useAppSelector(getCardLimitTimestamp)
-    const history = useHistory()
+    const history = useAppNavigation()
     const dispatch = useAppDispatch()
     const me = useAppSelector<IUser|null>(getMe)
     const hiddenBoardIDs = useAppSelector(getHiddenBoardIDs)

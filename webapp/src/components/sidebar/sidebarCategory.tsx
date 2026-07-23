@@ -2,13 +2,15 @@
 // See LICENSE.txt for license information.
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {generatePath, useHistory, useRouteMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
 
 import {debounce} from 'lodash'
 
-import {Draggable, Droppable} from 'react-beautiful-dnd'
+import {Draggable, Droppable} from '@hello-pangea/dnd'
 
 import {HandRightIcon} from '@mattermost/compass-icons/components'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import {Board} from '../../blocks/board'
 import mutator from '../../mutator'
@@ -66,13 +68,13 @@ export const ClassForManageCategoriesTourStep = 'manageCategoriesTourStep'
 const SidebarCategory = (props: Props) => {
     const [collapsed, setCollapsed] = useState(props.categoryBoards.collapsed)
     const intl = useIntl()
-    const history = useHistory()
+    const history = useAppNavigation()
 
     const [deleteBoard, setDeleteBoard] = useState<Board|null>()
     const [showDeleteCategoryDialog, setShowDeleteCategoryDialog] = useState<boolean>(false)
     const [categoryMenuOpen, setCategoryMenuOpen] = useState<boolean>(false)
 
-    const match = useRouteMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>()
+    const match = useAppRouteMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>()
     const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false)
     const [showUpdateCategoryModal, setShowUpdateCategoryModal] = useState(false)
 

@@ -104,28 +104,28 @@
         }
     }
 
-    .DayPicker {
+    .rdp {
         font-size: inherit;
     }
 
-    .DayPickerInput-Overlay {
+    .rdp-input_overlay {
         background-color: rgba(var(--center-channel-bg-rgb));
         box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1);
         line-height: 100%;
     }
 
-    .DayPicker-wrapper {
+    .rdp-months {
         padding: 0;
     }
 
-    .DayPicker-Month {
+    .rdp-month {
         margin: 0;
         margin-top: 1em;
         display: flex;
         flex-direction: column;
     }
 
-    .DayPicker-Body {
+    .rdp-tbody {
         display: flex;
         flex-direction: column;
     }
@@ -134,30 +134,30 @@
         max-width: 252px;
     }
 
-    .DayPicker-Weekdays {
+    .rdp-head {
         margin: 0;
     }
 
-    .DayPicker-WeekdaysRow {
+    .rdp-head_row {
         display: flex;
         flex-direction: row;
     }
 
-    .DayPicker-Weekday {
+    .rdp-head_cell {
         width: 36px;
         height: 36px;
     }
 
-    .DayPicker-NavButton {
+    .rdp-nav_button {
         right: 0;
     }
 
-    .DayPicker-Week {
+    .rdp-row {
         display: flex;
         flex-direction: row;
     }
 
-    .DayPicker-Day {
+    .rdp-day {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -170,7 +170,7 @@
             content: unset;
         }
 
-        &:not(.DayPicker-Day--selected) {
+        &:not(.rdp-day_selected) {
             &:hover {
                 background: rgba(var(--button-bg-rgb), 0.08) !important;
                 color: rgba(var(--button-bg-rgb), 1) !important;
@@ -178,26 +178,26 @@
         }
     }
 
-    .DayPicker-Day--today {
+    .rdp-day_today {
         background: transparent;
         color: #c74655;
     }
 
-    .DayPicker-Day--start {
+    .rdp-day_start {
         border-top-left-radius: 50% !important;
         border-bottom-left-radius: 50% !important;
         border-top-right-radius: unset;
         border-bottom-right-radius: unset;
     }
 
-    .DayPicker-Day--end {
+    .rdp-day_end {
         border-top-left-radius: unset;
         border-bottom-left-radius: unset;
         border-top-right-radius: 50% !important;
         border-bottom-right-radius: 50% !important;
     }
 
-    .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+    .rdp-day_selected:not(.rdp-day_disabled):not(.rdp-day_outside) {
         border-radius: unset;
         background-color: rgb(var(--button-bg-rgb));
         color: rgba(var(--button-color-rgb), 1);
@@ -207,7 +207,7 @@
         }
     }
 
-    .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+    .rdp-day_selected:not(.rdp-day_start):not(.rdp-day_end):not(.rdp-day_outside) {
         color: rgb(var(--button-bg-rgb));
         background-color: rgba(var(--button-bg-rgb), 0.08);
 
@@ -216,7 +216,7 @@
         }
     }
 
-    .DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+    .rdp .rdp-day:not(.rdp-day_disabled):not(.rdp-day_selected):not(.rdp-day_outside):hover {
         background-color: rgba(var(--body-color), 0.2);
     }
 }

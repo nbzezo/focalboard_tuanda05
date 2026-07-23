@@ -13,19 +13,24 @@ const boardId = '1'
 const board = TestBlockFactory.createBoard()
 board.id = boardId
 
-jest.mock('react-router-dom', () => {
-    const originalModule = jest.requireActual('react-router-dom')
+jest.mock('../../routeCompat', () => {
+    const actual = jest.requireActual('../../routeCompat')
 
     return {
-        ...originalModule,
-        useRouteMatch: jest.fn(() => {
+        ...actual,
+        useAppRouteMatch: jest.fn(() => {
             return {
-                teamId: 'team1',
-                boardId: 'boardId1',
-                viewId: 'viewId1',
-                cardId: 'cardId1',
+                params: {
+                    teamId: 'team1',
+                    boardId: 'boardId1',
+                    viewId: 'viewId1',
+                    cardId: 'cardId1',
+                },
+                path: '/team/:teamId/:boardId?/:viewId?/:cardId?',
+                url: '/team/team1/boardId1/viewId1/cardId1',
             }
         }),
+        useAppNavigation: jest.fn(() => ({push: jest.fn(), replace: jest.fn(), goBack: jest.fn()})),
     }
 })
 

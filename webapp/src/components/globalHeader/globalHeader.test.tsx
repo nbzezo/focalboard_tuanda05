@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 
 import {Provider as ReduxProvider} from 'react-redux'
-import {createMemoryHistory} from 'history'
 
 import {render} from '@testing-library/react'
 
@@ -14,7 +13,7 @@ import GlobalHeader from './globalHeader'
 
 describe('components/sidebar/GlobalHeader', () => {
     const mockStore = configureStore([])
-    const history = createMemoryHistory()
+    const history = {push: jest.fn(), replace: jest.fn(), goBack: jest.fn()}
 
     let store = mockStore({})
     beforeEach(() => {

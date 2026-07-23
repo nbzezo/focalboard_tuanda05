@@ -5,8 +5,9 @@ import {ReactNode, useRef, createRef, useState, useEffect, MutableRefObject} fro
 import './boardSwitcherDialog.scss'
 import {useIntl} from 'react-intl'
 
-import {generatePath, useHistory, useRouteMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
 
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 import octoClient from '../../octoClient'
 import SearchDialog from '../searchDialog/searchDialog'
 import Globe from '../../widgets/icons/globe'
@@ -42,8 +43,8 @@ const BoardSwitcherDialog = (props: Props): JSX.Element => {
         },
     )
 
-    const match = useRouteMatch<{boardId: string, viewId: string, cardId?: string}>()
-    const history = useHistory()
+    const match = useAppRouteMatch<{boardId: string, viewId: string, cardId?: string}>()
+    const history = useAppNavigation()
 
     const selectBoard = async (teamId: string, boardId: string): Promise<void> => {
         if (!me) {

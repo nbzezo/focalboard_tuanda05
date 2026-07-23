@@ -3,13 +3,12 @@
 import {render, screen, act, waitFor, within} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {MockStoreEnhanced} from 'redux-mock-store'
-import {createMemoryHistory} from 'history'
 
 import {mocked} from 'jest-mock'
 
 import {Provider as ReduxProvider} from 'react-redux'
 
-import {MemoryRouter, Router} from 'react-router-dom'
+import {MemoryRouter} from 'react-router-dom'
 
 import Mutator from '../../mutator'
 import {Team} from '../../store/teams'
@@ -266,14 +265,12 @@ describe('components/boardTemplateSelector/boardTemplateSelector', () => {
             expect(mockedMutator.deleteBoard).toBeCalledTimes(1)
         })
         test('return BoardTemplateSelector and click edit template icon', async () => {
-            const history = createMemoryHistory()
-            history.push = jest.fn()
             render(wrapDNDIntl(
-                <Router history={history}>
+                <MemoryRouter>
                     <ReduxProvider store={store}>
                         <BoardTemplateSelector onClose={jest.fn()}/>
                     </ReduxProvider>
-                </Router>,
+                </MemoryRouter>,
             ))
             const editIcon = screen.getByText(template1Title).parentElement?.querySelector('.EditIcon')
             expect(editIcon).not.toBeNull()

@@ -2,8 +2,10 @@
 // See LICENSE.txt for license information.
 import React, {useCallback, useRef, useState} from 'react'
 import {useIntl} from 'react-intl'
-import {generatePath, useHistory, useRouteMatch} from 'react-router-dom'
-import {Draggable} from 'react-beautiful-dnd'
+import {generatePath} from 'react-router-dom'
+import {Draggable} from '@hello-pangea/dnd'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import {Board} from '../../blocks/board'
 import {BoardView, IViewType} from '../../blocks/boardView'
@@ -75,8 +77,8 @@ const SidebarBoardItem = (props: Props) => {
     const teamID = team?.id || ''
     const me = useAppSelector(getMe)
 
-    const match = useRouteMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>()
-    const history = useHistory()
+    const match = useAppRouteMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>()
+    const history = useAppNavigation()
     const dispatch = useAppDispatch()
     const currentBoardID = useAppSelector(getCurrentBoardId)
 
@@ -143,7 +145,7 @@ const SidebarBoardItem = (props: Props) => {
     const showTemplatePicker = () => {
         // if the same board, reuse the match params
         // otherwise remove viewId and cardId, results in first view being selected
-        const params = {teamId: match.params.teamId}
+        const params = {teamId: match.params.teamId ?? null}
         const newPath = generatePath('/team/:teamId?', params)
         history.push(newPath)
     }

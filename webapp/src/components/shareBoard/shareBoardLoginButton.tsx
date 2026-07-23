@@ -3,7 +3,9 @@
 
 import React, {useCallback} from 'react'
 import {FormattedMessage} from 'react-intl'
-import {generatePath, useRouteMatch, useHistory} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import Button from '../../widgets/buttons/button'
 import TelemetryClient, {TelemetryActions, TelemetryCategory} from '../../telemetry/telemetryClient'
@@ -12,12 +14,18 @@ import {Utils} from '../../utils'
 import './shareBoardLoginButton.scss'
 
 const ShareBoardLoginButton = () => {
-    const match = useRouteMatch<{teamId: string, boardId: string, viewId?: string, cardId?: string}>()
-    const history = useHistory()
+    const match = useAppRouteMatch<{teamId: string, boardId: string, viewId?: string, cardId?: string}>()
+    const history = useAppNavigation()
 
-    let redirectQueryParam = 'r=' + encodeURIComponent(generatePath('/:boardId?/:viewId?/:cardId?', match.params))
+    const pathParams = {
+        teamId: match.params.teamId ?? null,
+        boardId: match.params.boardId ?? null,
+        viewId: match.params.viewId ?? null,
+        cardId: match.params.cardId ?? null,
+    }
+    let redirectQueryParam = 'r=' + encodeURIComponent(generatePath('/:boardId?/:viewId?/:cardId?', pathParams))
     if (Utils.isFocalboardLegacy()) {
-        redirectQueryParam = 'redirect_to=' + encodeURIComponent(generatePath('/boards/team/:teamId/:boardId?/:viewId?/:cardId?', match.params))
+        redirectQueryParam = 'redirect_to=' + encodeURIComponent(generatePath('/boards/team/:teamId/:boardId?/:viewId?/:cardId?', pathParams))
     }
     const loginPath = '/login?' + redirectQueryParam
 

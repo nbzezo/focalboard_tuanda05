@@ -2,8 +2,9 @@
 // See LICENSE.txt for license information.
 import React, {useEffect, useState, useCallback, useMemo} from 'react'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {useHistory, useRouteMatch} from 'react-router-dom'
 import {useHotkeys} from 'react-hotkeys-hook'
+
+import {useAppNavigation, useAppRouteMatch} from '../../routeCompat'
 
 import CompassIcon from '../../widgets/icons/compassIcon'
 
@@ -46,8 +47,8 @@ const BoardTemplateSelector = (props: Props) => {
     const {title, description, onClose} = props
     const dispatch = useAppDispatch()
     const intl = useIntl()
-    const history = useHistory()
-    const match = useRouteMatch<{boardId: string, viewId?: string}>()
+    const history = useAppNavigation()
+    const match = useAppRouteMatch<{boardId: string, viewId?: string}>()
     const me = useAppSelector<IUser|null>(getMe)
 
     useHotkeys('esc', () => props.onClose?.())

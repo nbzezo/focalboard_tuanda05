@@ -1,8 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 import React, {useState} from 'react'
-import {useHistory, Link, Redirect} from 'react-router-dom'
+import {Link, Navigate} from 'react-router-dom'
 import {FormattedMessage} from 'react-intl'
+
+import {useAppNavigation} from '../routeCompat'
 
 import {useAppDispatch, useAppSelector} from '../store/hooks'
 import {fetchMe, getLoggedIn} from '../store/users'
@@ -16,7 +18,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const history = useHistory()
+    const history = useAppNavigation()
     const dispatch = useAppDispatch()
     const loggedIn = useAppSelector<boolean|null>(getLoggedIn)
 
@@ -39,7 +41,12 @@ const RegisterPage = () => {
     }
 
     if (loggedIn) {
-        return <Redirect to={'/'}/>
+        return (
+            <Navigate
+                to='/'
+                replace={true}
+            />
+        )
     }
 
     return (

@@ -5,8 +5,7 @@ import {render} from '@testing-library/react'
 import 'isomorphic-fetch'
 
 import {Provider as ReduxProvider} from 'react-redux'
-import {Router} from 'react-router-dom'
-import {createMemoryHistory} from 'history'
+import {MemoryRouter} from 'react-router-dom'
 
 import configureStore from 'redux-mock-store'
 
@@ -66,22 +65,20 @@ describe('/components/viewMenu', () => {
         clientConfig: {},
     }
 
-    const history = createMemoryHistory()
-
     it('should match snapshot', () => {
         const mockStore = configureStore([])
         const store = mockStore(state)
 
         const component = wrapDNDIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <ViewMenu
                         board={board}
                         activeView={activeView}
                         views={views}
                         readonly={false}
                     />
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
 
@@ -95,14 +92,14 @@ describe('/components/viewMenu', () => {
 
         const component = wrapDNDIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <ViewMenu
                         board={board}
                         activeView={activeView}
                         views={views}
                         readonly={true}
                     />
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         )
 

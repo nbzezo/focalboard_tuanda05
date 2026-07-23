@@ -1,6 +1,5 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import {DateUtils} from 'react-day-picker'
 
 import {DateProperty} from './properties/date/date'
 
@@ -17,7 +16,7 @@ class CardFilter {
         let dateProperty: DateProperty = {}
         if (initialValue) {
             const singleDate = new Date(Number(initialValue))
-            if (singleDate && DateUtils.isDate(singleDate)) {
+            if (singleDate && !isNaN(singleDate.getTime())) {
                 dateProperty.from = singleDate.getTime()
             } else {
                 try {

@@ -3,10 +3,7 @@
 
 import {createIntl} from 'react-intl'
 
-import {createMemoryHistory} from 'history'
-
-import {match as routerMatch} from 'react-router-dom'
-
+import {AppHistory, AppRouteMatch} from './routeCompat'
 import {Utils, IDType, ShowFullName, ShowNicknameFullName, ShowUsername} from './utils'
 import {IUser} from './user'
 
@@ -180,7 +177,7 @@ describe('utils', () => {
 
     describe('showBoard test', () => {
         it('should switch boards', () => {
-            const match = {
+            const match: AppRouteMatch<{boardId?: string, viewId?: string, cardId?: string, teamId?: string}> = {
                 params: {
                     boardId: 'board_id_1',
                     viewId: 'view_id_1',
@@ -188,10 +185,14 @@ describe('utils', () => {
                     teamId: 'team_id_1',
                 },
                 path: '/team/:teamId/:boardId?/:viewId?/:cardId?',
-            } as unknown as routerMatch<{boardId: string, viewId?: string, cardId?: string, teamId?: string}>
+                url: '/team/team_id_1/board_id_1/view_id_1/card_id_1',
+            }
 
-            const history = createMemoryHistory()
-            history.push = jest.fn()
+            const history: AppHistory = {
+                push: jest.fn(),
+                replace: jest.fn(),
+                goBack: jest.fn(),
+            }
 
             Utils.showBoard('board_id_2', match, history)
 

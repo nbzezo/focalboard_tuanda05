@@ -2,11 +2,7 @@
 // See LICENSE.txt for license information.
 import {useMemo, useState, useCallback, useEffect} from 'react'
 import {useIntl} from 'react-intl'
-import {DateUtils} from 'react-day-picker'
-import MomentLocaleUtils from 'react-day-picker/moment'
-import DayPicker from 'react-day-picker/DayPicker'
-
-import moment from 'moment'
+import {DayPicker, addToRange} from 'react-day-picker'
 
 import mutator from '../../mutator'
 
@@ -17,8 +13,9 @@ import Button from '../../widgets/buttons/button'
 import Modal from '../../components/modal'
 import ModalWrapper from '../../components/modalWrapper'
 import {Utils} from '../../utils'
+import {getDateFnsLocale, localeDateFormat, parseInputDate} from '../../dateHelpers'
 
-import 'react-day-picker/lib/style.css'
+import 'react-day-picker/dist/style.css'
 import './date.scss'
 
 import {PropertyProps} from '../types'
@@ -34,7 +31,7 @@ export function createDatePropertyFromString(initialValue: string): DateProperty
     let dateProperty: DateProperty = {}
     if (initialValue) {
         const singleDate = new Date(Number(initialValue))
-        if (singleDate && DateUtils.isDate(singleDate)) {
+        if (singleDate && !isNaN(singleDate.getTime())) {
             dateProperty.from = singleDate.getTime()
         } else {
             try {
@@ -50,8 +47,6 @@ export function createDatePropertyFromString(initialValue: string): DateProperty
 function datePropertyToString(dateProperty: DateProperty): string {
     return dateProperty.from || dateProperty.to ? JSON.stringify(dateProperty) : ''
 }
-
-const loadedLocales: Record<string, moment.Locale> = {}
 
 function DateRange(props: PropertyProps): JSX.Element {
     const {propertyValue, propertyTemplate, showEmptyPlaceholder, readOnly, board, card} = props
@@ -96,18 +91,14 @@ function DateRange(props: PropertyProps): JSX.Element {
     const isRange = dateTo !== undefined
 
     const locale = intl.locale.toLowerCase()
-    if (locale && locale !== 'en' && !loadedLocales[locale]) {
-        // eslint-disable-next-line global-require
-        loadedLocales[locale] = require(`moment/locale/${locale}`)
-    }
 
     const handleDayClick = (day: Date) => {
         const range: DateProperty = {}
-        day.setHours(12)
+        day.setHours(12, 0, 0, 0)
         if (isRange) {
-            const newRange = DateUtils.addDayToRange(day, {from: dateFrom, to: dateTo})
-            range.from = newRange.from?.getTime()
-            range.to = newRange.to?.getTime()
+            const newRange = addToRange(day, {from: dateFrom, to: dateTo})
+            range.from = newRange?.from?.getTime()
+            range.to = newRange?.to?.getTime()
         } else {
             range.from = day.getTime()
             range.to = undefined
@@ -192,7 +183,7 @@ function DateRange(props: PropertyProps): JSX.Element {
                             <div className={'inputContainer'}>
                                 <Editable
                                     value={fromInput}
-                                    placeholderText={moment.localeData(locale).longDateFormat('L')}
+                                    placeholderText={localeDateFormat(locale)}
                                     onFocus={() => {
                                         if (dateFrom) {
                                             return setFromInput(Utils.inputDate(dateFrom, intl))
@@ -201,8 +192,8 @@ function DateRange(props: PropertyProps): JSX.Element {
                                     }}
                                     onChange={setFromInput}
                                     onSave={() => {
-                                        const newDate = MomentLocaleUtils.parseDate(fromInput, 'L', intl.locale)
-                                        if (newDate && DateUtils.isDate(newDate)) {
+                                        const newDate = parseInputDate(fromInput, intl.locale)
+                                        if (newDate) {
                                             newDate.setHours(12)
                                             const range: DateProperty = {
                                                 from: newDate.getTime(),
@@ -220,7 +211,7 @@ function DateRange(props: PropertyProps): JSX.Element {
                                 {dateTo &&
                                     <Editable
                                         value={toInput}
-                                        placeholderText={moment.localeData(locale).longDateFormat('L')}
+                                        placeholderText={localeDateFormat(locale)}
                                         onFocus={() => {
                                             if (dateTo) {
                                                 return setToInput(Utils.inputDate(dateTo, intl))
@@ -229,8 +220,8 @@ function DateRange(props: PropertyProps): JSX.Element {
                                         }}
                                         onChange={setToInput}
                                         onSave={() => {
-                                            const newDate = MomentLocaleUtils.parseDate(toInput, 'L', intl.locale)
-                                            if (newDate && DateUtils.isDate(newDate)) {
+                                            const newDate = parseInputDate(toInput, intl.locale)
+                                            if (newDate) {
                                                 newDate.setHours(12)
                                                 const range: DateProperty = {
                                                     from: dateFrom?.getTime(),
@@ -249,16 +240,22 @@ function DateRange(props: PropertyProps): JSX.Element {
                             </div>
                             <DayPicker
                                 onDayClick={handleDayClick}
-                                initialMonth={dateFrom || new Date()}
+                                defaultMonth={dateFrom || new Date()}
                                 showOutsideDays={false}
-                                locale={locale}
-                                localeUtils={MomentLocaleUtils}
-                                todayButton={intl.formatMessage({id: 'DateRange.today', defaultMessage: 'Today'})}
-                                onTodayButtonClick={handleDayClick}
-                                month={dateFrom}
-                                selectedDays={[dateFrom, dateTo ? {from: dateFrom, to: dateTo} : {from: dateFrom, to: dateFrom}]}
-                                modifiers={dateTo ? {start: dateFrom, end: dateTo} : {start: dateFrom, end: dateFrom}}
+                                locale={getDateFnsLocale(locale)}
+                                selected={dateFrom ? [dateFrom, {from: dateFrom, to: dateTo ?? dateFrom}] : undefined}
+                                modifiers={dateFrom ? {start: dateFrom, end: dateTo ?? dateFrom} : {}}
+                                modifiersClassNames={{start: 'rdp-day_start', end: 'rdp-day_end'}}
+                                footer={
+                                    <Button
+                                        className='rdp-today_button'
+                                        onClick={() => handleDayClick(new Date())}
+                                    >
+                                        {intl.formatMessage({id: 'DateRange.today', defaultMessage: 'Today'})}
+                                    </Button>
+                                }
                             />
+
                             <hr/>
                             <SwitchOption
                                 key={'EndDateOn'}

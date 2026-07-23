@@ -30,20 +30,20 @@ jest.mock('../../utils')
 const mockedOctoClient = mocked(client, {shallow: true})
 const mockedUtils = mocked(Utils, {shallow: true})
 
-let params = {}
-jest.mock('react-router', () => {
-    const originalModule = jest.requireActual('react-router')
+let params: Record<string, string | undefined> = {}
+jest.mock('../../routeCompat', () => {
+    const actual = jest.requireActual('../../routeCompat')
 
     return {
-        ...originalModule,
-        useRouteMatch: jest.fn(() => {
+        ...actual,
+        useAppRouteMatch: jest.fn(() => {
             return {
                 url: 'http://localhost/',
-                path: '/',
+                path: '/team/:teamId/:boardId?/:viewId?/:cardId?',
                 params,
-                isExact: true,
             }
         }),
+        useAppNavigation: jest.fn(() => ({push: jest.fn(), replace: jest.fn(), goBack: jest.fn()})),
     }
 })
 

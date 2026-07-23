@@ -1,8 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {createMemoryHistory} from 'history'
-import {Router} from 'react-router-dom'
+import {MemoryRouter} from 'react-router-dom'
 
 import {render} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -23,7 +22,6 @@ describe('components/sidebarBoardItem', () => {
 
     const view = TestBlockFactory.createBoardView(board)
     view.fields.sortOptions = []
-    const history = createMemoryHistory()
 
     const categoryBoards1 = TestBlockFactory.createCategoryBoards()
     categoryBoards1.name = 'Category 1'
@@ -75,7 +73,7 @@ describe('components/sidebarBoardItem', () => {
 
         const component = wrapRBDNDDroppable(wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <SidebarBoardItem
                         index={0}
                         categoryBoards={categoryBoards1}
@@ -86,7 +84,7 @@ describe('components/sidebarBoardItem', () => {
                         showView={jest.fn()}
                         onDeleteRequest={jest.fn()}
                     />
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         ))
         const {container} = render(component)
@@ -103,7 +101,7 @@ describe('components/sidebarBoardItem', () => {
 
         const component = wrapRBDNDDroppable(wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <SidebarBoardItem
                         index={0}
                         categoryBoards={categoryBoards1}
@@ -114,7 +112,7 @@ describe('components/sidebarBoardItem', () => {
                         showView={jest.fn()}
                         onDeleteRequest={jest.fn()}
                     />
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         ))
         const {container} = render(component)
@@ -127,7 +125,7 @@ describe('components/sidebarBoardItem', () => {
 
         const component = wrapRBDNDDroppable(wrapIntl(
             <ReduxProvider store={store}>
-                <Router history={history}>
+                <MemoryRouter>
                     <SidebarBoardItem
                         index={0}
                         categoryBoards={categoryBoards1}
@@ -138,7 +136,7 @@ describe('components/sidebarBoardItem', () => {
                         showView={jest.fn()}
                         onDeleteRequest={jest.fn()}
                     />
-                </Router>
+                </MemoryRouter>
             </ReduxProvider>,
         ))
         const {container} = render(component)

@@ -3,7 +3,6 @@
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {Provider as ReduxProvider} from 'react-redux'
-import moment from 'moment'
 
 import {mocked} from 'jest-mock'
 
@@ -17,6 +16,14 @@ import Comment from './comment'
 
 jest.mock('../../mutator')
 const mockedMutator = mocked(mutator, {shallow: true})
+
+// Pin the relative-time string so the snapshot is stable, without faking the
+// global Date (which would also shift Utils.yearOption and drop the year from
+// the absolute-date tooltip). Mirrors the pre-migration moment.now override.
+jest.mock('../../dateHelpers', () => ({
+    ...jest.requireActual('../../dateHelpers'),
+    relativeDate: () => 'a day ago',
+}))
 
 const board = TestBlockFactory.createBoard()
 const card = TestBlockFactory.createCard(board)
@@ -38,15 +45,6 @@ describe('components/cardDetail/comment', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
-        moment.now = () => {
-            return dateFixed + (24 * 60 * 60 * 1000)
-        }
-    })
-
-    afterEach(() => {
-        moment.now = () => {
-            return Number(new Date())
-        }
     })
 
     test('return comment', () => {

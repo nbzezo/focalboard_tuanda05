@@ -4,9 +4,11 @@
 import {useState, useEffect} from 'react'
 
 import {useIntl, FormattedMessage} from 'react-intl'
-import {generatePath, useRouteMatch} from 'react-router-dom'
+import {generatePath} from 'react-router-dom'
 import Select from 'react-select/async'
 import {CSSObject} from '@emotion/serialize'
+
+import {useAppRouteMatch} from '../../routeCompat'
 
 import {useAppSelector} from '../../store/hooks'
 import {getCurrentBoard, getCurrentBoardMembers} from '../../store/boards'
@@ -114,7 +116,7 @@ export default function ShareBoardDialog(props: Props): JSX.Element {
     const [publish, setPublish] = useState(false)
 
     const intl = useIntl()
-    const match = useRouteMatch<{teamId?: string, boardId: string, viewId: string}>()
+    const match = useAppRouteMatch<{teamId?: string, boardId: string, viewId: string}>()
 
     const hasSharePermissions = useHasPermissions(board.teamId, boardId, [Permission.ShareBoard])
 
