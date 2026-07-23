@@ -35,7 +35,7 @@ linters:
     - durationcheck
     - errorlint
     - exhaustive
-    - exportloopref
+    - copyloopvar
     - gosec
     - makezero
     - staticcheck

@@ -101,11 +101,20 @@ generate: ## Install and run code generators.
 	cd server; go install github.com/golang/mock/mockgen@v1.6.0
 	cd server; go generate ./...
 
+GOLANGCI_LINT_VERSION ?= v1.59.1
+
 server-lint: ## Run linters on server code.
 	@if ! [ -x "$$(command -v golangci-lint)" ]; then \
 		echo "golangci-lint is not installed. Please see https://github.com/golangci/golangci-lint#install-golangci-lint for installation instructions."; \
 		exit 1; \
 	fi;
+	@installed="$$(golangci-lint version 2>/dev/null | grep -o 'version v\?[0-9.]*' | head -1 | grep -o '[0-9.]*')"; \
+	want="$$(echo $(GOLANGCI_LINT_VERSION) | sed 's/^v//')"; \
+	if [ "$$installed" != "$$want" ]; then \
+		echo "golangci-lint $$installed found, but $(GOLANGCI_LINT_VERSION) is required."; \
+		echo "Install it with: go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)"; \
+		exit 1; \
+	fi
 	cd server; golangci-lint run ./...
 
 modd-precheck:

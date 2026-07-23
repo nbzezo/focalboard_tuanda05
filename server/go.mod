@@ -1,8 +1,13 @@
 module github.com/mattermost/focalboard/server
 
-go 1.21
+go 1.22
 
-toolchain go1.21.8
+toolchain go1.22.12
+
+// mattermost/server/v8 pins mattn/go-sqlite3 at the accidental v2.0.3+incompatible
+// tag (March 2020), which is OLDER code than the maintained v1.14.x line. Exclude
+// it so module resolution falls back to the v1.14.22 we require above.
+exclude github.com/mattn/go-sqlite3 v2.0.3+incompatible
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
@@ -15,7 +20,7 @@ require (
 	github.com/mattermost/mattermost/server/public v0.1.3
 	github.com/mattermost/mattermost/server/v8 v8.0.0-20240529104128-9d30a62c9471
 	github.com/mattermost/morph v1.1.0
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/mgdelacroix/foundation v0.0.0-20230510073833-0660207768ef
 	github.com/oklog/run v1.1.0
 	github.com/pkg/errors v0.9.1

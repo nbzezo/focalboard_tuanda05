@@ -23,6 +23,7 @@
         ".git",
         "**/node_modules/*",
         "dist",
-        "pack"
+        "pack",
+        "cypress"
     ]
 }
