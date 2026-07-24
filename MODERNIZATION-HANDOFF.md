@@ -2,30 +2,28 @@
 
 > **Mục đích:** Tài liệu này để bàn giao cho một agent/dev khác (DeepSeek) tiếp tục công việc hiện đại hoá & mở rộng Focalboard. Nó tự chứa (self-contained) — đọc xong là làm tiếp được mà không cần lịch sử hội thoại.
 >
-> **Ngày cập nhật:** 2026-07-24 (sau Phase 7b)
+> **Ngày cập nhật:** 2026-07-24 (sau Phase 9 — TOÀN BỘ 9 PHASE ĐÃ XONG)
 > **Branch:** `claude/project-quality-assessment-41e971` (git worktree)
 > **Plan gốc (9 phase):** đã copy vào repo tại `docs/modernization/PLAN-9-phases.md` (tự chứa, không phụ thuộc file ngoài).
 
 ---
 
-## ⭐ BẮT ĐẦU TỪ ĐÂY (kickoff cho DeepSeek)
+## ⭐ BẮT ĐẦU TỪ ĐÂY
+
+**Toàn bộ 9 phase của plan gốc đã hoàn thành và commit** (Phase 5 cố ý dừng ở MỘT PHẦN — xem mục 4c để biết chính xác cái gì còn thiếu và tại sao an toàn khi bỏ qua). Không còn phase nào "tiếp theo" theo plan gốc — nếu có việc mới, đó là: (a) hoàn thiện nốt phần Phase 5 còn thiếu (5b bước 2, 5c phần còn lại, 5d tách god-file — xem mục 4c), (b) nợ kỹ thuật ở mục 7, hoặc (c) yêu cầu tính năng mới ngoài phạm vi plan gốc.
 
 **Bước 0 — Xác nhận baseline (chạy trước khi làm gì):**
 ```bash
-git log --oneline -8
-# Phải thấy (từ mới nhất): "Phase 7b: Timeline/Gantt view", "Phase 7a: card dependencies...",
+git log --oneline -10
+# Phải thấy (từ mới nhất): "Phase 9: formula property", "Phase 8: automation rules engine",
+# "Phase 7b: Timeline/Gantt view", "Phase 7a: card dependencies...",
 # "Phase 6: quick wins...", "docs: record Phase 5 partial completion...",
-# "Phase 5 (partial): server pagination...", "docs: update handoff for Phase 4...",
-# "Phase 4: editor modernization...", "docs: modernization handoff guide...".
+# "Phase 5 (partial): server pagination...", ...
 # Đây là baseline XANH đã verify (Phase 1-4 xong, Phase 5 MỘT PHẦN — cố ý, xem mục 4c —
-# Phase 6 xong, Phase 7 xong với một số phạm vi thu hẹp có ghi chú — xem mục 4d/4e).
+# Phase 6-9 xong, một số phạm vi thu hẹp có ghi chú — xem mục 4d/4e/4f/4g).
 ```
-Phase 1–4 đã xong và commit. **Phase 5 mới làm MỘT PHẦN** (5a server pagination + 5b bước 1 windowed fetch + 5c một phần render memo — xem mục 4c). Quyết định đã chốt: **không quay lại hoàn thiện nốt Phase 5 trước khi làm Phase 6/7** — 5b bước 2/5c phần còn lại/5d đều là tối ưu/tái cấu trúc không chặn tính năng mới, nên Phase 6 và Phase 7 đã làm tiếp trên nền Phase 5 một phần này (xem mục 4c để hiểu rõ tại sao an toàn khi làm vậy — ví dụ: 5b bước 2 bị hoãn vì sẽ vỡ gallery/badges nếu không thiết kế lại 4 consumer trước, không liên quan gì đến WIP limit/swimlane/dependencies/timeline). **Việc tiếp theo là Phase 8 (Automation rules engine)** — xem mục 5 phần Phase 8 để biết spec, và mục 4d/4e để biết những gì Phase 6/7 đã xây (đặc biệt `groupCardsTwoLevels`, `blockChangeNotifier`/`notify.Backend` hook, `checklistUtils.ts`) mà Phase 8 có thể cần tái dùng hoặc phải tương thích. Nếu muốn hoàn thiện nốt phần Phase 5 còn thiếu trước, vẫn có thể — không có ràng buộc thứ tự cứng, chỉ là chưa ai làm.
 
-Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4c/4d/4e (Phase 5/6/7 đã làm gì, KHÔNG làm gì, và TẠI SAO) → mục 5 (spec gốc Phase 8/9, và phần Phase 5 còn thiếu nếu muốn quay lại).
-
-**Prompt mẫu để khởi động DeepSeek** (dán nguyên văn):
-> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), mục 4c/4d/4e (Phase 5 một phần + Phase 6 + Phase 7 đã làm gì — đọc kỹ phần "KHÔNG làm"/"deviations" trước khi động vào các file liên quan). Chạy `git log --oneline -8` xác nhận baseline (Phase 1–4 xong, Phase 5 một phần, Phase 6 xong, Phase 7 xong, đều đã commit xanh). Sau đó làm **Phase 8 (Automation rules engine)** theo spec ở mục 5, giữ mỗi phần kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong. Phase 8 đụng `server/services/notify` + interface `store.Store` — đặc biệt cẩn thận quy tắc vàng #2 (implement method mới ở CẢ sqlstore lẫn mattermostauthlayer).
+Đọc theo thứ tự khi cần hiểu một phase cụ thể: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4c/4d/4e/4f/4g (Phase 5/6/7/8/9 đã làm gì, KHÔNG làm gì, và TẠI SAO) → mục 5 (spec gốc, giữ để đối chiếu — phần Phase 5 còn thiếu nếu muốn quay lại).
 
 **Nếu chạy trên MÁY KHÁC** (không phải máy đã setup): xem mục 1 để biết yêu cầu phiên bản (Go 1.22, gcc cho CGO, Node 20+) và các cờ npm đặc thù; các đường dẫn tuyệt đối trong mục 1 là của máy gốc, cần thay bằng path máy bạn.
 
@@ -110,8 +108,8 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 | **5** | Hiệu năng & cấu trúc (pagination, lazy load, selectors, virtualize table, tách god-file) | 🟡 **MỘT PHẦN, đã commit** (5a+5b bước 1+5c một phần; còn lại xem mục 4c) | `248fefa6` |
 | **6** | Quick wins (WIP limit, swimlane, checklist progress, card history UI) | ✅ **XONG, đã commit** | `e714c4ba` |
 | **7** | Dependencies + Timeline/Gantt view | ✅ **XONG, đã commit** (một số phạm vi thu hẹp có ghi chú — xem mục 4e) | `c8470ebd` (7a) + `7e79fd4f` (7b) |
-| **8** | Automation rules engine | ⬜ Chưa làm — **BẮT ĐẦU TỪ ĐÂY** | — |
-| **9** | Formula property | ⬜ Chưa làm | — |
+| **8** | Automation rules engine | ✅ **XONG, đã commit** | `42c7219f` |
+| **9** | Formula property | ✅ **XONG, đã commit** (kèm 1 bug fix thật ở `createBoard()` — xem mục 4g) | `c1365cea` |
 
 ---
 
@@ -284,6 +282,51 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 ---
 
+## 4f. ✅ Phase 8 — Automation rules engine (ĐÃ XONG, commit `42c7219f`)
+
+**Verify đã đạt:** `go build -tags 'json1 sqlite3' ./...` sạch trên TOÀN BỘ module (gồm `mattermostauthlayer`/`ws/plugin_adapter`/`notify/plugindelivery`); `go vet` sạch; go test package `services/automation` (unit, fakes tự viết thay vì gomock vì interface hẹp) + `services/store/sqlstore` (bao gồm `AutomationStore` mới trong `storetests/`, chạy migration up thật trên SQLite) đều xanh; webapp tsc/eslint/jest (153 suite/910 test/457 snapshot) xanh. **Verify thủ công trên server thật**: tạo rule "khi Occurrence đổi → set Completed=true" qua UI, đổi Occurrence trên card thật → xác nhận qua server log CẢ hai việc: (1) action chạy đúng (PATCH Completed thật), VÀ (2) **action của chính automation KHÔNG tự kích hoạt lại notifyBlockChanged** (log chỉ xuất hiện 1 lần, không đệ quy) — bằng chứng cơ chế chống loop hoạt động đúng, không chỉ đúng trên giấy.
+
+- **Kiến trúc:** `server/services/automation/` là một `notify.Backend` mới, gắn vào ĐÚNG hook `blockChangeNotifier` đã có sẵn (không thêm call site mới). Đăng ký NGAY TRONG `server.New()` (cùng chỗ `notifylogger` được thêm) — nghĩa là **không cần sửa `linux/main.go` hay plugin wrapper**, tự động chạy ở cả 2 run mode.
+- **Vấn đề circular dependency & cách giải:** `app.New()` cần `notify.Service` (chứa backend automation) đã tồn tại trước, nhưng backend automation cần `*app.App` để THỰC THI action (PatchBlock/InsertBlock). Giải bằng deferred setter: `Backend.SetActionExecutor(app)` gọi NGAY SAU `app.New()` trả về trong `server.go`, không phải qua constructor. Phần ĐỌC rule (`GetAutomationRules`, dùng để match trigger) không bị vướng vì đó chỉ là `store.Store` — có sẵn TRƯỚC cả app lẫn notify.Service.
+- **`store.Store` interface += 6 method** (`GetAutomationRules/GetAutomationRule/UpsertAutomationRule/DeleteAutomationRule/CreateAutomationRun/GetAutomationRuns`) → implement trong `sqlstore/automation.go` (private method + `go run ./generators/main.go` sinh `public_methods.go` — đã CHẠY THẬT, không phải viết tay), mock qua `mockgen` (đã cài `go install github.com/golang/mock/mockgen@v1.6.0`, chạy thật, không viết tay). **`mattermostauthlayer` KHÔNG cần sửa gì** — struct này `embed store.Store` trực tiếp nên method mới tự động pass-through, xác nhận bằng `go build ./...` sạch trên toàn module.
+- **Migration `000042_create_automation_rules` + `000043_create_automation_runs`**: bảng rules (trigger_type/trigger_config JSON/actions JSON) + bảng run log (để UI xem lịch sử chạy).
+- **Chống loop — quyết định khác với draft ban đầu:** thay vì chỉ dựa vào check `ModifiedBy == automationBotID` trong matcher (như draft plan mô tả), mọi write của automation dùng `PatchBlockAndNotify(..., disableNotify=true)`/`InsertBlockAndNotify(..., disableNotify=true)` — flag NÀY ĐÃ CÓ SẴN trong `app/blocks.go`, chỉ bỏ qua bước gọi `notifyBlockChanged` (vẫn broadcast websocket/webhook bình thường). Nghĩa là write của automation KHÔNG BAO GIỜ sinh ra `BlockChangeEvent` mới → không thể tự kích hoạt lại CHÍNH NÓ hay bất kỳ rule nào khác — đơn giản và chắc chắn hơn hẳn so với check theo bot userID (vẫn giữ check đó làm lớp phòng thủ thứ 2, không hại gì). Đánh đổi: KHÔNG hỗ trợ rule-A-kích-hoạt-rule-B (chain nhiều hop) — chấp nhận cho v1.
+- **Trigger v1 (4 loại, matcher.go):** `card-created`, `property-changed`/`moved-to-group` (cùng 1 cơ chế — "group by" chỉ là 1 property select bình thường trong data model này, không có khái niệm riêng ở server), `checklist-completed` (chỉ đếm checkbox block riêng, KHÔNG đếm checkbox markdown nhúng trong text — xem ghi chú checklistUtils.ts gốc), `dependency-unblocked` (quét toàn bộ card trên board tìm ai có `blockedBy` chứa card vừa "done", kiểm tra TẤT CẢ blocker của nó đã done chưa).
+- **Action v1 (actions.go):** `set-property`/`move-to-group` (PATCH properties — **phải clone rồi merge 1 key**, vì `BlockPatch.UpdatedFields` merge nông ở cấp TOP-LEVEL của `Fields`, truyền cả object `properties` mới sẽ ĐÈ MẤT các property khác), `add-comment` (tạo block `TypeComment` mới, thay token `{{card.title}}`), `notify-user` (chỉ tạo Subscription cho user đó — có tác dụng thật ở CẢ 2 mode vì "follow" card hoạt động độc lập; delivery thông báo thật CHỈ có ở plugin mode do standalone không có kênh gửi, giống hệt hạn chế `notifysubscriptions`/`notifymentions` đã có từ trước — `NotifyBackends: nil` trong `linux/main.go`).
+- **Rate limiter (ratelimit.go):** 10 lần/phút/(rule,card) — phòng thủ bổ sung (KHÔNG phải cơ chế chống loop chính, vì disableNotify đã chặn loop từ gốc), phòng trường hợp fan-out gián tiếp hiếm gặp.
+- **API (`api/automation.go`):** CRUD `GET/POST /boards/{boardID}/automation/rules`, `PUT/DELETE .../rules/{ruleID}`, `GET .../rules/{ruleID}/runs` — quyền đọc `PermissionViewBoard`, ghi `PermissionManageBoardProperties`.
+- **Webapp:** `store/automationRules.ts` (RTK slice + `createAsyncThunk`), `components/automation/` (`ruleList.tsx` liệt kê/xoá, `ruleEditor.tsx` form trigger+action dùng select/input thường — KHÔNG có schema-driven form builder, đủ dùng cho v1), nút "Automation" cạnh nút Share trên header board (ẩn khi `readonly`).
+
+### Nợ kỹ thuật Phase 8 mở ra
+- Rule cache (TTL 30s per board trong `engine.go`) chỉ invalidate LOCAL NODE khi CRUD qua API cùng node đó — multi-node deployment có độ trễ tới 30s, đã ghi chú trong code.
+- `notify-user` action không có delivery thật ở standalone mode (xem trên).
+- Không hỗ trợ rule-kích-hoạt-rule (multi-hop) do thiết kế disableNotify.
+
+---
+
+## 4g. ✅ Phase 9 — Formula property (ĐÃ XONG, commit `c1365cea`)
+
+**Verify đã đạt:** tsc 0 lỗi, eslint sạch, **jest 157 suite / 951 test / 457 snapshot xanh** (thêm 1 regression test cho bug `createBoard()` bên dưới). Server KHÔNG đổi (đúng như plan — cô lập hoàn toàn phía webapp). **Verify thủ công trên server thật** phát hiện 1 bug thật (xem bên dưới), đã sửa và verify lại full cycle (save → evaluate → hiện giá trị NGAY không cần reload → đổi tên property → giá trị VẪN ĐÚNG sau reload) trước khi coi phase xong.
+
+- `blocks/board.ts`: `PropertyTypeEnum += 'formula'`; `IPropertyTemplate += formula?: string` (biểu thức, lưu trên TEMPLATE, không lưu giá trị trên từng card).
+- `properties/formula/lib/`: engine tự viết, KHÔNG thêm dependency — `tokenizer.ts`, `parser.ts` (recursive-descent, KHÔNG phải bảng Pratt như draft mô tả — cho cùng kết quả với grammar cố-định-độ-ưu-tiên này, ít rủi ro viết sai tay hơn), `evaluator.ts`. Ngữ pháp: số/chuỗi/bool, `+ - * / %`, so sánh `== != < <= > >=`, từ khoá `and/or/not`, `if(c,a,b)`, `concat()`, `prop("Tên")`, `now()`, `dateAdd/dateBetween` (qua dayjs), `round/abs/min/max`, `length/contains`. `prop()` trên property select/multiSelect trả về NHÃN lựa chọn (không phải ID lưu trong DB); đệ quy vào formula khác tối đa 4 tầng + phát hiện vòng lặp.
+- `properties/formula/formula.tsx`: **ô giá trị của property này kiêm luôn UI chỉnh biểu thức** — click vào giá trị đã tính để lộ ô nhập biểu thức formula (kèm thông báo lỗi parse trực tiếp). Đây là cách làm nhất quán với property "select" (ô giá trị của nó cũng kiêm luôn nơi thêm/sửa option board-wide), KHÔNG phải tự nghĩ ra pattern mới.
+- **Route qua 3/5 điểm đọc nêu trong draft gốc** (`calculations.ts`, `cardFilter.ts`, `store/cards.ts sortCards`) — **2 điểm còn lại KHÔNG cần sửa**: `boardUtils.ts groupCardsByOptions` không bao giờ nhận property formula vì `canGroup` giữ `false` (mặc định của base class, giống number/text/url) nên menu "Group by" đã tự loại nó; `PropertyValueElement` không cần sửa vì nó vốn đã uỷ quyền hoàn toàn cho `Editor` component của property type (giống hệt cách createdBy/createdTime đã làm từ trước).
+- `calculations.ts`: **mọi hàm trong file đều thêm tham số `templates`** (cần cho `prop()`) — thay đổi cơ học nhưng toàn diện vì tất cả hàm đi qua chung 1 helper `getCardProperty()`. **CSV export (`PropertyType.displayValue`) CỐ Ý KHÔNG route qua formula** — chữ ký hàm đó không có cách nào mang theo danh sách property đầy đủ mà `prop()` cần, và mở rộng chữ ký sẽ đụng MỌI property type trong `webapp/src/properties` chỉ vì 1 tính năng phụ (export) — ghi nhận là giới hạn có chủ đích, không phải thiếu sót ẩn.
+
+### 🐛 Bug thật tìm thấy & đã sửa: `createBoard()` xoá mất field `formula` khi clone
+- **Vị trí:** `webapp/src/blocks/board.ts`, hàm `createBoard()`, đoạn deep-clone `cardProperties` chỉ copy `{id, name, type, options}` — thiếu MỌI field khác kể cả `formula` mới thêm.
+- **Hậu quả:** bất kỳ luồng mutator nào gọi `createBoard(existingBoard)` — ví dụ `changePropertyTypeAndName` (dùng khi **ĐỔI TÊN** property, không chỉ đổi type) — sẽ ÂM THẦM XOÁ biểu thức formula của MỌI property formula khác trên board, kể cả khi user chỉ đang đổi TÊN một property KHÁC không liên quan.
+- **Cách phát hiện:** KHÔNG phải từ đọc code — phát hiện khi test tay trên browser thật: đổi tên property formula (không đụng vào formula), reload, thấy formula biến mất. Bài học lặp lại từ Phase 4/7: **luôn test tay trên browser thật cho tính năng chạm UI**, kể cả khi tsc/eslint/jest đã xanh hết.
+- **Sửa:** thêm `formula: o.formula` vào object clone trong `createBoard()`. Thêm regression test trong `blocks/board.test.ts` (`describe('createBoard')`) xác nhận field được giữ lại qua clone.
+
+### Nợ kỹ thuật Phase 9 mở ra
+- CSV export không hiện giá trị formula (xem trên — giới hạn có chủ đích).
+- `person`/`multiPerson` property đọc qua `prop()` trả về raw user ID (không resolve tên hiển thị) — evaluator là module thuần, không có quyền truy cập users store.
+- Không có UI riêng cho rollup/aggregate qua formula (đã loại khỏi phạm vi từ draft gốc, chờ relation property).
+
+---
+
 ## 5. CÁC PHASE CHƯA LÀM — SPEC CHI TIẾT (phần Phase 5 dưới đây giữ nguyên bản gốc để đối chiếu — xem mục 4c ở trên để biết chính xác cái gì ĐÃ xong)
 
 > Nguồn đầy đủ hơn: `docs/modernization/PLAN-9-phases.md` (trong repo). Dưới đây là bản rút gọn đủ để thực thi.
@@ -340,7 +383,7 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 **Verify:** jest dày cho `timelineUtils` (các mức zoom, fixture DST) + cycle detection; tạo timeline view, kéo bar, resize, tạo dependency, thấy mũi tên, badge blocked. Server không đổi API/schema ⇒ chỉ chạy regression.
 
-### ⬜ Phase 8 — Automation rules engine (L/XL)
+### ✅ Phase 8 — Automation rules engine (L/XL) — ĐÃ XONG, xem mục 4f để biết chi tiết thực tế đã làm + deviations (spec gốc giữ nguyên bên dưới để đối chiếu)
 
 **Data — migration `000042_create_automation_rules` (+`000043_create_automation_runs` nếu đủ thời gian):**
 - Bảng `{{.prefix}}automation_rules`: `id varchar(36) PK, board_id varchar(36) NOT NULL, name varchar(255), enabled boolean, trigger_type varchar(64), trigger_config JSON, actions JSON, created_by, modified_by, create_at/update_at/delete_at bigint`; index `(board_id)` qua `createIndexIfNeeded`. **Kiểu cột JSON phải theo đúng pattern per-DB của `blocks.fields`** (xem migration cũ để copy cú pháp JSON cho từng DB). `000043`: run log `id, rule_id, card_id, status, error, create_at`, index `(rule_id, create_at)`.
@@ -357,7 +400,7 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 **Verify:** unit test matcher (table-driven trên fixture `BlockChangeEvent`) + loop protection; store test thêm vào `server/services/store/storetests/` (CI tự chạy 3 DB); integration: tạo rule qua API → mutate card → assert action áp + không re-trigger; 2 mode compile + test delegation mattermostauthlayer.
 
-### ⬜ Phase 9 — Formula property (M)
+### ✅ Phase 9 — Formula property (M) — ĐÃ XONG, xem mục 4g để biết chi tiết thực tế đã làm + bug fix (spec gốc giữ nguyên bên dưới để đối chiếu)
 
 - `blocks/board.ts` (dòng ~86) `PropertyTypeEnum` += `'formula'`; `IPropertyTemplate` += `formula?: string` (expression trên template, **evaluate per-card lúc render — không lưu giá trị, không đổi server, không migration**).
 - `webapp/src/properties/formula/`: `property.ts` + `formula.tsx` (PropertyType subclass, đăng ký trong `properties/index.tsx`, hiển thị read-only), `lib/tokenizer.ts`, `lib/parser.ts` (Pratt parser tự viết — không thêm dep; grammar: literal number/string/bool, `+ - * / %`, so sánh, `and/or/not`, `if(c,a,b)`, `concat()`, `prop("Tên")`, `now()`, `dateAdd/dateBetween` (dayjs), `round/abs/min/max`, `length/contains`), `lib/evaluator.ts` memo theo `(card.id, card.updateAt, template.formula)`.
