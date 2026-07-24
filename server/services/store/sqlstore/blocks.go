@@ -56,7 +56,8 @@ func (s *SQLStore) blockFields(tableAlias string) []string {
 func (s *SQLStore) getBlocks(db sq.BaseRunner, opts model.QueryBlocksOptions) ([]*model.Block, error) {
 	query := s.getQueryBuilder(db).
 		Select(s.blockFields("")...).
-		From(s.tablePrefix + "blocks")
+		From(s.tablePrefix + "blocks").
+		OrderBy("board_id", "id")
 
 	if opts.BoardID != "" {
 		query = query.Where(sq.Eq{"board_id": opts.BoardID})

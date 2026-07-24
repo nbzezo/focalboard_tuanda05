@@ -68,10 +68,10 @@ test('OctoClient: importFullArchive', async () => {
         }))
 })
 
-function createBlocks(): Block[] {
+function createBlocks(count = 5): Block[] {
     const blocks = []
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < count; i++) {
         const block = createCard()
         block.id = `block${i + 1}`
         blocks.push(block)
@@ -79,6 +79,40 @@ function createBlocks(): Block[] {
 
     return blocks
 }
+
+test('OctoClient: getAllBlocks stops after a short page', async () => {
+    const blocks = createBlocks(5)
+
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(blocks)))
+    const result = await octoClient.getAllBlocks('board-id')
+
+    expect(result.length).toBe(5)
+    expect(FetchMock.fn).toBeCalledTimes(1)
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        expect.stringContaining('page=0&per_page=500'),
+        expect.anything(),
+    )
+})
+
+test('OctoClient: getAllBlocks pages through a full-size page', async () => {
+    const firstPage = createBlocks(500)
+    const secondPage = createBlocks(3)
+
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(firstPage)))
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(secondPage)))
+    const result = await octoClient.getAllBlocks('board-id')
+
+    expect(result.length).toBe(503)
+    expect(FetchMock.fn).toBeCalledTimes(2)
+    expect(FetchMock.fn).toHaveBeenNthCalledWith(1,
+        expect.stringContaining('page=0&per_page=500'),
+        expect.anything(),
+    )
+    expect(FetchMock.fn).toHaveBeenNthCalledWith(2,
+        expect.stringContaining('page=1&per_page=500'),
+        expect.anything(),
+    )
+})
 
 test('OctoClient: GetFileInfo', async () => {
     FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify({

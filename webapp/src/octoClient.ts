@@ -301,12 +301,27 @@ class OctoClient {
     }
 
     async getAllBlocks(boardID: string): Promise<Block[]> {
-        let path = `/api/v2/boards/${boardID}/blocks?all=true`
+        const pageSize = 500
         const readToken = Utils.getReadToken()
-        if (readToken) {
-            path += `&read_token=${readToken}`
+        const allBlocks: Block[] = []
+
+        for (let page = 0; ; page++) {
+            let path = `/api/v2/boards/${boardID}/blocks?all=true&page=${page}&per_page=${pageSize}`
+            if (readToken) {
+                path += `&read_token=${readToken}`
+            }
+
+            // Each page's existence depends on whether the previous one came back full,
+            // so these requests must be sequential rather than issued in parallel.
+            // eslint-disable-next-line no-await-in-loop
+            const blocks = await this.getBlocksWithPath(path)
+            allBlocks.push(...blocks)
+            if (blocks.length < pageSize) {
+                break
+            }
         }
-        return this.getBlocksWithPath(path)
+
+        return allBlocks
     }
 
     private async getBlocksWithPath(path: string): Promise<Block[]> {

@@ -49,6 +49,16 @@ func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
 	//   description: Type of blocks to return, omit to specify all types
 	//   required: false
 	//   type: string
+	// - name: page
+	//   in: query
+	//   description: Page number to return, for paginated results. Omit to return all pages.
+	//   required: false
+	//   type: integer
+	// - name: per_page
+	//   in: query
+	//   description: Number of blocks per page, for paginated results. Omit to return all pages.
+	//   required: false
+	//   type: integer
 	// security:
 	// - BearerAuth: []
 	// responses:
@@ -71,6 +81,8 @@ func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
 	all := query.Get("all")
 	blockID := query.Get("block_id")
 	boardID := mux.Vars(r)["boardID"]
+	page, _ := strconv.Atoi(query.Get("page"))
+	perPage, _ := strconv.Atoi(query.Get("per_page"))
 
 	userID := getUserID(r)
 
@@ -125,7 +137,7 @@ func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
 	var block *model.Block
 	switch {
 	case all != "":
-		blocks, err = a.app.GetBlocksForBoard(boardID)
+		blocks, err = a.app.GetBlocks(boardID, "", "", page, perPage)
 		if err != nil {
 			a.errorResponse(w, r, err)
 			return
@@ -144,7 +156,7 @@ func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
 
 		blocks = append(blocks, block)
 	default:
-		blocks, err = a.app.GetBlocks(boardID, parentID, blockType)
+		blocks, err = a.app.GetBlocks(boardID, parentID, blockType, page, perPage)
 		if err != nil {
 			a.errorResponse(w, r, err)
 			return

@@ -350,6 +350,14 @@ paths:
                   in: query
                   name: type
                   type: string
+                - description: Page number to return, for paginated results. Omit to return all pages.
+                  in: query
+                  name: page
+                  type: integer
+                - description: Number of blocks per page, for paginated results. Omit to return all pages.
+                  in: query
+                  name: per_page
+                  type: integer
             produces:
                 - application/json
             responses:

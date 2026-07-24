@@ -35,7 +35,7 @@ const TableRows = (props: Props): JSX.Element => {
             {cards.map((card, idx) => {
                 return (
                     <TableRow
-                        key={card.id + card.updateAt}
+                        key={card.id}
                         board={board}
                         columnWidths={activeView.fields.columnWidths}
                         isManualSort={activeView.fields.sortOptions.length === 0}

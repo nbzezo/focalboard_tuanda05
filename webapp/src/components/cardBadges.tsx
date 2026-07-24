@@ -76,7 +76,13 @@ const calculateBadges = (contents: ContentsType, comments: CommentBlock[]): Badg
 
 const CardBadges = (props: Props) => {
     const {card, className} = props
-    const contents = useAppSelector(getCardContents(card.id))
+
+    // getCardContents returns a fresh createSelector instance per call, so it's
+    // memoized here to keep that selector's own cache alive across re-renders
+    // of this component instance (otherwise every render would recompute
+    // contents from scratch even when this card's data hasn't changed).
+    const contentsSelector = useMemo(() => getCardContents(card.id), [card.id])
+    const contents = useAppSelector(contentsSelector)
     const comments = useAppSelector(getCardComments(card.id))
     const badges = useMemo(() => calculateBadges(contents, comments), [contents, comments])
     if (!hasBadges(badges)) {
