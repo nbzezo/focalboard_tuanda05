@@ -1,0 +1,58 @@
+.SuggestionList {
+    background: rgba(var(--center-channel-bg-rgb), 1);
+    box-shadow: var(--elevation-1);
+    border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
+    border-radius: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 4px 0;
+
+    .SuggestionList__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 40px;
+        padding: 0 20px;
+        cursor: pointer;
+
+        &.is-selected,
+        &:hover {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+        }
+
+        &:active {
+            background: rgba(var(--button-bg-rgb), 0.08);
+        }
+    }
+
+    .SuggestionList__item-left {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .Badge {
+            margin-left: 12px;
+        }
+    }
+
+    .SuggestionList__item-text {
+        margin-right: 8px;
+    }
+
+    .SuggestionList__item-hint {
+        opacity: 0.56;
+    }
+}
+
+.EmojiList {
+    .EmojiList__icon {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+}

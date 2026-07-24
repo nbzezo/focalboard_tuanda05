@@ -32,49 +32,19 @@ exports[`components/markdownEditor should match snapshot with on click on previe
     class="MarkdownEditor octo-editor classname-test active"
   >
     <div
-      class="MarkdownEditorInput"
+      class="TiptapEditor"
+      data-testid="test-id"
     >
-      <div
-        class="DraftEditor-root"
-      >
+      <div>
         <div
-          class="DraftEditor-editorContainer"
+          class="tiptap ProseMirror TiptapEditorInput"
+          contenteditable="true"
+          tabindex="0"
+          translate="no"
         >
-          <div
-            aria-autocomplete="list"
-            aria-expanded="false"
-            class="notranslate public-DraftEditor-content"
-            contenteditable="true"
-            role="combobox"
-            spellcheck="false"
-            style="outline: none; user-select: text; white-space: pre-wrap; word-wrap: break-word;"
-          >
-            <div
-              data-contents="true"
-            >
-              <div
-                class=""
-                data-block="true"
-                data-editor="test-id"
-                data-offset-key="123-0-0"
-              >
-                <div
-                  class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr"
-                  data-offset-key="123-0-0"
-                >
-                  <span
-                    data-offset-key="123-0-0"
-                  >
-                    <span
-                      data-text="true"
-                    >
-                      some initial text already set
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p>
+            some initial text already set
+          </p>
         </div>
       </div>
     </div>
@@ -88,49 +58,19 @@ exports[`components/markdownEditor should match snapshot with on click on previe
     class="MarkdownEditor octo-editor classname-test active"
   >
     <div
-      class="MarkdownEditorInput"
+      class="TiptapEditor"
+      data-testid="test-id"
     >
-      <div
-        class="DraftEditor-root"
-      >
+      <div>
         <div
-          class="DraftEditor-editorContainer"
+          class="tiptap ProseMirror TiptapEditorInput"
+          contenteditable="true"
+          tabindex="0"
+          translate="no"
         >
-          <div
-            aria-autocomplete="list"
-            aria-expanded="false"
-            class="notranslate public-DraftEditor-content"
-            contenteditable="true"
-            role="combobox"
-            spellcheck="false"
-            style="outline: none; user-select: text; white-space: pre-wrap; word-wrap: break-word;"
-          >
-            <div
-              data-contents="true"
-            >
-              <div
-                class=""
-                data-block="true"
-                data-editor="test-id"
-                data-offset-key="123-0-0"
-              >
-                <div
-                  class="public-DraftStyleDefault-block public-DraftStyleDefault-ltr"
-                  data-offset-key="123-0-0"
-                >
-                  <span
-                    data-offset-key="123-0-0"
-                  >
-                    <span
-                      data-text="true"
-                    >
-                      some initial text already set
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p>
+            some initial text already set
+          </p>
         </div>
       </div>
     </div>

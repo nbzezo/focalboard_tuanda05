@@ -1,0 +1,46 @@
+.TiptapEditor {
+    .ProseMirror {
+        outline: none;
+        white-space: pre-wrap;
+
+        > * + * {
+            margin-top: 0.4em;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.2em;
+        }
+
+        blockquote {
+            border-left: 3px solid rgba(var(--center-channel-color-rgb), 0.24);
+            margin-left: 0;
+            padding-left: 0.8em;
+        }
+
+        pre {
+            background: rgba(var(--center-channel-color-rgb), 0.06);
+            border-radius: 4px;
+            padding: 0.6em 0.8em;
+
+            code {
+                background: none;
+                padding: 0;
+            }
+        }
+
+        code {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+            border-radius: 3px;
+            padding: 0.1em 0.3em;
+        }
+
+        a {
+            color: rgb(var(--link-color-rgb));
+        }
+    }
+}
