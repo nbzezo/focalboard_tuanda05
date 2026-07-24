@@ -13,13 +13,13 @@
 **Bước 0 — Xác nhận baseline (chạy trước khi làm gì):**
 ```bash
 git log --oneline -4
-# Phải thấy 3 commit: "Phase 3: library modernization...", "Phase 2: React 18 gate",
-# "Phase 1: tooling & dependency hygiene". Đây là baseline XANH đã verify.
+# Phải thấy 4 commit: "Phase 4: editor modernization...", "Phase 3: library modernization...",
+# "Phase 2: React 18 gate", "Phase 1: tooling & dependency hygiene". Đây là baseline XANH đã verify.
 ```
-Phase 1–3 đã xong và commit. **Việc tiếp theo là Phase 4** (mục 5 bên dưới). Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 5 Phase 4.
+Phase 1–4 đã xong và commit. **Việc tiếp theo là Phase 5** (mục 5 bên dưới). Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4 "Bài học Phase 4" (đặc biệt về gotcha test browser/webpack) → mục 5 Phase 5.
 
 **Prompt mẫu để khởi động DeepSeek** (dán nguyên văn):
-> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), và mục 5 Phase 4. Chạy `git log --oneline -4` xác nhận baseline (Phase 1–3 đã commit xanh). Sau đó triển khai **Phase 4 (draft-js → TipTap)** theo spec, giữ mỗi phase kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4.
+> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), và mục 5 Phase 5. Chạy `git log --oneline -4` xác nhận baseline (Phase 1–4 đã commit xanh). Sau đó triển khai **Phase 5 (hiệu năng & cấu trúc: pagination, lazy load, selectors, virtualize, tách god-file)** theo spec, giữ mỗi phase kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong.
 
 **Nếu chạy trên MÁY KHÁC** (không phải máy đã setup): xem mục 1 để biết yêu cầu phiên bản (Go 1.22, gcc cho CGO, Node 20+) và các cờ npm đặc thù; các đường dẫn tuyệt đối trong mục 1 là của máy gốc, cần thay bằng path máy bạn.
 
@@ -100,7 +100,7 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 | **1** | Vệ sinh tooling & deps (dead deps, TS5, Go 1.22, lint pin) | ✅ **XONG, đã commit** | `b3181364` |
 | **2** | Cổng React 18 (react-intl 6, react-redux 8, jest 29, createRoot, JSX tự động) | ✅ **XONG, đã commit** | `7d4e16c7` |
 | **3** | Hiện đại hoá thư viện (router v6, dnd, dayjs, emoji-mart 5, react-day-picker v8) | ✅ **XONG, đã commit** | `edea4b07` |
-| **4** | Editor draft-js → **TipTap** | ⬜ Chưa làm | — |
+| **4** | Editor draft-js → **TipTap v3** | ✅ **XONG, đã commit** | `0c7aa346` |
 | **5** | Hiệu năng & cấu trúc (pagination, lazy load, selectors, virtualize table, tách god-file) | ⬜ Chưa làm | — |
 | **6** | Quick wins (WIP limit, swimlane, checklist progress, card history UI) | ⬜ Chưa làm | — |
 | **7** | Dependencies + Timeline/Gantt view | ⬜ Chưa làm | — |
@@ -164,24 +164,41 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 
 ---
 
+## 4b. ✅ Phase 4 — Editor: draft-js → TipTap v3 (ĐÃ XONG, commit `0c7aa346`)
+
+**Verify đã đạt:** tsc 0 lỗi, eslint sạch (trừ nhiễu CRLF), **jest 140 suite / 836 test / 457 snapshot xanh**, `npx cross-env NODE_ENV=production webpack --config webpack.prod.js` build production OK (chỉ có 3 warning kích thước bundle sẵn có từ trước, không phải lỗi mới). **Cộng với manual browser smoke test đầy đủ** (xem bên dưới) — đây là bước bắt buộc, không chỉ dựa vào jest/tsc/eslint.
+
+- **Component mới, giữ nguyên props contract:** `webapp/src/components/markdownEditor/tiptapEditor.tsx` implement đúng interface cũ (`onChange(text)`, `onFocus/onBlur`, `onEditorCancel`, `saveOnEnter`, initial text) ⇒ `webapp/src/components/markdownEditor.tsx` chỉ đổi **1 dòng** (`React.lazy(() => import('./markdownEditor/tiptapEditor'))`), 4 consumer (`cardDetail/cardDetailContents.tsx`, `cardDetail/commentsList.tsx`, `content/textElement.tsx`, `viewTitle.tsx`) **không đổi gì**.
+- **Deps thêm:** `@tiptap/core@3.28`, `@tiptap/react@3.28`, `@tiptap/starter-kit@3.28`, `@tiptap/suggestion@3.28`, `@tiptap/pm@3.28`, `markdown-it@14.1`, `prosemirror-markdown@1.13`; devDep `@types/lodash@4.17`, `@types/markdown-it@14.1`.
+- **Xoá:** `draft-js`, `@draft-js-plugins/editor`, `@draft-js-plugins/emoji`, `@draft-js-plugins/mention`, `@types/draft-js`, `components/live-markdown-plugin/` (13 file), `components/markdownEditorInput/` (cũ, cả thư mục). Gỡ `jest.mock('draft-js/lib/generateRandomKey', ...)` khỏi 12 file test.
+- **Markdown bridge tự viết — KHÔNG dùng `tiptap-markdown` package:** `webapp/src/components/markdownEditor/markdownBridge.ts` build trực tiếp trên `prosemirror-markdown` + `markdown-it`, thay vì cộng đồng package `tiptap-markdown`.
+  - **Lý do (quan trọng, đọc kỹ):** `tiptap-markdown`'s UMD build throw `Cannot read properties of undefined (reading 'Extension')` khi webpack bundle production — bug interop ESM/CJS với `@tiptap/core`'s dual package exports. **Jest KHÔNG bắt được bug này** vì jest's CJS module resolution đi qua path khác trong package "exports" map so với webpack. Bug này chỉ lộ ra khi build bundle thật + chạy trong browser thật — được phát hiện bằng manual testing SAU KHI toàn bộ tsc/eslint/jest đã xanh.
+  - Node/mark mapping trong `markdownBridge.ts` lấy từ chính source code `prosemirror-markdown`'s default parser/serializer rules, re-key theo tên node/mark chính xác mà TipTap StarterKit dùng (`bulletList` không phải `bullet_list`, `codeBlock` attr `language` không phải `params`, `orderedList` attr `start` không phải `order`) — verify bằng cách đọc trực tiếp `node_modules/@tiptap/extension-*` source, KHÔNG đoán tên.
+  - `tightLists: true` được set qua type-cast (`as ConstructorParameters<typeof MarkdownSerializer>[2]`) vì gap trong published type của `prosemirror-markdown` — field này được đọc runtime nhưng thiếu trong type.
+- **Mentions & emoji — plain-text insertion, KHÔNG dùng ProseMirror Node riêng:**
+  - Dùng `@tiptap/suggestion`'s low-level `Suggestion` plugin trực tiếp (không dùng `@tiptap/extension-mention` cấp cao hơn), với `props.mount()` (floating-ui built-in, không cần tippy.js thủ công).
+  - `mentionExtension.ts` (trigger `@`, gọi `octoClient.searchTeamUsers` qua `loadMentionSuggestions()`) chèn `@username ` dạng **text thuần**, KHÔNG phải custom node. `emojiExtension.ts` (trigger `:`, dataset `@emoji-mart/data` có sẵn từ Phase 3) chèn unicode emoji thuần.
+  - **Lý do chọn plain-text thay vì Node type:** khớp CHÍNH XÁC hành vi lưu trữ cũ của draft-js (`block.title` chỉ chứa text/markdown thuần, không có cấu trúc mention riêng) và loại bỏ hoàn toàn rủi ro serialization markdown cho mention/emoji content.
+  - Flow xác nhận thêm board-member khi mention người ngoài board (`ConfirmAddUserForNotifications`) giữ nguyên, wiring qua `mentionExtension.ts`'s `onNeedsConfirmAddUser` callback.
+- **Key bindings giữ nguyên hành vi cũ:** Escape=blur (`view.dom.blur()`), Backspace-khi-rỗng=cancel (gọi `onEditorCancel`), Enter=save khi `saveOnEnter` — tất cả trong `editorProps.handleKeyDown` của `tiptapEditor.tsx`.
+- **`@types/lodash` thêm làm devDependency tường minh:** trước đây chỉ là transitive/hoisted dependency **vô tình** (qua `draft-js`'s dependency tree) — vô hình cho tới khi xoá draft-js thì lộ ra lỗi thiếu type ở 8 file khác (`blocks/block.ts`, `blocks/board.ts`, `searchDialog.tsx`, `sidebarCategory.tsx`, `tutorial_tour_tip/hooks.ts`, `mutator.ts`, `store/views.ts`, `theme.ts`). Bài học: KHÔNG dựa vào transitive type hoisting — khai báo tường minh mọi type dep thực sự dùng tới.
+
+### Bài học Phase 4 (RẤT QUAN TRỌNG — đọc trước khi test browser)
+
+1. **jest/tsc/eslint xanh KHÔNG đủ để coi phase xong nếu phase đó chạm code chạy trong browser.** Bug `tiptap-markdown` ở trên CHỈ lộ ra khi build webpack production bundle thật + mở trong browser thật. Luôn thêm bước: build production (`npx cross-env NODE_ENV=production webpack --config webpack.prod.js`) + mở app thật, thao tác qua feature vừa sửa.
+2. **Công cụ gõ phím tự động (browser automation `type` action) có thể KHÔNG mô phỏng đúng gõ phím thật của user** — trong quá trình test tay Phase 4, gõ chuỗi `**bold**` bằng action `type` (chèn hàng loạt ký tự cùng lúc) khiến ProseMirror's Bold InputRule crash với `RangeError: Position X out of range`. Nghi ngờ + verify bằng cách gõ **từng ký tự một** qua action `key` (mô phỏng keydown thật) — KHÔNG crash, input rule hoạt động đúng, tạo `<strong>bold</strong>` sạch sẽ. Kết luận: đây là **artifact của tool test, không phải bug sản phẩm thật**. Bài học cho phase sau: khi nghi ngờ 1 crash trong browser test tự động liên quan đến ProseMirror InputRule (hoặc bất kỳ logic nhạy cảm với thứ tự keystroke), **luôn verify lại bằng gõ từng-ký-tự-một** trước khi kết luận là bug thật.
+3. **`key: "Space"` và `key: "Return"` là no-op trong môi trường browser automation này** (đã ghi nhận từ trước với "Return"; Phase 4 phát hiện thêm "Space" cũng vậy) — dùng action `type` với 1 ký tự space thay vì `key: "Space"` khi cần trigger input rule cần dấu cách (ví dụ bullet list `- `).
+4. **Full manual verify checklist đã chạy và ĐẠT** (không tìm thấy bug sản phẩm thật nào): bold/italic/strike/inline-code marks, heading, bullet list 2 item, mention `@` (suggestion dropdown đúng, chèn plain text, không crash), emoji `:` (suggestion dropdown đúng, chèn unicode), multi-line comment (soft break `Shift+Enter`, hard break serialize đúng `\\\n`) — **tất cả đã kiểm tra persist đúng qua 2 lần full page reload** (description card + comment).
+
+### Nợ kỹ thuật Phase 4 mở ra (cleanup khi tiện)
+- Live-markdown decorator cũ (gõ `**bold**` thấy style ngay lập tức trong khi gõ, trước khi hoàn tất) đã được thay bằng WYSIWYG native của TipTap (input rule áp style ngay khi gõ xong ký tự đóng) — chấp nhận đổi UX nhỏ này, không rebuild lại decorator kiểu cũ.
+- `components/confirmAddUserForNotifications.test.tsx` (có sẵn từ trước) test component đó độc lập; KHÔNG có test riêng cho wiring mention→confirm-modal trong `tiptapEditor.tsx` (chỉ verify bằng manual browser test) — cân nhắc thêm 1 test tích hợp nếu có thời gian.
+
+---
+
 ## 5. CÁC PHASE CHƯA LÀM — SPEC CHI TIẾT
 
 > Nguồn đầy đủ hơn: `docs/modernization/PLAN-9-phases.md` (trong repo). Dưới đây là bản rút gọn đủ để thực thi.
-
-### ⬜ Phase 4 — Editor: draft-js → TipTap (L)
-
-**Mục tiêu:** Thay `markdownEditorInput.tsx` + thư mục `components/live-markdown-plugin/` (13 file) bằng TipTap. **Định dạng lưu vẫn là markdown text trong `block.title` — KHÔNG migrate data.**
-
-- Component mới `webapp/src/components/markdownEditor/tiptapEditor.tsx` **giữ nguyên props contract** của `MarkdownEditor` hiện tại (`onChange(text)`, `onFocus/onBlur`, `saveOnEnter`, initial text) ⇒ 4 consumer gần như không đổi: `cardDetail/cardDetailContents.tsx`, `cardDetail/commentsList.tsx`, `content/textElement.tsx`, `viewTitle.tsx`.
-- Deps: `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-mention`, và `tiptap-markdown` (hoặc `prosemirror-markdown`) để round-trip markdown ↔ doc.
-- **Mentions:** TipTap `Mention` extension, suggestion gọi `octoClient.searchTeamUsers`; giữ flow xác nhận thêm board-member như plugin draft-js cũ.
-- **Emoji:** extension gợi ý `:emoji:` dùng chung dataset `@emoji-mart/data` (đã có từ Phase 3).
-- **Key bindings giữ nguyên hành vi:** Escape=blur, Backspace-khi-rỗng=cancel, Enter=save (khi `saveOnEnter`).
-- Live-markdown decorator (hiện `**bold**` có style inline) thay bằng WYSIWYG native của TipTap — chấp nhận đổi UX, không rebuild decorator.
-- `components/blocksEditor/` (dùng ở `cardDetail.tsx:319`) chỉ đổi text block sang editor mới, interface giữ nguyên.
-- **Xoá:** `draft-js`, `@draft-js-plugins/*`, `components/live-markdown-plugin/` (13 file), `markdownEditorInput.tsx` cũ. Trong test còn `jest.mock('draft-js/lib/generateRandomKey', ...)` — gỡ theo.
-- **Rủi ro:** fidelity round-trip markdown (bảng, list lồng, HTML thô) — **tạo corpus fixture từ nội dung card thật TRƯỚC khi chuyển**; IME/composition; paste từ Word.
-- **Verify:** jest mới `markdownRoundtrip.test.ts` (parse→serialize idempotent trên corpus); tạo card, gõ mention/emoji/comment nhiều dòng, refresh, kiểm tra persist; `npx webpack` kiểm bundle size không phình bất thường.
 
 ### ⬜ Phase 5 — Hiệu năng & cấu trúc (L)
 
@@ -300,6 +317,8 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 - `webapp/src/mutator.ts`, `webapp/src/octoClient.ts` — tách facade (Phase 5)
 - `webapp/src/routeCompat.ts` — **compat router v5→v6 (mới, Phase 3)**: sửa route phải sync pattern list ở đây với `router.tsx`
 - `webapp/src/dateHelpers.ts` — **helper dayjs (mới, Phase 3)**: mọi thao tác ngày dùng file này
+- `webapp/src/components/markdownEditor/tiptapEditor.tsx` — **editor chính (mới, Phase 4)**: mọi consumer đi qua `markdownEditor.tsx` wrapper, không import trực tiếp file này
+- `webapp/src/components/markdownEditor/markdownBridge.ts` — **markdown↔ProseMirror bridge tự viết (mới, Phase 4)**: KHÔNG dùng `tiptap-markdown` package (bug webpack/UMD — xem mục 4b); sửa node/mark mapping ở đây nếu thêm extension mới cho editor
 
 ---
 
