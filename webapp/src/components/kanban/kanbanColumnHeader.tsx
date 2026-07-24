@@ -86,6 +86,11 @@ export default function KanbanColumnHeader(props: Props): JSX.Element {
     const groupCalculation = props.activeView.fields.kanbanCalculations[props.group.option.id]
     const calculationValue = groupCalculation ? groupCalculation.calculation : defaultCalculation
     const calculationProperty = groupCalculation ? props.board.cardProperties.find((property) => property.id === groupCalculation.propertyId) || defaultProperty : defaultProperty
+
+    const wipLimit = props.activeView.fields.columnWipLimits?.[group.option.id]
+    const cardCount = group.cards.length
+    const isOverWipLimit = Boolean(wipLimit) && cardCount > wipLimit
+
     return (
         <div
             key={group.option.id || 'empty'}
@@ -132,6 +137,14 @@ export default function KanbanColumnHeader(props: Props): JSX.Element {
                         spellCheck={true}
                     />
                 </Label>}
+            {Boolean(wipLimit) &&
+                <Label
+                    title={intl.formatMessage({id: 'BoardComponent.wip-limit-title', defaultMessage: 'WIP limit'})}
+                >
+                    <span className={isOverWipLimit ? 'KanbanColumnHeader__wip-limit KanbanColumnHeader__wip-limit--over' : 'KanbanColumnHeader__wip-limit'}>
+                        {`${cardCount}/${wipLimit}`}
+                    </span>
+                </Label>}
             <KanbanCalculation
                 cards={group.cards}
                 menuOpen={props.calculationMenuOpen}
@@ -170,6 +183,26 @@ export default function KanbanColumnHeader(props: Props): JSX.Element {
                                     name={intl.formatMessage({id: 'BoardComponent.hide', defaultMessage: 'Hide'})}
                                     onClick={() => mutator.hideViewColumn(board.id, activeView, group.option.id || '')}
                                 />
+                                <Menu.SubMenu
+                                    id='wip-limit'
+                                    name={intl.formatMessage({id: 'BoardComponent.set-wip-limit', defaultMessage: 'Set WIP limit…'})}
+                                >
+                                    <Menu.TextInput
+                                        initialValue={wipLimit ? String(wipLimit) : ''}
+                                        onValueChanged={() => {}}
+                                        onConfirmValue={(value: string) => {
+                                            const parsed = parseInt(value, 10)
+                                            const oldWipLimits = props.activeView.fields.columnWipLimits || {}
+                                            const newWipLimits = {...oldWipLimits}
+                                            if (Number.isNaN(parsed) || parsed <= 0) {
+                                                delete newWipLimits[group.option.id]
+                                            } else {
+                                                newWipLimits[group.option.id] = parsed
+                                            }
+                                            mutator.changeViewColumnWipLimit(board.id, props.activeView.id, oldWipLimits, newWipLimits)
+                                        }}
+                                    />
+                                </Menu.SubMenu>
                                 {canEditOption &&
                                     <>
                                         <Menu.Text

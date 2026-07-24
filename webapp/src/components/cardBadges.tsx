@@ -12,7 +12,7 @@ import {CommentBlock} from '../blocks/commentBlock'
 import TextIcon from '../widgets/icons/text'
 import MessageIcon from '../widgets/icons/message'
 import CheckIcon from '../widgets/icons/check'
-import {Utils} from '../utils'
+import {calculateChecklistProgress} from '../checklistUtils'
 
 import './cardBadges.scss'
 
@@ -38,34 +38,17 @@ const hasBadges = (badges: Badges): boolean => {
 
 type ContentsType = Array<ContentBlock | ContentBlock[]>
 
+const hasTextContent = (contents: ContentsType): boolean => {
+    return contents.some((content) => {
+        const blocks = Array.isArray(content) ? content : [content]
+        return blocks.some((block) => block.type === 'text')
+    })
+}
+
 const calculateBadges = (contents: ContentsType, comments: CommentBlock[]): Badges => {
-    let text = 0
-    let total = 0
-    let checked = 0
-
-    const updateCounters = (block: ContentBlock) => {
-        if (block.type === 'text') {
-            text++
-            const checkboxes = Utils.countCheckboxesInMarkdown(block.title)
-            total += checkboxes.total
-            checked += checkboxes.checked
-        } else if (block.type === 'checkbox') {
-            total++
-            if (block.fields.value) {
-                checked++
-            }
-        }
-    }
-
-    for (const content of contents) {
-        if (Array.isArray(content)) {
-            content.forEach(updateCounters)
-        } else {
-            updateCounters(content)
-        }
-    }
+    const {total, checked} = calculateChecklistProgress(contents)
     return {
-        description: text > 0,
+        description: hasTextContent(contents),
         comments: comments.length,
         checkboxes: {
             total,

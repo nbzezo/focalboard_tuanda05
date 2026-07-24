@@ -23,6 +23,8 @@ import {dragAndDropRearrange} from '../cardDetail/cardDetailContentsUtility'
 import {getCurrentBoardTemplates} from '../../store/cards'
 import BoardPermissionGate from '../permissions/boardPermissionGate'
 import HiddenCardCount from '../../components/hiddenCardCount/hiddenCardCount'
+import {groupCardsTwoLevels, Swimlane} from '../../boardUtils'
+import CompassIcon from '../../widgets/icons/compassIcon'
 
 import KanbanCard from './kanbanCard'
 import KanbanColumn from './kanbanColumn'
@@ -36,6 +38,7 @@ type Props = {
     activeView: BoardView
     cards: Card[]
     groupByProperty?: IPropertyTemplate
+    swimlaneByProperty?: IPropertyTemplate
     visibleGroups: BoardGroup[]
     hiddenGroups: BoardGroup[]
     selectedCardIds: string[]
@@ -55,7 +58,7 @@ const vStrength = createVerticalStrength(Utils.isMobile() ? 60 : 250)
 
 const Kanban = (props: Props) => {
     const cardTemplates: Card[] = useAppSelector(getCurrentBoardTemplates)
-    const {board, activeView, cards, groupByProperty, visibleGroups, hiddenGroups, hiddenCardsCount} = props
+    const {board, activeView, cards, groupByProperty, swimlaneByProperty, visibleGroups, hiddenGroups, hiddenCardsCount} = props
     const [defaultTemplateID, setDefaultTemplateID] = useState<string>()
 
     useEffect(() => {
@@ -108,7 +111,7 @@ const Kanban = (props: Props) => {
         return cardOrder
     }, [activeView, visibleGroups])
 
-    const onDropToColumn = useCallback(async (option: IPropertyOption, card?: Card, dstOption?: IPropertyOption) => {
+    const onDropToColumn = useCallback(async (option: IPropertyOption, card?: Card, dstOption?: IPropertyOption, swimlaneOptionId?: string) => {
         const {selectedCardIds} = props
         const optionId = option ? option.id : undefined
 
@@ -131,6 +134,12 @@ const Kanban = (props: Props) => {
                     const oldValue = draggedCard.fields.properties[groupByProperty!.id]
                     if (optionId !== oldValue) {
                         awaits.push(mutator.changePropertyValue(props.board.id, draggedCard, groupByProperty!.id, optionId, description))
+                    }
+                    if (swimlaneByProperty && swimlaneOptionId !== undefined) {
+                        const oldSwimlaneValue = draggedCard.fields.properties[swimlaneByProperty.id]
+                        if (swimlaneOptionId !== oldSwimlaneValue) {
+                            awaits.push(mutator.changePropertyValue(props.board.id, draggedCard, swimlaneByProperty.id, swimlaneOptionId, description))
+                        }
                     }
                 }
                 const newOrder = orderAfterMoveToColumn(draggedCardIds, optionId)
@@ -160,7 +169,7 @@ const Kanban = (props: Props) => {
 
             await mutator.changeViewVisibleOptionIds(props.board.id, activeView.id, activeView.fields.visibleOptionIds, visibleOptionIdsRearranged)
         }
-    }, [cards, visibleGroups, activeView.id, activeView.fields.cardOrder, groupByProperty, props.selectedCardIds])
+    }, [cards, visibleGroups, activeView.id, activeView.fields.cardOrder, groupByProperty, swimlaneByProperty, props.selectedCardIds])
 
     const onDropToCard = useCallback(async (srcCard: Card, dstCard: Card) => {
         if (srcCard.id === dstCard.id || !groupByProperty) {
@@ -190,6 +199,8 @@ const Kanban = (props: Props) => {
         }
         cardOrder.splice(destIndex, 0, ...draggedCardIds)
 
+        const swimlaneOptionId = swimlaneByProperty ? dstCard.fields.properties[swimlaneByProperty.id] as string : undefined
+
         await mutator.performAsUndoGroup(async () => {
             // Update properties of dragged cards
             const awaits = []
@@ -199,11 +210,17 @@ const Kanban = (props: Props) => {
                 if (optionId !== oldOptionId) {
                     awaits.push(mutator.changePropertyValue(props.board.id, draggedCard, groupByProperty!.id, optionId, description))
                 }
+                if (swimlaneByProperty && swimlaneOptionId !== undefined) {
+                    const oldSwimlaneValue = draggedCard.fields.properties[swimlaneByProperty.id]
+                    if (swimlaneOptionId !== oldSwimlaneValue) {
+                        awaits.push(mutator.changePropertyValue(props.board.id, draggedCard, swimlaneByProperty.id, swimlaneOptionId, description))
+                    }
+                }
             }
             await Promise.all(awaits)
             await mutator.changeViewCardOrder(props.board.id, activeView.id, activeView.fields.cardOrder, cardOrder, description)
         })
-    }, [cards, activeView.id, activeView.fields.cardOrder, groupByProperty, props.selectedCardIds])
+    }, [cards, activeView.id, activeView.fields.cardOrder, groupByProperty, swimlaneByProperty, props.selectedCardIds])
 
     const [showCalculationsMenu, setShowCalculationsMenu] = useState<Map<string, boolean>>(new Map<string, boolean>())
     const toggleOptions = (templateId: string, show: boolean) => {
@@ -211,6 +228,21 @@ const Kanban = (props: Props) => {
         newShowOptions.set(templateId, show)
         setShowCalculationsMenu(newShowOptions)
     }
+
+    const swimlanes: Swimlane[] = useMemo(() => {
+        if (!swimlaneByProperty || !groupByProperty) {
+            return []
+        }
+        return groupCardsTwoLevels(cards, activeView.fields.visibleOptionIds, activeView.fields.hiddenOptionIds, groupByProperty, swimlaneByProperty)
+    }, [cards, activeView.fields.visibleOptionIds, activeView.fields.hiddenOptionIds, groupByProperty, swimlaneByProperty])
+
+    const toggleSwimlane = useCallback((swimlaneOptionId: string) => {
+        const collapsedSwimlanes = activeView.fields.collapsedSwimlanes || []
+        const newCollapsedSwimlanes = collapsedSwimlanes.includes(swimlaneOptionId) ?
+            collapsedSwimlanes.filter((id) => id !== swimlaneOptionId) :
+            [...collapsedSwimlanes, swimlaneOptionId]
+        mutator.changeViewCollapsedSwimlanes(board.id, activeView.id, collapsedSwimlanes, newCollapsedSwimlanes)
+    }, [board.id, activeView.id, activeView.fields.collapsedSwimlanes])
 
     if (!groupByProperty) {
         Utils.assertFailure('Board views must have groupByProperty set')
@@ -276,76 +308,135 @@ const Kanban = (props: Props) => {
 
             {/* Main content */}
 
-            <div
-                className='octo-board-body'
-                id='mainBoardBody'
-            >
-                {/* Columns */}
-
-                {visibleGroups.map((group) => (
-                    <KanbanColumn
-                        key={group.option.id || 'empty'}
-                        onDrop={(card: Card) => onDropToColumn(group.option, card)}
-                    >
-                        {group.cards.map((card) => (
-                            <KanbanCard
-                                card={card}
-                                board={board}
-                                visiblePropertyTemplates={visiblePropertyTemplates}
-                                visibleBadges={visibleBadges}
-                                key={card.id}
-                                readonly={props.readonly}
-                                isSelected={props.selectedCardIds.includes(card.id)}
-                                onClick={props.onCardClicked}
-                                onDrop={onDropToCard}
-                                showCard={props.showCard}
-                                isManualSort={isManualSort}
-                            />
-                        ))}
-                        {!props.readonly &&
-                            <BoardPermissionGate permissions={[Permission.ManageBoardCards]}>
-                                <Button
-                                    onClick={() => {
-                                        if (defaultTemplateID) {
-                                            props.addCardFromTemplate(defaultTemplateID, group.option.id)
-                                        } else {
-                                            props.addCard(group.option.id, true)
+            {swimlanes.length > 0 ? swimlanes.map((swimlane) => {
+                const isCollapsed = (activeView.fields.collapsedSwimlanes || []).includes(swimlane.option.id)
+                return (
+                    <React.Fragment key={swimlane.option.id || 'empty'}>
+                        <div
+                            className='KanbanSwimlane__header'
+                            onClick={() => toggleSwimlane(swimlane.option.id)}
+                        >
+                            <CompassIcon icon={isCollapsed ? 'chevron-right' : 'chevron-down'}/>
+                            <span>{swimlane.option.value || groupByProperty!.name}</span>
+                            <span className='KanbanSwimlane__count'>{swimlane.cards.length}</span>
+                        </div>
+                        {!isCollapsed &&
+                            <div className='octo-board-body'>
+                                {swimlane.groups.map((group) => (
+                                    <KanbanColumn
+                                        key={group.option.id || 'empty'}
+                                        onDrop={(card: Card) => onDropToColumn(group.option, card, undefined, swimlane.option.id)}
+                                    >
+                                        {group.cards.map((card) => (
+                                            <KanbanCard
+                                                card={card}
+                                                board={board}
+                                                visiblePropertyTemplates={visiblePropertyTemplates}
+                                                visibleBadges={visibleBadges}
+                                                key={card.id}
+                                                readonly={props.readonly}
+                                                isSelected={props.selectedCardIds.includes(card.id)}
+                                                onClick={props.onCardClicked}
+                                                onDrop={onDropToCard}
+                                                showCard={props.showCard}
+                                                isManualSort={isManualSort}
+                                            />
+                                        ))}
+                                        {!props.readonly &&
+                                            <BoardPermissionGate permissions={[Permission.ManageBoardCards]}>
+                                                <Button
+                                                    onClick={() => {
+                                                        if (defaultTemplateID) {
+                                                            props.addCardFromTemplate(defaultTemplateID, group.option.id)
+                                                        } else {
+                                                            props.addCard(group.option.id, true)
+                                                        }
+                                                    }}
+                                                >
+                                                    <FormattedMessage
+                                                        id='BoardComponent.new'
+                                                        defaultMessage='+ New'
+                                                    />
+                                                </Button>
+                                            </BoardPermissionGate>
                                         }
-                                    }}
-                                >
-                                    <FormattedMessage
-                                        id='BoardComponent.new'
-                                        defaultMessage='+ New'
-                                    />
-                                </Button>
-                            </BoardPermissionGate>
-                        }
-                    </KanbanColumn>
-                ))}
+                                    </KanbanColumn>
+                                ))}
+                            </div>}
+                    </React.Fragment>
+                )
+            }) : (
+                <div
+                    className='octo-board-body'
+                    id='mainBoardBody'
+                >
+                    {/* Columns */}
 
-                {/* Hidden columns */}
+                    {visibleGroups.map((group) => (
+                        <KanbanColumn
+                            key={group.option.id || 'empty'}
+                            onDrop={(card: Card) => onDropToColumn(group.option, card)}
+                        >
+                            {group.cards.map((card) => (
+                                <KanbanCard
+                                    card={card}
+                                    board={board}
+                                    visiblePropertyTemplates={visiblePropertyTemplates}
+                                    visibleBadges={visibleBadges}
+                                    key={card.id}
+                                    readonly={props.readonly}
+                                    isSelected={props.selectedCardIds.includes(card.id)}
+                                    onClick={props.onCardClicked}
+                                    onDrop={onDropToCard}
+                                    showCard={props.showCard}
+                                    isManualSort={isManualSort}
+                                />
+                            ))}
+                            {!props.readonly &&
+                                <BoardPermissionGate permissions={[Permission.ManageBoardCards]}>
+                                    <Button
+                                        onClick={() => {
+                                            if (defaultTemplateID) {
+                                                props.addCardFromTemplate(defaultTemplateID, group.option.id)
+                                            } else {
+                                                props.addCard(group.option.id, true)
+                                            }
+                                        }}
+                                    >
+                                        <FormattedMessage
+                                            id='BoardComponent.new'
+                                            defaultMessage='+ New'
+                                        />
+                                    </Button>
+                                </BoardPermissionGate>
+                            }
+                        </KanbanColumn>
+                    ))}
 
-                {(hiddenGroups.length > 0 || hiddenCardsCount > 0) &&
-                    <div className='octo-board-column narrow'>
-                        {hiddenGroups.map((group) => (
-                            <KanbanHiddenColumnItem
-                                key={group.option.id}
-                                group={group}
-                                activeView={activeView}
-                                intl={props.intl}
-                                readonly={props.readonly}
-                                onDrop={(card: Card) => onDropToColumn(group.option, card)}
-                            />
-                        ))}
-                        {hiddenCardsCount > 0 &&
-                        <div className='ml-1'>
-                            <HiddenCardCount
-                                hiddenCardsCount={hiddenCardsCount}
-                                showHiddenCardNotification={props.showHiddenCardCountNotification}
-                            />
+                    {/* Hidden columns */}
+
+                    {(hiddenGroups.length > 0 || hiddenCardsCount > 0) &&
+                        <div className='octo-board-column narrow'>
+                            {hiddenGroups.map((group) => (
+                                <KanbanHiddenColumnItem
+                                    key={group.option.id}
+                                    group={group}
+                                    activeView={activeView}
+                                    intl={props.intl}
+                                    readonly={props.readonly}
+                                    onDrop={(card: Card) => onDropToColumn(group.option, card)}
+                                />
+                            ))}
+                            {hiddenCardsCount > 0 &&
+                            <div className='ml-1'>
+                                <HiddenCardCount
+                                    hiddenCardsCount={hiddenCardsCount}
+                                    showHiddenCardNotification={props.showHiddenCardCountNotification}
+                                />
+                            </div>}
                         </div>}
-                    </div>}
-            </div>
+                </div>
+            )}
         </ScrollingComponent>
     )
 }

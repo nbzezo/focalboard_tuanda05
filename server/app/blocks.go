@@ -244,6 +244,10 @@ func (a *App) DeleteBlockAndNotify(blockID string, modifiedBy string, disableNot
 	return nil
 }
 
+func (a *App) GetBlockHistory(blockID string, opts model.QueryBlockHistoryOptions) ([]*model.Block, error) {
+	return a.store.GetBlockHistory(blockID, opts)
+}
+
 func (a *App) GetLastBlockHistoryEntry(blockID string) (*model.Block, error) {
 	blocks, err := a.store.GetBlockHistory(blockID, model.QueryBlockHistoryOptions{Limit: 1, Descending: true})
 	if err != nil {

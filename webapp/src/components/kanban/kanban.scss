@@ -4,6 +4,25 @@
     overflow: auto;
     flex: 1;
 
+    .KanbanSwimlane__header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 0;
+        cursor: pointer;
+        font-weight: 600;
+        color: rgb(var(--center-channel-color-rgb));
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    .KanbanSwimlane__count {
+        color: #909090;
+        font-weight: 400;
+    }
+
     .octo-board-header {
         @include z-index(kanban-board-header);
         display: flex;
@@ -40,6 +59,14 @@
 
             &:hover {
                 background-color: rgba(var(--center-channel-color-rgb), 0.1);
+            }
+        }
+
+        .KanbanColumnHeader__wip-limit {
+            font-weight: 600;
+
+            &--over {
+                color: var(--error-text);
             }
         }
 

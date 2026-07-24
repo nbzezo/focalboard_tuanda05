@@ -95,6 +95,24 @@ exports[`src/components/kanban/kanbanColumnHeader return kanbanColumnHeader and 
             </div>
             <div>
               <div
+                class="MenuOption SubMenuOption menu-option"
+                id="wip-limit"
+              >
+                <div
+                  class="noicon"
+                />
+                <div
+                  class="menu-name"
+                >
+                  Set WIP limit…
+                </div>
+                <i
+                  class="CompassIcon icon-chevron-right"
+                />
+              </div>
+            </div>
+            <div>
+              <div
                 aria-label="Delete"
                 class="MenuOption TextOption menu-option"
                 role="button"

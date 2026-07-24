@@ -809,6 +809,32 @@ class Mutator {
         )
     }
 
+    async changeViewSwimlaneById(boardId: string, viewId: string, oldSwimlaneById: string|undefined, swimlaneById: string): Promise<void> {
+        await undoManager.perform(
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {swimlaneById}})
+            },
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {swimlaneById: oldSwimlaneById}})
+            },
+            'sub-group by',
+            this.undoGroupId,
+        )
+    }
+
+    async changeViewCollapsedSwimlanes(boardId: string, viewId: string, oldCollapsedSwimlanes: string[], collapsedSwimlanes: string[]): Promise<void> {
+        await undoManager.perform(
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {collapsedSwimlanes}})
+            },
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {collapsedSwimlanes: oldCollapsedSwimlanes}})
+            },
+            'toggle swimlane',
+            this.undoGroupId,
+        )
+    }
+
     async changeViewDateDisplayPropertyId(boardId: string, viewId: string, oldDateDisplayPropertyId: string|undefined, dateDisplayPropertyId: string): Promise<void> {
         await undoManager.perform(
             async () => {
@@ -902,6 +928,19 @@ class Mutator {
             },
             async () => {
                 await octoClient.patchBlock(boardId, viewId, {updatedFields: {columnCalculations: oldCalculations}})
+            },
+            description,
+            this.undoGroupId,
+        )
+    }
+
+    async changeViewColumnWipLimit(boardId: string, viewId: string, oldWipLimits: Record<string, number>, wipLimits: Record<string, number>, description = 'updated wip limit'): Promise<void> {
+        await undoManager.perform(
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {columnWipLimits: wipLimits}})
+            },
+            async () => {
+                await octoClient.patchBlock(boardId, viewId, {updatedFields: {columnWipLimits: oldWipLimits}})
             },
             description,
             this.undoGroupId,

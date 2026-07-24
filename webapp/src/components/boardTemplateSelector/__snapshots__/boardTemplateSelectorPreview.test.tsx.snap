@@ -104,6 +104,19 @@ exports[`components/boardTemplateSelector/boardTemplateSelectorPreview should ma
           </button>
         </div>
         <div
+          aria-label="menuwrapper"
+          class="MenuWrapper"
+          role="button"
+        >
+          <button
+            type="button"
+          >
+            <span>
+              Sub-group by: None
+            </span>
+          </button>
+        </div>
+        <div
           class="ModalWrapper"
         >
           <button

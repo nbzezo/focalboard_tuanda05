@@ -159,6 +159,20 @@ export const getCurrentViewGroupBy = createSelector(
     },
 )
 
+export const getCurrentViewSwimlaneBy = createSelector(
+    getCurrentBoard,
+    getCurrentView,
+    (currentBoard, currentView) => {
+        if (!currentBoard) {
+            return undefined
+        }
+        if (!currentView) {
+            return undefined
+        }
+        return currentBoard.cardProperties.find((o) => o.id === currentView.fields.swimlaneById)
+    },
+)
+
 export const getCurrentViewDisplayBy = createSelector(
     getCurrentBoard,
     getCurrentView,

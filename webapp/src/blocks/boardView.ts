@@ -15,6 +15,8 @@ type KanbanCalculationFields = {
 type BoardViewFields = {
     viewType: IViewType
     groupById?: string
+    swimlaneById?: string
+    collapsedSwimlanes: string[]
     dateDisplayPropertyId?: string
     sortOptions: ISortOption[]
     visiblePropertyIds: string[]
@@ -25,6 +27,7 @@ type BoardViewFields = {
     cardOrder: string[]
     columnWidths: Record<string, number>
     columnCalculations: Record<string, string>
+    columnWipLimits: Record<string, number>
     kanbanCalculations: Record<string, KanbanCalculationFields>
     defaultTemplateId: string
 }
@@ -40,6 +43,8 @@ function createBoardView(block?: Block): BoardView {
         fields: {
             viewType: block?.fields.viewType || 'board',
             groupById: block?.fields.groupById,
+            swimlaneById: block?.fields.swimlaneById,
+            collapsedSwimlanes: block?.fields.collapsedSwimlanes?.slice() || [],
             dateDisplayPropertyId: block?.fields.dateDisplayPropertyId,
             sortOptions: block?.fields.sortOptions?.map((o: ISortOption) => ({...o})) || [],
             visiblePropertyIds: block?.fields.visiblePropertyIds?.slice() || [],
@@ -50,6 +55,7 @@ function createBoardView(block?: Block): BoardView {
             cardOrder: block?.fields.cardOrder?.slice() || [],
             columnWidths: {...(block?.fields.columnWidths || {})},
             columnCalculations: {...(block?.fields.columnCalculations) || {}},
+            columnWipLimits: {...(block?.fields.columnWipLimits) || {}},
             kanbanCalculations: {...(block?.fields.kanbanCalculations) || {}},
             defaultTemplateId: block?.fields.defaultTemplateId || '',
         },

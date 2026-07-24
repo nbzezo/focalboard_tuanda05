@@ -67,11 +67,13 @@ exports[`components/viewHeader/dateFilter handles calendar click event 1`] = `
             "card3",
           ],
           "collapsedOptionIds": Array [],
+          "collapsedSwimlanes": Array [],
           "columnCalculations": Object {},
           "columnWidths": Object {
             "column1": 100,
             "column2": 200,
           },
+          "columnWipLimits": Object {},
           "dateDisplayPropertyId": undefined,
           "defaultTemplateId": "",
           "filter": Object {
@@ -99,6 +101,7 @@ exports[`components/viewHeader/dateFilter handles calendar click event 1`] = `
               "reversed": false,
             },
           ],
+          "swimlaneById": undefined,
           "viewType": "board",
           "visibleOptionIds": Array [],
           "visiblePropertyIds": Array [],

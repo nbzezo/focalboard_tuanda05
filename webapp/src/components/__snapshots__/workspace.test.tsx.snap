@@ -434,6 +434,19 @@ exports[`src/components/workspace return workspace and showcard 1`] = `
               </button>
             </div>
             <div
+              aria-label="menuwrapper"
+              class="MenuWrapper"
+              role="button"
+            >
+              <button
+                type="button"
+              >
+                <span>
+                  Sub-group by: None
+                </span>
+              </button>
+            </div>
+            <div
               class="ModalWrapper"
             >
               <button
@@ -1539,6 +1552,19 @@ exports[`src/components/workspace should match snapshot 1`] = `
                   >
                     Property 2
                   </span>
+                </span>
+              </button>
+            </div>
+            <div
+              aria-label="menuwrapper"
+              class="MenuWrapper"
+              role="button"
+            >
+              <button
+                type="button"
+              >
+                <span>
+                  Sub-group by: None
                 </span>
               </button>
             </div>

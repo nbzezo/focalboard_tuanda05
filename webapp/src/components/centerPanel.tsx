@@ -68,6 +68,7 @@ type Props = {
     activeView: BoardView
     views: BoardView[]
     groupByProperty?: IPropertyTemplate
+    swimlaneByProperty?: IPropertyTemplate
     dateDisplayProperty?: IPropertyTemplate
     readonly: boolean
     shownCardId?: string
@@ -442,6 +443,7 @@ const CenterPanel = (props: Props) => {
                     cards={props.cards}
                     views={props.views}
                     groupByProperty={props.groupByProperty}
+                    swimlaneByProperty={props.swimlaneByProperty}
                     dateDisplayProperty={props.dateDisplayProperty}
                     addCard={addEmptyCardAndShow}
                     addCardFromTemplate={addCardFromTemplate}
@@ -457,6 +459,7 @@ const CenterPanel = (props: Props) => {
                 activeView={props.activeView}
                 cards={props.cards}
                 groupByProperty={props.groupByProperty}
+                swimlaneByProperty={props.swimlaneByProperty}
                 visibleGroups={visibleGroups}
                 hiddenGroups={hiddenGroups}
                 selectedCardIds={selectedCardIds}

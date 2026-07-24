@@ -38,6 +38,7 @@ import CommentsList from './commentsList'
 import {CardDetailProvider} from './cardDetailContext'
 import CardDetailContents from './cardDetailContents'
 import CardDetailContentsMenu from './cardDetailContentsMenu'
+import ChecklistProgress from './checklistProgress'
 import CardDetailProperties from './cardDetailProperties'
 import useImagePaste from './imagePaste'
 import AttachmentList from './attachment'
@@ -386,6 +387,7 @@ const CardDetail = (props: Props): JSX.Element|null => {
                     />)}
                 {!newBoardsEditor && (
                     <CardDetailProvider card={card}>
+                        <ChecklistProgress contents={props.contents}/>
                         <CardDetailContents
                             card={props.card}
                             contents={props.contents}

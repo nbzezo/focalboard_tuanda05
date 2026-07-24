@@ -30,6 +30,7 @@ import {Permission} from '../constants'
 import BoardPermissionGate from './permissions/boardPermissionGate'
 
 import CardDetail from './cardDetail/cardDetail'
+import CardHistory from './cardDetail/cardHistory'
 import Dialog from './dialog'
 
 import CardActionsMenu from './cardActionsMenu/cardActionsMenu'
@@ -57,6 +58,7 @@ const CardDialog = (props: Props): JSX.Element => {
     const isTemplate = card && card.fields.isTemplate
 
     const [showConfirmationDialogBox, setShowConfirmationDialogBox] = useState<boolean>(false)
+    const [showCardHistory, setShowCardHistory] = useState<boolean>(false)
     const makeTemplateClicked = async () => {
         if (!card) {
             Utils.assertFailure('card')
@@ -129,6 +131,12 @@ const CardDialog = (props: Props): JSX.Element => {
                 />
             </BoardPermissionGate>
             }
+            <Menu.Text
+                id='viewHistory'
+                icon={<CompassIcon icon='restore'/>}
+                name={intl.formatMessage({id: 'CardDialog.view-history', defaultMessage: 'View history'})}
+                onClick={() => setShowCardHistory(true)}
+            />
         </CardActionsMenu>
     )
 
@@ -267,6 +275,13 @@ const CardDialog = (props: Props): JSX.Element => {
             </Dialog>
 
             {showConfirmationDialogBox && <ConfirmationDialogBox dialogBox={confirmDialogProps}/>}
+
+            {showCardHistory && card &&
+                <CardHistory
+                    card={card}
+                    board={board}
+                    onClose={() => setShowCardHistory(false)}
+                />}
         </>
     )
 }

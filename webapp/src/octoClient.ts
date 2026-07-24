@@ -791,6 +791,11 @@ class OctoClient {
         return this.getJson<BoardsAndBlocks>(response, {} as BoardsAndBlocks)
     }
 
+    async getBlockHistory(boardID: string, blockID: string, limit?: number): Promise<Block[]> {
+        const path = `/api/v2/boards/${boardID}/blocks/${blockID}/history${limit ? `?limit=${limit}` : ''}`
+        return this.getBlocksWithPath(path)
+    }
+
     async duplicateBlock(boardID: string, blockID: string, asTemplate: boolean): Promise<Block[] | undefined> {
         let query = '?asTemplate=false'
         if (asTemplate) {

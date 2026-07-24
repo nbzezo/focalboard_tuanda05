@@ -37,6 +37,7 @@ import BoardPermissionGate from '../permissions/boardPermissionGate'
 import NewCardButton from './newCardButton'
 import ViewHeaderPropertiesMenu from './viewHeaderPropertiesMenu'
 import ViewHeaderGroupByMenu from './viewHeaderGroupByMenu'
+import ViewHeaderSubGroupByMenu from './viewHeaderSubGroupByMenu'
 import ViewHeaderDisplayByMenu from './viewHeaderDisplayByMenu'
 import ViewHeaderSortMenu from './viewHeaderSortMenu'
 import ViewHeaderActionsMenu from './viewHeaderActionsMenu'
@@ -51,6 +52,7 @@ type Props = {
     views: BoardView[]
     cards: Card[]
     groupByProperty?: IPropertyTemplate
+    swimlaneByProperty?: IPropertyTemplate
     addCard: () => void
     addCardFromTemplate: (cardTemplateId: string) => void
     addCardTemplate: () => void
@@ -65,9 +67,10 @@ const ViewHeader = (props: Props) => {
     const intl = useIntl()
     const canEditBoardProperties = useHasCurrentBoardPermissions([Permission.ManageBoardProperties])
 
-    const {board, activeView, views, groupByProperty, cards, dateDisplayProperty} = props
+    const {board, activeView, views, groupByProperty, swimlaneByProperty, cards, dateDisplayProperty} = props
 
     const withGroupBy = activeView.fields.viewType === 'board' || activeView.fields.viewType === 'table'
+    const withSubGroupBy = activeView.fields.viewType === 'board'
     const withDisplayBy = activeView.fields.viewType === 'calendar'
     const withSortBy = activeView.fields.viewType !== 'calendar'
 
@@ -164,6 +167,16 @@ const ViewHeader = (props: Props) => {
                     properties={board.cardProperties}
                     activeView={activeView}
                     groupByProperty={groupByProperty}
+                />}
+
+                {/* Sub-group by (swimlane) */}
+
+                {withSubGroupBy &&
+                <ViewHeaderSubGroupByMenu
+                    properties={board.cardProperties}
+                    activeView={activeView}
+                    groupByProperty={groupByProperty}
+                    swimlaneByProperty={swimlaneByProperty}
                 />}
 
                 {/* Display by */}

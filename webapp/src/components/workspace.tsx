@@ -15,6 +15,7 @@ import {
     getCurrentViewGroupBy,
     getCurrentViewId,
     getCurrentViewDisplayBy,
+    getCurrentViewSwimlaneBy,
     getCurrentView,
 } from '../store/views'
 import {useAppSelector, useAppDispatch} from '../store/hooks'
@@ -52,6 +53,7 @@ function CenterContent(props: Props) {
     const activeView = useAppSelector(getCurrentView)
     const views = useAppSelector(getCurrentBoardViews)
     const groupByProperty = useAppSelector(getCurrentViewGroupBy)
+    const swimlaneByProperty = useAppSelector(getCurrentViewSwimlaneBy)
     const dateDisplayProperty = useAppSelector(getCurrentViewDisplayBy)
     const clientConfig = useAppSelector(getClientConfig)
     const hiddenCardsCount = useAppSelector(getCurrentBoardHiddenCardsCount)
@@ -140,6 +142,7 @@ function CenterContent(props: Props) {
                 showCard={showCard}
                 activeView={activeView}
                 groupByProperty={property}
+                swimlaneByProperty={swimlaneByProperty}
                 dateDisplayProperty={displayProperty}
                 views={views}
                 hiddenCardsCount={hiddenCardsCount}

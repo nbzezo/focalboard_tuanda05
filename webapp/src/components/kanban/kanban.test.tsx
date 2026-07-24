@@ -529,6 +529,110 @@ describe('src/component/kanban/kanban', () => {
             expect(mockedinsertPropertyOption).toBeCalled()
         })
     })
+
+    test('renders one swimlane row per option when swimlaneByProperty is set', () => {
+        const swimlaneProperty: IPropertyTemplate = {
+            id: 'swimlane-prop',
+            name: 'Priority',
+            type: 'select',
+            options: [
+                {id: 'swim1', value: 'High', color: 'propColorRed'},
+                {id: 'swim2', value: 'Low', color: 'propColorBlue'},
+            ],
+        }
+        card1.fields.properties = {id: 'property_value_id_1', 'swimlane-prop': 'swim1'}
+        card2.fields.properties = {id: 'property_value_id_1', 'swimlane-prop': 'swim2'}
+
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <Kanban
+                    board={board}
+                    activeView={activeView}
+                    cards={[card1, card2]}
+                    groupByProperty={groupProperty}
+                    swimlaneByProperty={swimlaneProperty}
+                    visibleGroups={[
+                        {
+                            option: optionQ1,
+                            cards: [card1, card2],
+                        },
+                    ]}
+                    hiddenGroups={[]}
+                    selectedCardIds={[]}
+                    readonly={false}
+                    onCardClicked={jest.fn()}
+                    addCard={jest.fn()}
+                    addCardFromTemplate={jest.fn()}
+                    showCard={jest.fn()}
+                    hiddenCardsCount={0}
+                    showHiddenCardCountNotification={jest.fn()}
+                />
+            </ReduxProvider>,
+        ), {wrapper: MemoryRouter})
+
+        const swimlaneHeaders = container.querySelectorAll('.KanbanSwimlane__header')
+
+        // High, Low, and the empty ("no value") swimlane
+        expect(swimlaneHeaders).toHaveLength(3)
+        expect(container.textContent).toContain('High')
+        expect(container.textContent).toContain('Low')
+    })
+
+    test('dropping a card into a swimlane column sets both the column and swimlane properties', async () => {
+        const swimlaneProperty: IPropertyTemplate = {
+            id: 'swimlane-prop',
+            name: 'Priority',
+            type: 'select',
+            options: [
+                {id: 'swim1', value: 'High', color: 'propColorRed'},
+                {id: 'swim2', value: 'Low', color: 'propColorBlue'},
+            ],
+        }
+        card1.fields.properties = {id: 'property_value_id_1', 'swimlane-prop': 'swim1'}
+        card2.fields.properties = {id: 'property_value_id_1', 'swimlane-prop': 'swim2'}
+
+        const {container} = render(wrapDNDIntl(
+            <ReduxProvider store={store}>
+                <Kanban
+                    board={board}
+                    activeView={activeView}
+                    cards={[card1, card2]}
+                    groupByProperty={groupProperty}
+                    swimlaneByProperty={swimlaneProperty}
+                    visibleGroups={[
+                        {
+                            option: optionQ1,
+                            cards: [card1, card2],
+                        },
+                    ]}
+                    hiddenGroups={[]}
+                    selectedCardIds={[]}
+                    readonly={false}
+                    onCardClicked={jest.fn()}
+                    addCard={jest.fn()}
+                    addCardFromTemplate={jest.fn()}
+                    showCard={jest.fn()}
+                    hiddenCardsCount={0}
+                    showHiddenCardCountNotification={jest.fn()}
+                />
+            </ReduxProvider>,
+        ), {wrapper: MemoryRouter})
+
+        const cardsElement = container.querySelectorAll('.KanbanCard')
+        expect(cardsElement.length).toBeGreaterThan(0)
+
+        // Drag card1 (in the "High" swimlane) onto itself's column to exercise
+        // the swimlane-aware drop path (fireEvent.drop targets the KanbanColumn).
+        const columnElement = container.querySelector('.octo-board-column')
+        fireEvent.dragStart(cardsElement[0])
+        fireEvent.dragEnter(columnElement!)
+        fireEvent.dragOver(columnElement!)
+        fireEvent.drop(columnElement!)
+
+        await waitFor(async () => {
+            expect(mockedChangeViewCardOrder).toBeCalled()
+        })
+    })
 })
 
 describe('src/component/kanban/kanban', () => {

@@ -23,6 +23,7 @@ func (a *API) registerBlocksRoutes(r *mux.Router) {
 	r.HandleFunc("/boards/{boardID}/blocks/{blockID}", a.sessionRequired(a.handlePatchBlock)).Methods("PATCH")
 	r.HandleFunc("/boards/{boardID}/blocks/{blockID}/undelete", a.sessionRequired(a.handleUndeleteBlock)).Methods("POST")
 	r.HandleFunc("/boards/{boardID}/blocks/{blockID}/duplicate", a.sessionRequired(a.handleDuplicateBlock)).Methods("POST")
+	r.HandleFunc("/boards/{boardID}/blocks/{blockID}/history", a.sessionRequired(a.handleGetBlockHistory)).Methods("GET")
 }
 
 func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
@@ -170,6 +171,79 @@ func (a *API) handleGetBlocks(w http.ResponseWriter, r *http.Request) {
 		mlog.String("blockID", blockID),
 		mlog.Int("block_count", len(blocks)),
 	)
+
+	json, err := json.Marshal(blocks)
+	if err != nil {
+		a.errorResponse(w, r, err)
+		return
+	}
+
+	jsonBytesResponse(w, http.StatusOK, json)
+
+	auditRec.AddMeta("blockCount", len(blocks))
+	auditRec.Success()
+}
+
+func (a *API) handleGetBlockHistory(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation GET /boards/{boardID}/blocks/{blockID}/history getBlockHistory
+	//
+	// Returns the change history for a block, most recent first
+	//
+	// ---
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: boardID
+	//   in: path
+	//   description: Board ID
+	//   required: true
+	//   type: string
+	// - name: blockID
+	//   in: path
+	//   description: Block ID
+	//   required: true
+	//   type: string
+	// - name: limit
+	//   in: query
+	//   description: Maximum number of history entries to return, omit for no limit
+	//   required: false
+	//   type: integer
+	// security:
+	// - BearerAuth: []
+	// responses:
+	//   '200':
+	//     description: success
+	//     schema:
+	//       type: array
+	//       items:
+	//         "$ref": "#/definitions/Block"
+	//   '404':
+	//     description: board not found
+	//   default:
+	//     description: internal error
+	//     schema:
+	//       "$ref": "#/definitions/ErrorResponse"
+
+	boardID := mux.Vars(r)["boardID"]
+	blockID := mux.Vars(r)["blockID"]
+	userID := getUserID(r)
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+
+	if !a.permissions.HasPermissionToBoard(userID, boardID, model.PermissionViewBoard) {
+		a.errorResponse(w, r, model.NewErrPermission("access denied to board"))
+		return
+	}
+
+	auditRec := a.makeAuditRecord(r, "getBlockHistory", audit.Fail)
+	defer a.audit.LogRecord(audit.LevelRead, auditRec)
+	auditRec.AddMeta("boardID", boardID)
+	auditRec.AddMeta("blockID", blockID)
+
+	blocks, err := a.app.GetBlockHistory(blockID, model.QueryBlockHistoryOptions{Limit: uint64(limit), Descending: true})
+	if err != nil {
+		a.errorResponse(w, r, err)
+		return
+	}
 
 	json, err := json.Marshal(blocks)
 	if err != nil {

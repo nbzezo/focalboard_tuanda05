@@ -514,6 +514,42 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             security:
                 - BearerAuth: []
+    /boards/{boardID}/blocks/{blockID}/history:
+        get:
+            description: Returns the change history for a block, most recent first
+            operationId: getBlockHistory
+            parameters:
+                - description: Board ID
+                  in: path
+                  name: boardID
+                  required: true
+                  type: string
+                - description: Block ID
+                  in: path
+                  name: blockID
+                  required: true
+                  type: string
+                - description: Maximum number of history entries to return, omit for no limit
+                  in: query
+                  name: limit
+                  type: integer
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: success
+                    schema:
+                        items:
+                            $ref: '#/definitions/Block'
+                        type: array
+                "404":
+                    description: board not found
+                default:
+                    description: internal error
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            security:
+                - BearerAuth: []
     /boards/{boardID}/blocks/{blockID}/duplicate:
         post:
             description: Returns the new created blocks

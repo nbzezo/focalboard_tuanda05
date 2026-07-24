@@ -3,7 +3,34 @@
 import {Card} from './blocks/card'
 import {IPropertyTemplate, IPropertyOption, BoardGroup} from './blocks/board'
 
-function groupCardsByOptions(cards: Card[], optionIds: string[], groupByProperty?: IPropertyTemplate): BoardGroup[] {
+export type Swimlane = {
+    option: IPropertyOption
+    cards: Card[]
+    groups: BoardGroup[]
+}
+
+// groupCardsTwoLevels groups cards first by swimlaneByProperty (the outer axis,
+// one row per option, always including the "no value" option) and then, within
+// each swimlane, by groupByProperty (the normal kanban column axis) using the
+// same visible/hidden column rules as the single-level board view.
+export function groupCardsTwoLevels(cards: Card[], visibleOptionIds: string[], hiddenOptionIds: string[], groupByProperty: IPropertyTemplate|undefined, swimlaneByProperty: IPropertyTemplate): Swimlane[] {
+    const allSwimlaneOptionIds = swimlaneByProperty.options.map((o) => o.id)
+    if (!allSwimlaneOptionIds.includes('')) {
+        allSwimlaneOptionIds.unshift('')
+    }
+
+    const outerGroups = groupCardsByOptions(cards, allSwimlaneOptionIds, swimlaneByProperty)
+    return outerGroups.map((outerGroup): Swimlane => {
+        const {visible: innerGroups} = getVisibleAndHiddenGroups(outerGroup.cards, visibleOptionIds, hiddenOptionIds, groupByProperty)
+        return {
+            option: outerGroup.option,
+            cards: outerGroup.cards,
+            groups: innerGroups,
+        }
+    })
+}
+
+export function groupCardsByOptions(cards: Card[], optionIds: string[], groupByProperty?: IPropertyTemplate): BoardGroup[] {
     const groups = []
     for (const optionId of optionIds) {
         if (optionId) {

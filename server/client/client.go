@@ -268,6 +268,16 @@ func (c *Client) DuplicateBoard(boardID string, asTemplate bool, teamID string) 
 	return model.BoardsAndBlocksFromJSON(r.Body), BuildResponse(r)
 }
 
+func (c *Client) GetBlockHistory(boardID, blockID string) ([]*model.Block, *Response) {
+	r, err := c.DoAPIGet(c.GetBlockRoute(boardID, blockID)+"/history", "")
+	if err != nil {
+		return nil, BuildErrorResponse(r, err)
+	}
+	defer closeBody(r)
+
+	return model.BlocksFromJSON(r.Body), BuildResponse(r)
+}
+
 func (c *Client) DuplicateBlock(boardID, blockID string, asTemplate bool) (bool, *Response) {
 	queryParams := "?asTemplate=false"
 	if asTemplate {

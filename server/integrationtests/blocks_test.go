@@ -392,3 +392,38 @@ func TestUndeleteBlock(t *testing.T) {
 		require.Len(t, blocks, initialCount)
 	})
 }
+
+func TestGetBlockHistory(t *testing.T) {
+	th := SetupTestHelperWithToken(t).Start()
+	defer th.TearDown()
+
+	board := th.CreateBoard("team-id", model.BoardTypeOpen)
+
+	block := &model.Block{
+		ID:       utils.NewID(utils.IDTypeBlock),
+		BoardID:  board.ID,
+		CreateAt: 1,
+		UpdateAt: 1,
+		Type:     model.TypeCard,
+		Title:    "original title",
+	}
+	newBlocks, resp := th.Client.InsertBlocks(board.ID, []*model.Block{block}, false)
+	require.NoError(t, resp.Error)
+	require.Len(t, newBlocks, 1)
+	blockID := newBlocks[0].ID
+
+	// block history rows are uniqued on (id, insert_at); a small sleep
+	// between mutations avoids colliding within the same millisecond.
+	time.Sleep(10 * time.Millisecond)
+	newTitle := "updated title"
+	_, resp = th.Client.PatchBlock(board.ID, blockID, &model.BlockPatch{Title: &newTitle}, false)
+	require.NoError(t, resp.Error)
+
+	history, resp := th.Client.GetBlockHistory(board.ID, blockID)
+	require.NoError(t, resp.Error)
+	require.Len(t, history, 2)
+
+	// Descending: true means most recent first.
+	require.Equal(t, newTitle, history[0].Title)
+	require.Equal(t, "original title", history[1].Title)
+}
