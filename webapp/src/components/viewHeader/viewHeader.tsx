@@ -71,8 +71,8 @@ const ViewHeader = (props: Props) => {
 
     const withGroupBy = activeView.fields.viewType === 'board' || activeView.fields.viewType === 'table'
     const withSubGroupBy = activeView.fields.viewType === 'board'
-    const withDisplayBy = activeView.fields.viewType === 'calendar'
-    const withSortBy = activeView.fields.viewType !== 'calendar'
+    const withDisplayBy = activeView.fields.viewType === 'calendar' || activeView.fields.viewType === 'timeline'
+    const withSortBy = activeView.fields.viewType !== 'calendar' && activeView.fields.viewType !== 'timeline'
 
     const [viewTitle, setViewTitle] = useState(activeView.title)
 

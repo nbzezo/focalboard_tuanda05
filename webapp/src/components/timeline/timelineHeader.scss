@@ -1,0 +1,22 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+.TimelineHeader {
+    position: relative;
+    height: 32px;
+    border-bottom: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    flex-shrink: 0;
+}
+
+.TimelineHeader__tick {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(var(--center-channel-color-rgb), 0.6);
+    border-left: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    white-space: nowrap;
+}

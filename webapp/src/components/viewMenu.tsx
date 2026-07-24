@@ -20,6 +20,7 @@ import DeleteIcon from '../widgets/icons/delete'
 import DuplicateIcon from '../widgets/icons/duplicate'
 import GalleryIcon from '../widgets/icons/gallery'
 import TableIcon from '../widgets/icons/table'
+import CompassIcon from '../widgets/icons/compassIcon'
 import Menu from '../widgets/menu'
 
 import BoardPermissionGate from './permissions/boardPermissionGate'
@@ -212,6 +213,39 @@ const ViewMenu = (props: Props) => {
             })
     }, [props.board, props.activeView, props.intl, showView])
 
+    const handleAddViewTimeline = useCallback(() => {
+        const {board, activeView, intl} = props
+
+        Utils.log('addview-timeline')
+
+        const view = createBoardView()
+        view.title = intl.formatMessage({id: 'View.NewTimelineTitle', defaultMessage: 'Timeline view'})
+        view.fields.viewType = 'timeline'
+        view.parentId = board.id
+        view.boardId = board.id
+        view.fields.visiblePropertyIds = [Constants.titleColumnId]
+
+        const oldViewId = activeView.id
+
+        // Find first date property
+        view.fields.dateDisplayPropertyId = board.cardProperties.find((o: IPropertyTemplate) => o.type === 'date')?.id
+
+        mutator.insertBlock(
+            view.boardId,
+            view,
+            'add view',
+            async (block: Block) => {
+                // This delay is needed because WSClient has a default 100 ms notification delay before updates
+                setTimeout(() => {
+                    Utils.log(`showView: ${block.id}`)
+                    showView(block.id)
+                }, 120)
+            },
+            async () => {
+                showView(oldViewId)
+            })
+    }, [props.board, props.activeView, props.intl, showView])
+
     const {views, intl} = props
 
     const duplicateViewText = intl.formatMessage({
@@ -245,6 +279,7 @@ const ViewMenu = (props: Props) => {
         case 'table': return <TableIcon/>
         case 'gallery': return <GalleryIcon/>
         case 'calendar': return <CalendarIcon/>
+        case 'timeline': return <CompassIcon icon='timeline-text-outline'/>
         default: return <div/>
         }
     }
@@ -316,6 +351,12 @@ const ViewMenu = (props: Props) => {
                                 name='Calendar'
                                 icon={<CalendarIcon/>}
                                 onClick={handleAddViewCalendar}
+                            />
+                            <Menu.Text
+                                id='timeline'
+                                name={intl.formatMessage({id: 'View.Timeline', defaultMessage: 'Timeline'})}
+                                icon={<CompassIcon icon='timeline-text-outline'/>}
+                                onClick={handleAddViewTimeline}
                             />
                         </div>
                     </Menu.SubMenu>

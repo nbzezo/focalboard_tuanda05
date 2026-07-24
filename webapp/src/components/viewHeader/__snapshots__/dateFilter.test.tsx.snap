@@ -91,6 +91,7 @@ exports[`components/viewHeader/dateFilter handles calendar click event 1`] = `
             "value1",
           ],
           "kanbanCalculations": Object {},
+          "showDependencies": true,
           "sortOptions": Array [
             Object {
               "propertyId": "property1",
@@ -102,6 +103,7 @@ exports[`components/viewHeader/dateFilter handles calendar click event 1`] = `
             },
           ],
           "swimlaneById": undefined,
+          "timelineZoom": "week",
           "viewType": "board",
           "visibleOptionIds": Array [],
           "visiblePropertyIds": Array [],

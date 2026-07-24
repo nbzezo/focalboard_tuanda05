@@ -4,8 +4,9 @@
 import {Block, createBlock} from './block'
 import {FilterGroup, createFilterGroup} from './filterGroup'
 
-type IViewType = 'board' | 'table' | 'gallery' | 'calendar'
+type IViewType = 'board' | 'table' | 'gallery' | 'calendar' | 'timeline'
 type ISortOption = { propertyId: '__title' | string, reversed: boolean }
+type ITimelineZoom = 'day' | 'week' | 'month' | 'quarter'
 
 type KanbanCalculationFields = {
     calculation: string
@@ -30,6 +31,8 @@ type BoardViewFields = {
     columnWipLimits: Record<string, number>
     kanbanCalculations: Record<string, KanbanCalculationFields>
     defaultTemplateId: string
+    timelineZoom: ITimelineZoom
+    showDependencies: boolean
 }
 
 type BoardView = Block & {
@@ -58,6 +61,8 @@ function createBoardView(block?: Block): BoardView {
             columnWipLimits: {...(block?.fields.columnWipLimits) || {}},
             kanbanCalculations: {...(block?.fields.kanbanCalculations) || {}},
             defaultTemplateId: block?.fields.defaultTemplateId || '',
+            timelineZoom: block?.fields.timelineZoom || 'week',
+            showDependencies: block?.fields.showDependencies ?? true,
         },
     }
 }
@@ -69,4 +74,4 @@ function sortBoardViewsAlphabetically(views: BoardView[]): BoardView[] {
     }).sort((v1, v2) => v1.title.localeCompare(v2.title)).map((v) => v.view)
 }
 
-export {BoardView, IViewType, ISortOption, sortBoardViewsAlphabetically, createBoardView, KanbanCalculationFields}
+export {BoardView, IViewType, ISortOption, ITimelineZoom, sortBoardViewsAlphabetically, createBoardView, KanbanCalculationFields}

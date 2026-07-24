@@ -1,0 +1,18 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+.DependencyArrows {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.DependencyArrows__line {
+    stroke: rgba(var(--center-channel-color-rgb), 0.4);
+    stroke-width: 2;
+}
+
+.DependencyArrows__line--violated {
+    stroke: var(--error-text);
+    stroke-width: 2;
+}

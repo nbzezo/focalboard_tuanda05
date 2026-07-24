@@ -58,6 +58,7 @@ import CalendarFullView from './calendar/fullCalendar'
 import CardLimitNotification from './cardLimitNotification'
 
 import Gallery from './gallery/gallery'
+import TimelineView from './timeline/timeline'
 import {BoardTourSteps, FINISHED, TOUR_BOARD, TOUR_CARD} from './onboardingTour'
 import ShareBoardTourStep from './onboardingTour/shareBoard/shareBoard'
 
@@ -512,6 +513,16 @@ const CenterPanel = (props: Props) => {
                     addCard={(show) => addCard('', show)}
                     hiddenCardsCount={props.hiddenCardsCount}
                     showHiddenCardCountNotification={hiddenCardCountNotifyHandler}
+                />}
+
+            {activeView.fields.viewType === 'timeline' &&
+                <TimelineView
+                    board={props.board}
+                    activeView={props.activeView}
+                    cards={props.cards}
+                    dateDisplayProperty={props.dateDisplayProperty}
+                    readonly={props.readonly}
+                    showCard={showCard}
                 />}
             <CardLimitNotification
                 showHiddenCardNotification={showHiddenCardCountNotification}

@@ -1,0 +1,46 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+.TimelineRow {
+    position: relative;
+    width: 100%;
+}
+
+.TimelineRow__bar {
+    position: absolute;
+    top: 6px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-radius: 4px;
+    background: rgb(var(--button-bg-rgb));
+    color: rgb(var(--button-color-rgb));
+    cursor: grab;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+
+    &--blocked {
+        background: var(--error-text);
+    }
+
+    &--dragging {
+        cursor: grabbing;
+        opacity: 0.85;
+    }
+}
+
+.TimelineRow__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+
+.TimelineRow__resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+}
