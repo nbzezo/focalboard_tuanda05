@@ -440,6 +440,31 @@ exports[`widgets/PropertyMenu should match snapshot 1`] = `
                       class="noicon"
                     />
                   </div>
+                  <div
+                    aria-label="Formula"
+                    class="MenuOption TextOption menu-option"
+                    role="button"
+                  >
+                    <div
+                      class="d-flex"
+                    >
+                      <div
+                        class="noicon"
+                      />
+                    </div>
+                    <div
+                      class="menu-option__content"
+                    >
+                      <div
+                        class="menu-name"
+                      >
+                        Formula
+                      </div>
+                    </div>
+                    <div
+                      class="noicon"
+                    />
+                  </div>
                 </div>
                 <div
                   class="menu-spacer hideOnWidescreen"

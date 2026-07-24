@@ -17,6 +17,7 @@ import DateProperty from './date/property'
 import PersonProperty from './person/property'
 import MultiPersonProperty from './multiperson/property'
 import CheckboxProperty from './checkbox/property'
+import FormulaProperty from './formula/property'
 import UnknownProperty from './unknown/property'
 
 import {PropertyType} from './types'
@@ -61,5 +62,6 @@ registry.register(new CreatedTimeProperty())
 registry.register(new CreatedByProperty())
 registry.register(new UpdatedTimeProperty())
 registry.register(new UpdatedByProperty())
+registry.register(new FormulaProperty())
 
 export default registry

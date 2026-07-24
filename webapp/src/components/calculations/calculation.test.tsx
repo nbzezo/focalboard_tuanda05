@@ -50,6 +50,7 @@ describe('components/calculations/Calculation', () => {
                     onMenuOpen={() => {}}
                     onChange={() => {}}
                     cards={[card, card2]}
+                    board={board}
                     hovered={true}
                     property={{
                         id: 'property_2',
@@ -76,6 +77,7 @@ describe('components/calculations/Calculation', () => {
                     onMenuOpen={() => {}}
                     onChange={() => {}}
                     cards={[card, card2]}
+                    board={board}
                     hovered={true}
                     property={{
                         id: 'property_2',
@@ -102,6 +104,7 @@ describe('components/calculations/Calculation', () => {
                     onMenuOpen={() => {}}
                     onChange={() => {}}
                     cards={[card, card2]}
+                    board={board}
                     hovered={true}
                     property={{
                         id: 'property_3',
@@ -128,6 +131,7 @@ describe('components/calculations/Calculation', () => {
                     onMenuOpen={() => {}}
                     onChange={() => {}}
                     cards={[card, card2]}
+                    board={board}
                     hovered={true}
                     property={{
                         id: 'property_4',
@@ -158,6 +162,7 @@ describe('components/calculations/Calculation', () => {
                     onMenuOpen={onMenuOpen}
                     onChange={onChange}
                     cards={[card, card2]}
+                    board={board}
                     hovered={true}
                     property={{
                         id: 'property_2',

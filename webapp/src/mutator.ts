@@ -630,6 +630,20 @@ class Mutator {
         await this.updateBoardCardProperties(boardId, oldCardProperties, newCardProperties, 'rename option')
     }
 
+    // changePropertyFormula updates a formula-type property template's expression.
+    // Unlike changePropertyValue, this never touches any card's stored fields -
+    // formula properties have no stored per-card value, only a per-template
+    // expression evaluated at render time (see properties/formula/).
+    async changePropertyFormula(boardId: string, oldCardProperties: IPropertyTemplate[], template: IPropertyTemplate, formula: string) {
+        const newCardProperties: IPropertyTemplate[] = cloneDeep(oldCardProperties)
+        const newTemplate = newCardProperties.find((o: IPropertyTemplate) => o.id === template.id)!
+        newTemplate.formula = formula
+
+        await this.updateBoardCardProperties(boardId, oldCardProperties, newCardProperties, 'change formula')
+
+        return newCardProperties
+    }
+
     async changePropertyValue(boardId: string, card: Card, propertyId: string, value?: string | string[], description = 'change property') {
         const oldValue = card.fields.properties[propertyId]
 

@@ -31,9 +31,9 @@ function KanbanCalculation(props: Props): JSX.Element {
             <Button
                 onClick={() => (props.menuOpen ? props.onMenuClose : props.onMenuOpen)()}
                 onBlur={props.onMenuClose}
-                title={Calculations[props.value] ? Calculations[props.value](props.cards, props.property, intl) : ''}
+                title={Calculations[props.value] ? Calculations[props.value](props.cards, props.property, intl, props.cardProperties) : ''}
             >
-                {Calculations[props.value] ? Calculations[props.value](props.cards, props.property, intl) : ''}
+                {Calculations[props.value] ? Calculations[props.value](props.cards, props.property, intl, props.cardProperties) : ''}
             </Button>
 
             {

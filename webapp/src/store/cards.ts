@@ -13,6 +13,7 @@ import {Utils} from '../utils'
 import {Constants} from '../constants'
 import {CardFilter} from '../cardFilter'
 import {default as client} from '../octoClient'
+import {evaluateFormula} from '../properties/formula/lib/evaluator'
 
 import {loadBoardData, initialReadOnlyLoad, initialLoad} from './initialLoad'
 import {getCurrentBoard} from './boards'
@@ -258,10 +259,17 @@ function sortCards(cards: Card[], lastCommentByCard: {[key: string]: CommentBloc
                 } else if (template.type === 'date') {
                     aValue = (aValue === '') ? '' : JSON.parse(aValue as string).from
                     bValue = (bValue === '') ? '' : JSON.parse(bValue as string).from
+                } else if (template.type === 'formula') {
+                    const aFormula = evaluateFormula(template.formula || '', a, board.cardProperties)
+                    const bFormula = evaluateFormula(template.formula || '', b, board.cardProperties)
+                    aValue = aFormula === undefined ? '' : String(aFormula)
+                    bValue = bFormula === undefined ? '' : String(bFormula)
                 }
 
+                const isNumericFormula = template.type === 'formula' && aValue !== '' && !isNaN(Number(aValue))
+
                 let result = 0
-                if (template.type === 'number' || template.type === 'date') {
+                if (template.type === 'number' || template.type === 'date' || isNumericFormula) {
                     // Always put empty values at the bottom
                     if (aValue && !bValue) {
                         return -1

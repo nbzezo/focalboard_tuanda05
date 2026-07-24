@@ -58,7 +58,7 @@ const CardDetailProperties = (props: Props) => {
             return
         }
 
-        const affectsNumOfCards: string = Calculations.countNotEmpty(cards, propertyTemplate, intl)
+        const affectsNumOfCards: string = Calculations.countNotEmpty(cards, propertyTemplate, intl, board.cardProperties)
 
         // if only the name has changed, set the property without warning
         if (affectsNumOfCards === '0' || oldType === newType) {

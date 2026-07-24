@@ -6,6 +6,26 @@ import {createPatchesFromBoards, createBoard, IPropertyTemplate, createPatchesFr
 import {createBlock} from './block'
 
 describe('board tests', () => {
+    describe('createBoard', () => {
+        it('preserves a formula-type property\'s formula expression when cloning', () => {
+            const board = TestBlockFactory.createBoard()
+            board.cardProperties.push({
+                id: 'formula1',
+                name: 'Total',
+                type: 'formula',
+                options: [],
+                formula: 'prop("Property 1") + 1',
+            })
+
+            // createBoard(board) is called internally by mutators such as
+            // changePropertyTypeAndName (renaming/retyping a property) - it must
+            // not silently drop the formula field from unrelated properties.
+            const cloned = createBoard(board)
+            const clonedFormulaProperty = cloned.cardProperties.find((p) => p.id === 'formula1')
+            expect(clonedFormulaProperty?.formula).toBe('prop("Property 1") + 1')
+        })
+    })
+
     describe('correctly generate patches from two boards', () => {
         it('should generate two empty patches for the same board', () => {
             const board = TestBlockFactory.createBoard()

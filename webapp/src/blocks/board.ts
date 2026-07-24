@@ -83,7 +83,7 @@ type BoardsAndBlocksPatch = {
     blockPatches: BlockPatch[]
 }
 
-type PropertyTypeEnum = 'text' | 'number' | 'select' | 'multiSelect' | 'date' | 'person' | 'multiPerson' | 'file' | 'checkbox' | 'url' | 'email' | 'phone' | 'createdTime' | 'createdBy' | 'updatedTime' | 'updatedBy' | 'unknown'
+type PropertyTypeEnum = 'text' | 'number' | 'select' | 'multiSelect' | 'date' | 'person' | 'multiPerson' | 'file' | 'checkbox' | 'url' | 'email' | 'phone' | 'createdTime' | 'createdBy' | 'updatedTime' | 'updatedBy' | 'unknown' | 'formula'
 
 interface IPropertyOption {
     id: string
@@ -97,6 +97,10 @@ interface IPropertyTemplate {
     name: string
     type: PropertyTypeEnum
     options: IPropertyOption[]
+
+    // formula-type properties only: the expression evaluated per-card at render
+    // time (see properties/formula/) - never persisted as a stored value.
+    formula?: string
 }
 
 function createBoard(board?: Board): Board {
@@ -121,6 +125,7 @@ function createBoard(board?: Board): Board {
                 name: o.name,
                 type: o.type,
                 options: o.options ? o.options.map((option) => ({...option})) : [],
+                formula: o.formula,
             }
         })
     }

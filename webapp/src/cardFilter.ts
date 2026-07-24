@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import {DateProperty} from './properties/date/date'
+import {evaluateFormula} from './properties/formula/lib/evaluator'
 
 import {IPropertyTemplate} from './blocks/board'
 import {Card} from './blocks/card'
@@ -86,6 +87,9 @@ class CardFilter {
             } else if (template && template.type === 'updatedTime') {
                 value = card.updateAt.toString()
                 dateValue = this.createDatePropertyFromString(value as string)
+            } else if (template.type === 'formula') {
+                const evaluated = evaluateFormula(template.formula || '', card, templates)
+                value = evaluated === undefined ? '' : String(evaluated)
             }
         }
 
