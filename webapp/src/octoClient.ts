@@ -18,6 +18,7 @@ import {Constants} from './constants'
 import {BoardsCloudLimits} from './boardsCloudLimits'
 import {TopBoardResponse} from './insights'
 import {BoardSiteStatistics} from './statistics'
+import {AutomationRule, AutomationRun} from './automation'
 
 //
 // OctoClient is the client interface to the server APIs
@@ -794,6 +795,58 @@ class OctoClient {
     async getBlockHistory(boardID: string, blockID: string, limit?: number): Promise<Block[]> {
         const path = `/api/v2/boards/${boardID}/blocks/${blockID}/history${limit ? `?limit=${limit}` : ''}`
         return this.getBlocksWithPath(path)
+    }
+
+    async getAutomationRules(boardID: string): Promise<AutomationRule[]> {
+        const path = `/api/v2/boards/${boardID}/automation/rules`
+        const response = await fetch(this.getBaseURL() + path, {headers: this.headers()})
+        if (response.status !== 200) {
+            return []
+        }
+        return (await this.getJson(response, [])) as AutomationRule[]
+    }
+
+    async createAutomationRule(boardID: string, rule: AutomationRule): Promise<AutomationRule | undefined> {
+        const path = `/api/v2/boards/${boardID}/automation/rules`
+        const response = await fetch(this.getBaseURL() + path, {
+            method: 'POST',
+            headers: this.headers(),
+            body: JSON.stringify(rule),
+        })
+        if (response.status !== 200) {
+            return undefined
+        }
+        return this.getJson<AutomationRule>(response, {} as AutomationRule)
+    }
+
+    async updateAutomationRule(boardID: string, rule: AutomationRule): Promise<AutomationRule | undefined> {
+        const path = `/api/v2/boards/${boardID}/automation/rules/${rule.id}`
+        const response = await fetch(this.getBaseURL() + path, {
+            method: 'PUT',
+            headers: this.headers(),
+            body: JSON.stringify(rule),
+        })
+        if (response.status !== 200) {
+            return undefined
+        }
+        return this.getJson<AutomationRule>(response, {} as AutomationRule)
+    }
+
+    async deleteAutomationRule(boardID: string, ruleID: string): Promise<Response> {
+        const path = `/api/v2/boards/${boardID}/automation/rules/${ruleID}`
+        return fetch(this.getBaseURL() + path, {
+            method: 'DELETE',
+            headers: this.headers(),
+        })
+    }
+
+    async getAutomationRuns(boardID: string, ruleID: string, limit?: number): Promise<AutomationRun[]> {
+        const path = `/api/v2/boards/${boardID}/automation/rules/${ruleID}/runs${limit ? `?limit=${limit}` : ''}`
+        const response = await fetch(this.getBaseURL() + path, {headers: this.headers()})
+        if (response.status !== 200) {
+            return []
+        }
+        return (await this.getJson(response, [])) as AutomationRun[]
     }
 
     async duplicateBlock(boardID: string, blockID: string, asTemplate: boolean): Promise<Block[] | undefined> {

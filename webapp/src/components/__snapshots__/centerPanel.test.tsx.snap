@@ -95,6 +95,22 @@ exports[`components/centerPanel Clicking on the Hidden card count should open a 
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -802,6 +818,22 @@ exports[`components/centerPanel return centerPanel and click on card to show car
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -1367,6 +1399,22 @@ exports[`components/centerPanel return centerPanel and click on new card to edit
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -2423,6 +2471,22 @@ exports[`components/centerPanel return centerPanel and press touch ctrl+d for on
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -3079,6 +3143,22 @@ exports[`components/centerPanel return centerPanel and press touch del for one c
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -3737,6 +3817,22 @@ exports[`components/centerPanel return centerPanel and press touch esc for one c
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -4393,6 +4489,22 @@ exports[`components/centerPanel return centerPanel and press touch esc for one c
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -5051,6 +5163,22 @@ exports[`components/centerPanel return centerPanel and press touch esc for two c
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -5707,6 +5835,22 @@ exports[`components/centerPanel return centerPanel and press touch esc for two c
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -6365,6 +6509,22 @@ exports[`components/centerPanel return centerPanel and press touch esc for two c
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -7021,6 +7181,22 @@ exports[`components/centerPanel return centerPanel and select one card and click
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -7679,6 +7855,22 @@ exports[`components/centerPanel return centerPanel and select one card and click
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -8336,6 +8528,22 @@ exports[`components/centerPanel should match snapshot for Gallery 1`] = `
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -8610,6 +8818,22 @@ exports[`components/centerPanel should match snapshot for Kanban 1`] = `
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >
@@ -9143,6 +9367,22 @@ exports[`components/centerPanel should match snapshot for Kanban, not shared 1`]
           class="shareButtonWrapper"
         >
           <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
+          <div
             class="ShareBoardButton"
           >
             <button
@@ -9674,6 +9914,22 @@ exports[`components/centerPanel should match snapshot for Table 1`] = `
         <div
           class="shareButtonWrapper"
         >
+          <div
+            class="AutomationRulesButton"
+          >
+            <button
+              class="Button size--medium"
+              title="Automation"
+              type="button"
+            >
+              <i
+                class="CompassIcon icon-flash-outline"
+              />
+              <span>
+                Automation
+              </span>
+            </button>
+          </div>
           <div
             class="ShareBoardButton"
           >

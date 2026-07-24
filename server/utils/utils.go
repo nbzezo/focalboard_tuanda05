@@ -22,6 +22,8 @@ const (
 	IDTypeToken      IDType = 'k'
 	IDTypeBlock      IDType = 'a'
 	IDTypeAttachment IDType = 'i'
+	IDTypeRule       IDType = 'r'
+	IDTypeRuleRun    IDType = 'y'
 )
 
 // NewId is a globally unique identifier.  It is a [A-Z0-9] string 27

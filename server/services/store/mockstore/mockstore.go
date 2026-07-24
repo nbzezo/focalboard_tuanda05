@@ -79,6 +79,21 @@ func (mr *MockStoreMockRecorder) CleanUpSessions(arg0 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CleanUpSessions", reflect.TypeOf((*MockStore)(nil).CleanUpSessions), arg0)
 }
 
+// CreateAutomationRun mocks base method.
+func (m *MockStore) CreateAutomationRun(arg0 *model.AutomationRun) (*model.AutomationRun, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAutomationRun", arg0)
+	ret0, _ := ret[0].(*model.AutomationRun)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAutomationRun indicates an expected call of CreateAutomationRun.
+func (mr *MockStoreMockRecorder) CreateAutomationRun(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAutomationRun", reflect.TypeOf((*MockStore)(nil).CreateAutomationRun), arg0)
+}
+
 // CreateBoardsAndBlocks mocks base method.
 func (m *MockStore) CreateBoardsAndBlocks(arg0 *model.BoardsAndBlocks, arg1 string) (*model.BoardsAndBlocks, error) {
 	m.ctrl.T.Helper()
@@ -194,6 +209,20 @@ func (m *MockStore) DBVersion() string {
 func (mr *MockStoreMockRecorder) DBVersion() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DBVersion", reflect.TypeOf((*MockStore)(nil).DBVersion))
+}
+
+// DeleteAutomationRule mocks base method.
+func (m *MockStore) DeleteAutomationRule(arg0 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAutomationRule", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAutomationRule indicates an expected call of DeleteAutomationRule.
+func (mr *MockStoreMockRecorder) DeleteAutomationRule(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAutomationRule", reflect.TypeOf((*MockStore)(nil).DeleteAutomationRule), arg0)
 }
 
 // DeleteBlock mocks base method.
@@ -395,6 +424,51 @@ func (m *MockStore) GetAllTeams() ([]*model.Team, error) {
 func (mr *MockStoreMockRecorder) GetAllTeams() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllTeams", reflect.TypeOf((*MockStore)(nil).GetAllTeams))
+}
+
+// GetAutomationRule mocks base method.
+func (m *MockStore) GetAutomationRule(arg0 string) (*model.AutomationRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAutomationRule", arg0)
+	ret0, _ := ret[0].(*model.AutomationRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAutomationRule indicates an expected call of GetAutomationRule.
+func (mr *MockStoreMockRecorder) GetAutomationRule(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAutomationRule", reflect.TypeOf((*MockStore)(nil).GetAutomationRule), arg0)
+}
+
+// GetAutomationRules mocks base method.
+func (m *MockStore) GetAutomationRules(arg0 string) ([]*model.AutomationRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAutomationRules", arg0)
+	ret0, _ := ret[0].([]*model.AutomationRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAutomationRules indicates an expected call of GetAutomationRules.
+func (mr *MockStoreMockRecorder) GetAutomationRules(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAutomationRules", reflect.TypeOf((*MockStore)(nil).GetAutomationRules), arg0)
+}
+
+// GetAutomationRuns mocks base method.
+func (m *MockStore) GetAutomationRuns(arg0 string, arg1 model.QueryAutomationRunOptions) ([]*model.AutomationRun, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAutomationRuns", arg0, arg1)
+	ret0, _ := ret[0].([]*model.AutomationRun)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAutomationRuns indicates an expected call of GetAutomationRuns.
+func (mr *MockStoreMockRecorder) GetAutomationRuns(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAutomationRuns", reflect.TypeOf((*MockStore)(nil).GetAutomationRuns), arg0, arg1)
 }
 
 // GetBlock mocks base method.
@@ -1732,6 +1806,21 @@ func (m *MockStore) UpdateUserPasswordByID(arg0, arg1 string) error {
 func (mr *MockStoreMockRecorder) UpdateUserPasswordByID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPasswordByID", reflect.TypeOf((*MockStore)(nil).UpdateUserPasswordByID), arg0, arg1)
+}
+
+// UpsertAutomationRule mocks base method.
+func (m *MockStore) UpsertAutomationRule(arg0 *model.AutomationRule) (*model.AutomationRule, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertAutomationRule", arg0)
+	ret0, _ := ret[0].(*model.AutomationRule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertAutomationRule indicates an expected call of UpsertAutomationRule.
+func (mr *MockStoreMockRecorder) UpsertAutomationRule(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertAutomationRule", reflect.TypeOf((*MockStore)(nil).UpsertAutomationRule), arg0)
 }
 
 // UpsertNotificationHint mocks base method.

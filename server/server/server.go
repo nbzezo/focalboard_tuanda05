@@ -19,6 +19,7 @@ import (
 	"github.com/mattermost/focalboard/server/auth"
 	appModel "github.com/mattermost/focalboard/server/model"
 	"github.com/mattermost/focalboard/server/services/audit"
+	"github.com/mattermost/focalboard/server/services/automation"
 	"github.com/mattermost/focalboard/server/services/config"
 	"github.com/mattermost/focalboard/server/services/metrics"
 	"github.com/mattermost/focalboard/server/services/notify"
@@ -123,8 +124,19 @@ func New(params Params) (*Server, error) {
 		return nil, fmt.Errorf("unable to initialize the audit service: %w", err)
 	}
 
-	// Init notification services
-	notificationService, errNotify := initNotificationService(params.NotifyBackends, params.Logger)
+	// Init notification services. The automation rules engine is registered here
+	// (rather than left to the caller like NotifyBackends) so it's active in both
+	// run modes with zero changes needed to linux/main.go or the plugin wrapper -
+	// same reasoning as loggerBackend below. It only needs the store at this
+	// point; the *app.App reference it needs to execute actions is injected via
+	// SetActionExecutor once app.New() returns further down, since app.New()
+	// itself requires this notification service to already exist.
+	automationBackend := automation.New(params.DBStore, params.Logger)
+	notifyBackends := make([]notify.Backend, 0, len(params.NotifyBackends)+1)
+	notifyBackends = append(notifyBackends, params.NotifyBackends...)
+	notifyBackends = append(notifyBackends, automationBackend)
+
+	notificationService, errNotify := initNotificationService(notifyBackends, params.Logger)
 	if errNotify != nil {
 		return nil, fmt.Errorf("cannot initialize notification service(s): %w", errNotify)
 	}
@@ -142,8 +154,9 @@ func New(params Params) (*Server, error) {
 		SkipTemplateInit: utils.IsRunningUnitTests(),
 	}
 	app := app.New(params.Cfg, wsAdapter, appServices)
+	automationBackend.SetActionExecutor(app)
 
-	focalboardAPI := api.NewAPI(app, params.SingleUserToken, params.Cfg.AuthMode, params.PermissionsService, params.Logger, auditService)
+	focalboardAPI := api.NewAPI(app, params.SingleUserToken, params.Cfg.AuthMode, params.PermissionsService, params.Logger, auditService, automationBackend)
 
 	// Local router for admin APIs
 	localRouter := mux.NewRouter()

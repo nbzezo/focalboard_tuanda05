@@ -178,6 +178,15 @@ type Store interface {
 	// For unit testing only
 	DeleteBoardRecord(boardID, modifiedBy string) error
 	DeleteBlockRecord(blockID, modifiedBy string) error
+
+	// Automation
+	GetAutomationRules(boardID string) ([]*model.AutomationRule, error)
+	GetAutomationRule(ruleID string) (*model.AutomationRule, error)
+	// @withTransaction
+	UpsertAutomationRule(rule *model.AutomationRule) (*model.AutomationRule, error)
+	DeleteAutomationRule(ruleID string) error
+	CreateAutomationRun(run *model.AutomationRun) (*model.AutomationRun, error)
+	GetAutomationRuns(ruleID string, opts model.QueryAutomationRunOptions) ([]*model.AutomationRun, error)
 }
 
 type NotSupportedError struct {

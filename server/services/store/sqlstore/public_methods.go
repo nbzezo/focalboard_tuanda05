@@ -56,6 +56,11 @@ func (s *SQLStore) CleanUpSessions(expireTime int64) error {
 
 }
 
+func (s *SQLStore) CreateAutomationRun(run *model.AutomationRun) (*model.AutomationRun, error) {
+	return s.createAutomationRun(s.db, run)
+
+}
+
 func (s *SQLStore) CreateBoardsAndBlocks(bab *model.BoardsAndBlocks, userID string) (*model.BoardsAndBlocks, error) {
 	if s.dbType == model.SqliteDBType {
 		return s.createBoardsAndBlocks(s.db, bab, userID)
@@ -140,6 +145,11 @@ func (s *SQLStore) CreateSubscription(sub *model.Subscription) (*model.Subscript
 
 func (s *SQLStore) CreateUser(user *model.User) (*model.User, error) {
 	return s.createUser(s.db, user)
+
+}
+
+func (s *SQLStore) DeleteAutomationRule(ruleID string) error {
+	return s.deleteAutomationRule(s.db, ruleID)
 
 }
 
@@ -305,6 +315,21 @@ func (s *SQLStore) GetActiveUserCount(updatedSecondsAgo int64) (int, error) {
 
 func (s *SQLStore) GetAllTeams() ([]*model.Team, error) {
 	return s.getAllTeams(s.db)
+
+}
+
+func (s *SQLStore) GetAutomationRule(ruleID string) (*model.AutomationRule, error) {
+	return s.getAutomationRule(s.db, ruleID)
+
+}
+
+func (s *SQLStore) GetAutomationRules(boardID string) ([]*model.AutomationRule, error) {
+	return s.getAutomationRules(s.db, boardID)
+
+}
+
+func (s *SQLStore) GetAutomationRuns(ruleID string, opts model.QueryAutomationRunOptions) ([]*model.AutomationRun, error) {
+	return s.getAutomationRuns(s.db, ruleID, opts)
 
 }
 
@@ -940,6 +965,30 @@ func (s *SQLStore) UpdateUserPassword(username string, password string) error {
 
 func (s *SQLStore) UpdateUserPasswordByID(userID string, password string) error {
 	return s.updateUserPasswordByID(s.db, userID, password)
+
+}
+
+func (s *SQLStore) UpsertAutomationRule(rule *model.AutomationRule) (*model.AutomationRule, error) {
+	if s.dbType == model.SqliteDBType {
+		return s.upsertAutomationRule(s.db, rule)
+	}
+	tx, txErr := s.db.BeginTx(context.Background(), nil)
+	if txErr != nil {
+		return nil, txErr
+	}
+	result, err := s.upsertAutomationRule(tx, rule)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			s.logger.Error("transaction rollback error", mlog.Err(rollbackErr), mlog.String("methodName", "UpsertAutomationRule"))
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 
 }
 

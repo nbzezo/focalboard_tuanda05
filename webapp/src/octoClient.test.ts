@@ -132,3 +132,57 @@ test('OctoClient: GetFileInfo', async () => {
                 'X-Requested-With': 'XMLHttpRequest',
             }}))
 })
+
+test('OctoClient: getAutomationRules', async () => {
+    const rules = [{id: 'rule1', boardId: 'board-id', name: 'Test rule'}]
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(rules)))
+    const result = await octoClient.getAutomationRules('board-id')
+    expect(result).toEqual(rules)
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        'http://localhost/api/v2/boards/board-id/automation/rules',
+        expect.anything(),
+    )
+})
+
+test('OctoClient: createAutomationRule', async () => {
+    const rule = {id: '', boardId: 'board-id', name: 'New rule'}
+    const saved = {...rule, id: 'rule1'}
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(saved)))
+    const result = await octoClient.createAutomationRule('board-id', rule as any)
+    expect(result).toEqual(saved)
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        'http://localhost/api/v2/boards/board-id/automation/rules',
+        expect.objectContaining({method: 'POST'}),
+    )
+})
+
+test('OctoClient: updateAutomationRule', async () => {
+    const rule = {id: 'rule1', boardId: 'board-id', name: 'Updated rule'}
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(rule)))
+    const result = await octoClient.updateAutomationRule('board-id', rule as any)
+    expect(result).toEqual(rule)
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        'http://localhost/api/v2/boards/board-id/automation/rules/rule1',
+        expect.objectContaining({method: 'PUT'}),
+    )
+})
+
+test('OctoClient: deleteAutomationRule', async () => {
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse('{}'))
+    await octoClient.deleteAutomationRule('board-id', 'rule1')
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        'http://localhost/api/v2/boards/board-id/automation/rules/rule1',
+        expect.objectContaining({method: 'DELETE'}),
+    )
+})
+
+test('OctoClient: getAutomationRuns', async () => {
+    const runs = [{id: 'run1', ruleId: 'rule1', cardId: 'card1', status: 'success'}]
+    FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse(JSON.stringify(runs)))
+    const result = await octoClient.getAutomationRuns('board-id', 'rule1', 10)
+    expect(result).toEqual(runs)
+    expect(FetchMock.fn).toHaveBeenCalledWith(
+        'http://localhost/api/v2/boards/board-id/automation/rules/rule1/runs?limit=10',
+        expect.anything(),
+    )
+})

@@ -11,6 +11,7 @@ import (
 	"github.com/mattermost/focalboard/server/app"
 	"github.com/mattermost/focalboard/server/model"
 	"github.com/mattermost/focalboard/server/services/audit"
+	"github.com/mattermost/focalboard/server/services/automation"
 	"github.com/mattermost/focalboard/server/services/permissions"
 
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
@@ -41,6 +42,7 @@ type API struct {
 	MattermostAuth  bool
 	logger          mlog.LoggerIFace
 	audit           *audit.Audit
+	automation      *automation.Backend
 }
 
 func NewAPI(
@@ -50,6 +52,7 @@ func NewAPI(
 	permissions permissions.PermissionsService,
 	logger mlog.LoggerIFace,
 	audit *audit.Audit,
+	automationBackend *automation.Backend,
 ) *API {
 	return &API{
 		app:             app,
@@ -58,6 +61,7 @@ func NewAPI(
 		permissions:     permissions,
 		logger:          logger,
 		audit:           audit,
+		automation:      automationBackend,
 	}
 }
 
@@ -93,6 +97,7 @@ func (a *API) RegisterRoutes(r *mux.Router) {
 	a.registerContentBlocksRoutes(apiv2)
 	a.registerStatisticsRoutes(apiv2)
 	a.registerComplianceRoutes(apiv2)
+	a.registerAutomationRoutes(apiv2)
 
 	// V3 routes
 	a.registerCardsRoutes(apiv2)

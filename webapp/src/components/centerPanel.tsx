@@ -61,6 +61,7 @@ import Gallery from './gallery/gallery'
 import TimelineView from './timeline/timeline'
 import {BoardTourSteps, FINISHED, TOUR_BOARD, TOUR_CARD} from './onboardingTour'
 import ShareBoardTourStep from './onboardingTour/shareBoard/shareBoard'
+import AutomationRulesButton from './automation/automationRulesButton'
 
 type Props = {
     clientConfig?: ClientConfig
@@ -427,6 +428,11 @@ const CenterPanel = (props: Props) => {
                         readonly={props.readonly}
                     />
                     <div className='shareButtonWrapper'>
+                        {!props.readonly &&
+                        <AutomationRulesButton
+                            board={board}
+                        />
+                        }
                         {showShareButton &&
                         <ShareBoardButton
                             enableSharedBoards={props.clientConfig?.enablePublicSharedBoards || false}

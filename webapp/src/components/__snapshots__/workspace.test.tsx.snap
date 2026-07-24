@@ -354,6 +354,21 @@ exports[`src/components/workspace return workspace and showcard 1`] = `
               class="shareButtonWrapper"
             >
               <div
+                class="AutomationRulesButton"
+              >
+                <button
+                  title="Automation"
+                  type="button"
+                >
+                  <i
+                    class="CompassIcon icon-flash-outline"
+                  />
+                  <span>
+                    Automation
+                  </span>
+                </button>
+              </div>
+              <div
                 class="ShareBoardButton"
               >
                 <button
@@ -1475,6 +1490,21 @@ exports[`src/components/workspace should match snapshot 1`] = `
             <div
               class="shareButtonWrapper"
             >
+              <div
+                class="AutomationRulesButton"
+              >
+                <button
+                  title="Automation"
+                  type="button"
+                >
+                  <i
+                    class="CompassIcon icon-flash-outline"
+                  />
+                  <span>
+                    Automation
+                  </span>
+                </button>
+              </div>
               <div
                 class="ShareBoardButton"
               >
