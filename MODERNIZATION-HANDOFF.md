@@ -2,7 +2,7 @@
 
 > **Mục đích:** Tài liệu này để bàn giao cho một agent/dev khác (DeepSeek) tiếp tục công việc hiện đại hoá & mở rộng Focalboard. Nó tự chứa (self-contained) — đọc xong là làm tiếp được mà không cần lịch sử hội thoại.
 >
-> **Ngày cập nhật:** 2026-07-24
+> **Ngày cập nhật:** 2026-07-24 (sau Phase 7b)
 > **Branch:** `claude/project-quality-assessment-41e971` (git worktree)
 > **Plan gốc (9 phase):** đã copy vào repo tại `docs/modernization/PLAN-9-phases.md` (tự chứa, không phụ thuộc file ngoài).
 
@@ -12,15 +12,20 @@
 
 **Bước 0 — Xác nhận baseline (chạy trước khi làm gì):**
 ```bash
-git log --oneline -5
-# Phải thấy 5 commit: "Phase 5 (partial): server pagination...", "Phase 4: editor modernization...",
-# "Phase 3: library modernization...", "Phase 2: React 18 gate", "Phase 1: tooling & dependency hygiene".
-# Đây là baseline XANH đã verify.
+git log --oneline -8
+# Phải thấy (từ mới nhất): "Phase 7b: Timeline/Gantt view", "Phase 7a: card dependencies...",
+# "Phase 6: quick wins...", "docs: record Phase 5 partial completion...",
+# "Phase 5 (partial): server pagination...", "docs: update handoff for Phase 4...",
+# "Phase 4: editor modernization...", "docs: modernization handoff guide...".
+# Đây là baseline XANH đã verify (Phase 1-4 xong, Phase 5 MỘT PHẦN — cố ý, xem mục 4c —
+# Phase 6 xong, Phase 7 xong với một số phạm vi thu hẹp có ghi chú — xem mục 4d/4e).
 ```
-Phase 1–4 đã xong và commit. **Phase 5 mới làm MỘT PHẦN** (5a server pagination + 5b bước 1 windowed fetch + 5c một phần render memo — xem mục 4c để biết chính xác cái gì đã xong). **Việc tiếp theo là hoàn thiện phần còn lại của Phase 5** trước khi sang Phase 6, cụ thể: 5b bước 2 (defer content load — cần thiết kế lại cách gallery/cardBadges/updatedBy đọc content trước, xem lý do ở mục 4c), 5c phần còn lại (selector chain filter→search→sort, `react-window` virtualize cho table), và 5d (tách god-file `mutator.ts`/`octoClient.ts`). Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4c (Phase 5 đã làm gì, KHÔNG làm gì, và TẠI SAO) → mục 5 (spec gốc, tham khảo phần chưa làm).
+Phase 1–4 đã xong và commit. **Phase 5 mới làm MỘT PHẦN** (5a server pagination + 5b bước 1 windowed fetch + 5c một phần render memo — xem mục 4c). Quyết định đã chốt: **không quay lại hoàn thiện nốt Phase 5 trước khi làm Phase 6/7** — 5b bước 2/5c phần còn lại/5d đều là tối ưu/tái cấu trúc không chặn tính năng mới, nên Phase 6 và Phase 7 đã làm tiếp trên nền Phase 5 một phần này (xem mục 4c để hiểu rõ tại sao an toàn khi làm vậy — ví dụ: 5b bước 2 bị hoãn vì sẽ vỡ gallery/badges nếu không thiết kế lại 4 consumer trước, không liên quan gì đến WIP limit/swimlane/dependencies/timeline). **Việc tiếp theo là Phase 8 (Automation rules engine)** — xem mục 5 phần Phase 8 để biết spec, và mục 4d/4e để biết những gì Phase 6/7 đã xây (đặc biệt `groupCardsTwoLevels`, `blockChangeNotifier`/`notify.Backend` hook, `checklistUtils.ts`) mà Phase 8 có thể cần tái dùng hoặc phải tương thích. Nếu muốn hoàn thiện nốt phần Phase 5 còn thiếu trước, vẫn có thể — không có ràng buộc thứ tự cứng, chỉ là chưa ai làm.
+
+Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4c/4d/4e (Phase 5/6/7 đã làm gì, KHÔNG làm gì, và TẠI SAO) → mục 5 (spec gốc Phase 8/9, và phần Phase 5 còn thiếu nếu muốn quay lại).
 
 **Prompt mẫu để khởi động DeepSeek** (dán nguyên văn):
-> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), và mục 4c (Phase 5 đã làm một phần — đọc kỹ phần "KHÔNG làm" và lý do trước khi động vào gallery/cardBadges/mutator.ts/octoClient.ts). Chạy `git log --oneline -5` xác nhận baseline (Phase 1–4 xong + Phase 5 một phần, đều đã commit xanh). Sau đó hoàn thiện **phần còn lại của Phase 5** (5b bước 2, 5c phần còn lại, 5d tách god-file) theo spec ở mục 5, giữ mỗi phần kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong.
+> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), mục 4c/4d/4e (Phase 5 một phần + Phase 6 + Phase 7 đã làm gì — đọc kỹ phần "KHÔNG làm"/"deviations" trước khi động vào các file liên quan). Chạy `git log --oneline -8` xác nhận baseline (Phase 1–4 xong, Phase 5 một phần, Phase 6 xong, Phase 7 xong, đều đã commit xanh). Sau đó làm **Phase 8 (Automation rules engine)** theo spec ở mục 5, giữ mỗi phần kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong. Phase 8 đụng `server/services/notify` + interface `store.Store` — đặc biệt cẩn thận quy tắc vàng #2 (implement method mới ở CẢ sqlstore lẫn mattermostauthlayer).
 
 **Nếu chạy trên MÁY KHÁC** (không phải máy đã setup): xem mục 1 để biết yêu cầu phiên bản (Go 1.22, gcc cho CGO, Node 20+) và các cờ npm đặc thù; các đường dẫn tuyệt đối trong mục 1 là của máy gốc, cần thay bằng path máy bạn.
 
@@ -103,9 +108,9 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 | **3** | Hiện đại hoá thư viện (router v6, dnd, dayjs, emoji-mart 5, react-day-picker v8) | ✅ **XONG, đã commit** | `edea4b07` |
 | **4** | Editor draft-js → **TipTap v3** | ✅ **XONG, đã commit** | `0c7aa346` |
 | **5** | Hiệu năng & cấu trúc (pagination, lazy load, selectors, virtualize table, tách god-file) | 🟡 **MỘT PHẦN, đã commit** (5a+5b bước 1+5c một phần; còn lại xem mục 4c) | `248fefa6` |
-| **6** | Quick wins (WIP limit, swimlane, checklist progress, card history UI) | ⬜ Chưa làm | — |
-| **7** | Dependencies + Timeline/Gantt view | ⬜ Chưa làm | — |
-| **8** | Automation rules engine | ⬜ Chưa làm | — |
+| **6** | Quick wins (WIP limit, swimlane, checklist progress, card history UI) | ✅ **XONG, đã commit** | `e714c4ba` |
+| **7** | Dependencies + Timeline/Gantt view | ✅ **XONG, đã commit** (một số phạm vi thu hẹp có ghi chú — xem mục 4e) | `c8470ebd` (7a) + `7e79fd4f` (7b) |
+| **8** | Automation rules engine | ⬜ Chưa làm — **BẮT ĐẦU TỪ ĐÂY** | — |
 | **9** | Formula property | ⬜ Chưa làm | — |
 
 ---
@@ -233,6 +238,52 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 ---
 
+## 4d. ✅ Phase 6 — Quick wins (ĐÃ XONG, commit `e714c4ba`)
+
+**Verify đã đạt:** tsc 0 lỗi, eslint sạch (trừ CRLF), jest xanh (toàn bộ suite, gồm test mới cho `groupCardsTwoLevels`/`checklistUtils`/`cardHistory`), webpack build OK. Server: `GetBlockHistory` API mới không đổi interface `store.Store` (dùng method sẵn có) ⇒ không đụng `mattermostauthlayer`.
+
+- **6a. WIP limit:** `blocks/boardView.ts` `BoardViewFields` += `columnWipLimits?: Record<string, number>`, default `{}` trong `createBoardView()`. UI ở `kanbanColumnHeader.tsx` + `kanban.tsx`.
+- **6b. Swimlane:** `BoardViewFields` += `swimlaneById?: string`, `collapsedSwimlanes?: string[]`. Util `groupCardsTwoLevels` + `groupCardsByOptions` (export) trong `boardUtils.ts`. Menu mới `viewHeader/viewHeaderSubGroupByMenu.tsx`. `kanban.tsx` render 2 cấp, drop handler set cả 2 property cùng lúc.
+- **6c. Checklist progress:** `checklistUtils.ts` (mới, tách logic đếm checkbox ra khỏi `cardBadges.tsx` để dùng chung) + `cardDetail/checklistProgress.tsx`.
+- **6d. Card history UI:** `server/api/blocks.go` `handleGetBlockHistory` + `server/app/blocks.go` `GetBlockHistory` (cưỡi store method **sẵn có**, không sửa interface) + `cardDetail/cardHistory.tsx` (mới).
+- **Bug thật tìm thấy qua jest (không phải do Phase 6 gây ra nhưng lộ ra khi thêm field mới):** `KanbanColumnHeader`/`kanban.tsx` đọc `undefined.columnWipLimits[...]`/`.collapsedSwimlanes.includes(...)` crash trên `BoardView` object dựng tay trong test (bypass `createBoardView()`). Sửa bằng guard `?.`/`|| []` tại điểm đọc — **an toàn cho data thật** vì `octoUtils.tsx`'s `fixBlock` luôn route block tải từ server qua `createBoardView()`/`createCard()` nên field default luôn được set; chỉ test fixture tự dựng object mới thiếu field.
+
+### Nợ kỹ thuật Phase 6 mở ra
+- Timeline (Phase 7) tái dùng `groupCardsTwoLevels` nhưng **KHÔNG dùng** trong Timeline view (xem mục 4e — swimlane trong Timeline chưa làm).
+
+---
+
+## 4e. ✅ Phase 7 — Dependencies + Timeline/Gantt (ĐÃ XONG, commit `c8470ebd` phần 7a + `7e79fd4f` phần 7b)
+
+**Verify đã đạt:** tsc 0 lỗi, eslint sạch, **jest 151 suite / 899 test / 457 snapshot xanh**. Server không đổi (7a+7b đều thuần webapp) ⇒ không cần chạy lại go test. **Manual browser smoke test đầy đủ đã chạy** (xem bên dưới) — bắt buộc vì Timeline đụng code chạy trong browser (drag/resize qua raw mouse event, không phải chỉ logic thuần).
+
+### 7a. Card dependencies (commit `c8470ebd`)
+- `blocks/card.ts`: `CardFields` += `blockedBy?: string[]`, default `[]` trong `createCard()`.
+- `cardDependencyUtils.ts` (mới): `wouldCreateCycle(cardsById, cardId, candidateBlockerId)` — DFS thuần, dùng chung giữa mutator (check trước khi commit) và UI picker (lọc option sẽ tạo vòng).
+- `store/cards.ts`: `getCardDependencyMap` — **1 selector global KHÔNG tham số hoá theo boardId** (khác với factory pattern `(boardId) => selector` — cố ý tránh anti-pattern gọi factory trong thân render tạo selector mới mỗi lần, xem bài học Phase 5 mục 4c).
+- `mutator.ts`: `addCardDependency`/`removeCardDependency` — check vòng qua `store.getState()` làm safety net cuối trước khi commit.
+- UI: `cardDetail/cardDependencies.tsx` ("Blocked by" picker + "Blocks" derived read-only), badge "blocked" trong `cardBadges.tsx` (dùng `CompassIcon icon='lock-outline'`).
+
+### 7b. Timeline/Gantt view (commit `7e79fd4f`)
+- `blocks/boardView.ts`: `IViewType` += `'timeline'`; `ITimelineZoom = 'day'|'week'|'month'|'quarter'`; `BoardViewFields` += `timelineZoom` (default `'week'`), `showDependencies` (default `true`).
+- **Quyết định quan trọng — tái dùng `dateDisplayPropertyId` thay vì field riêng:** spec gốc dự tính `timelineDatePropertyId` riêng; thực tế tái dùng field `dateDisplayPropertyId` **đã có sẵn** (dùng chung với Calendar view) — giảm phạm vi (không cần UI picker mới, `viewHeaderDisplayByMenu.tsx` dùng nguyên), và **tái dùng `DatePropertyType.getDateFrom/getDateTo`** (`properties/types.tsx`/`properties/date/property.tsx`) thay vì tự parse JSON — abstraction này đã giải quyết sẵn quirk "date property lưu ở 12pm UTC, normalize về local midnight" mà Calendar's `fullCalendar.tsx` đã dùng.
+- Thư mục mới `webapp/src/components/timeline/`: `timelineUtils.ts` (toán date↔pixel qua `dayjs(...).startOf('day').diff(...)`, KHÔNG chia mili-giây thô — an toàn qua DST, có test fixture đổi `process.env.TZ` runtime), `timelineRow.tsx` (bar 1 card, drag=dời/resize qua raw `mousedown`→`document.mousemove/mouseup`, commit qua `mutator.changePropertyValue` khi `mouseup`), `timelineHeader.tsx` (thang thời gian), `dependencyArrows.tsx` (SVG `<line>` overlay, đỏ khi vi phạm thứ tự), `timeline.tsx` (view chính — tách scheduled/unscheduled, khay "Unscheduled" cho card chưa có ngày).
+- Wiring: `viewMenu.tsx` (thêm vào menu "Add view"), `viewHeader.tsx` (hiện Display by/Sort by giống Calendar), `workspace.tsx` (auto-fallback `dateDisplayProperty` giống Calendar), `centerPanel.tsx` (case render mới).
+
+### Deviations so với spec gốc (cố ý, đã cân nhắc — đọc trước khi mở rộng Timeline)
+1. **Drag/resize dùng raw mouse event, KHÔNG dùng react-dnd** — react-dnd được thiết kế cho reorder qua drop-target rời rạc, không hợp với kéo tự do theo tỷ lệ pixel liên tục.
+2. **Không có arrowhead marker trên dependency line** — SVG `<marker>` + `currentColor` có vấn đề portability qua theme, đơn giản hoá thành `<line>` trơn.
+3. **Swimlane (Phase 6) KHÔNG tái dùng trong Timeline** — chỉ 1 cấp hàng.
+4. **KHÔNG virtualize hàng bằng `react-window`** — spec gốc đề xuất làm từ đầu vì dễ hơn kanban, nhưng chưa làm (số card thực tế trong board cá nhân nhỏ, chưa thấy cần).
+
+### Manual browser verify đã chạy (bắt buộc, không chỉ dựa jest)
+- Rebuild webpack production bundle + restart server thật, mở board "Personal Tasks" thật qua UI.
+- Thêm date property qua UI thật, set ngày cho 2 card có quan hệ blocked-by (từ Phase 7a) → mở Timeline view → xác nhận: vị trí/độ rộng bar khớp chính xác với ngày (đối chiếu pixel qua `getBoundingClientRect` với công thức `pxPerDay`), badge `--blocked` hiện đúng, dependency arrow hiện với style `--violated` đúng khi thứ tự bị vi phạm.
+- Kéo bar qua sự kiện mouse thật (`mousedown`→`mousemove`→`mouseup` cách nhau, KHÔNG dồn 1 lần — xem "bài học test" bên dưới) → ngày cập nhật đúng, **persist qua restart server thật** (không chỉ qua reload client-side).
+- **Bài học test (browser automation, không phải bug sản phẩm):** nếu dispatch `mousedown`+`mousemove`+`mouseup` dồn trong CÙNG MỘT lần gọi script đồng bộ (không có khoảng cách để React flush state + effect), component có thể kẹt ở trạng thái "dragging" vì `useEffect` gắn listener `document.mouseup` chưa kịp chạy trước khi mouseup được dispatch. Đây là **artifact của cách test tự động dồn sự kiện, không phải bug thật** — người dùng thật luôn có khoảng cách giữa 2 native event. Xác nhận bằng cách tách 3 sự kiện thành 3 lần gọi script riêng (hoặc dispatch thêm 1 `mouseup` riêng) → hoạt động đúng ngay. Bài học chung (nối tiếp bài học Phase 4 #2): khi test kéo-thả/nhiều-bước qua browser automation mà thấy hành vi lạ, luôn nghi ngờ cách dồn sự kiện của tool test trước khi kết luận là bug sản phẩm.
+
+---
+
 ## 5. CÁC PHASE CHƯA LÀM — SPEC CHI TIẾT (phần Phase 5 dưới đây giữ nguyên bản gốc để đối chiếu — xem mục 4c ở trên để biết chính xác cái gì ĐÃ xong)
 
 > Nguồn đầy đủ hơn: `docs/modernization/PLAN-9-phases.md` (trong repo). Dưới đây là bản rút gọn đủ để thực thi.
@@ -259,7 +310,7 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 **Verify:** `go test` migration up/down 2 chiều (CI chạy đủ 3 DB); seed board 1000 card bằng script API (để trong scratchpad); mở board lớn, scroll table, mở card, sửa live từ browser thứ 2 (WS).
 
-### ⬜ Phase 6 — Quick wins (M)
+### ✅ Phase 6 — Quick wins (M) — ĐÃ XONG, xem mục 4d để biết chi tiết thực tế đã làm (spec gốc giữ nguyên bên dưới để đối chiếu)
 
 **6a. WIP limit cột kanban:** `blocks/boardView.ts` `BoardViewFields` += `columnWipLimits?: Record<optionId, number>` (default `{}` trong `createBoardView()`). View fields là JSON tự do ⇒ **không cần migration/server change**. UI ở `kanbanColumnHeader.tsx`: hiện `count/limit`, style đỏ khi vượt, menu "Set WIP limit…"; mutator mới `changeViewColumnWipLimit`. V1 chỉ cảnh báo hình ảnh (soft).
 
@@ -273,7 +324,7 @@ Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/t�
 
 **Verify:** jest cho `groupCardsTwoLevels` + util diff; API test kiểu `api/blocks_test` + app test (CI chạy 3 DB); set WIP/vượt limit, sub-group, kéo chéo lane+cột, xem history.
 
-### ⬜ Phase 7 — Dependencies + Timeline/Gantt (XL)
+### ✅ Phase 7 — Dependencies + Timeline/Gantt (XL) — ĐÃ XONG, xem mục 4e để biết chi tiết thực tế đã làm + deviations (spec gốc giữ nguyên bên dưới để đối chiếu)
 
 **7a. Card dependencies (tối giản — KHÔNG có relation property):**
 - Lưu trên **card bị chặn**: `card.fields.blockedBy?: string[]` (mảng card ID cùng board, v1) — cưỡi JSON blocks, **không migration**, history miễn phí qua `blocks_history`, chạy cả 3 DB.
