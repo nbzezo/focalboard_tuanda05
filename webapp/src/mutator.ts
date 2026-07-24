@@ -20,13 +20,14 @@ import {Utils, IDType} from './utils'
 import {UserSettings} from './userSettings'
 import TelemetryClient, {TelemetryCategory, TelemetryActions} from './telemetry/telemetryClient'
 import {Category} from './store/sidebar'
+import {wouldCreateCycle} from './cardDependencyUtils'
 
 /* eslint-disable max-lines */
 import {UserConfigPatch, UserPreference} from './user'
 import store from './store'
 import {updateBoards} from './store/boards'
 import {updateViews} from './store/views'
-import {updateCards} from './store/cards'
+import {updateCards, getCards} from './store/cards'
 import {updateAttachments} from './store/attachments'
 import {updateComments} from './store/comments'
 import {updateContents} from './store/contents'
@@ -645,6 +646,34 @@ class Mutator {
         }
         await this.updateBlock(boardId, newCard, card, description)
         TelemetryClient.trackEvent(TelemetryCategory, TelemetryActions.EditCardProperty, {board: card.boardId, card: card.id})
+    }
+
+    async addCardDependency(boardId: string, card: Card, blockedByCardId: string, description = 'add dependency'): Promise<void> {
+        const oldBlockedBy = card.fields.blockedBy || []
+        if (blockedByCardId === card.id || oldBlockedBy.includes(blockedByCardId)) {
+            return
+        }
+
+        const cardsById = getCards(store.getState())
+        if (wouldCreateCycle(cardsById, card.id, blockedByCardId)) {
+            Utils.logError(`addCardDependency: refusing to create a dependency cycle between ${card.id} and ${blockedByCardId}`)
+            return
+        }
+
+        const newCard = createCard(card)
+        newCard.fields.blockedBy = [...oldBlockedBy, blockedByCardId]
+        await this.updateBlock(boardId, newCard, card, description)
+    }
+
+    async removeCardDependency(boardId: string, card: Card, blockedByCardId: string, description = 'remove dependency'): Promise<void> {
+        const oldBlockedBy = card.fields.blockedBy || []
+        if (!oldBlockedBy.includes(blockedByCardId)) {
+            return
+        }
+
+        const newCard = createCard(card)
+        newCard.fields.blockedBy = oldBlockedBy.filter((id) => id !== blockedByCardId)
+        await this.updateBlock(boardId, newCard, card, description)
     }
 
     async changePropertyTypeAndName(board: Board, cards: Card[], propertyTemplate: IPropertyTemplate, newType: PropertyTypeEnum, newName: string) {

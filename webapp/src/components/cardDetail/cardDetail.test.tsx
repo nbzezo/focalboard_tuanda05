@@ -148,6 +148,12 @@ describe('components/cardDetail/CardDetail', () => {
                     [board.id]: {userId: 'user_id_1', schemeAdmin: true},
                 },
             },
+            cards: {
+                cards: {
+                    [card.id]: card,
+                },
+                current: card.id,
+            },
             users: {
                 boardUsers: {
                     'user-id-1': {username: 'username_1'},

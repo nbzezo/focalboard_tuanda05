@@ -408,5 +408,26 @@ export const getCurrentCard = createSelector(
     (current, cards) => cards[current],
 )
 
+// getCardDependencyMap derives the reverse of each card's fields.blockedBy:
+// a map from cardId to the list of card IDs that are blocked by it (i.e. what
+// it "Blocks"). Not parameterized by boardId - dependencies are only ever
+// created between cards on the same board, so a single global selector avoids
+// the per-call-site selector-factory recreation pitfall (see cardBadges.tsx).
+export const getCardDependencyMap = createSelector(
+    getCards,
+    (cards): Record<string, string[]> => {
+        const map: Record<string, string[]> = {}
+        for (const card of Object.values(cards)) {
+            for (const blockerId of (card.fields.blockedBy || [])) {
+                if (!map[blockerId]) {
+                    map[blockerId] = []
+                }
+                map[blockerId].push(card.id)
+            }
+        }
+        return map
+    },
+)
+
 export const getCardLimitTimestamp = (state: RootState): number => state.cards.limitTimestamp
 export const getCardHiddenWarning = (state: RootState): boolean => state.cards.cardHiddenWarning

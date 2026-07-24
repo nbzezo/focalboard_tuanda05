@@ -12,6 +12,7 @@ import {CommentBlock} from '../blocks/commentBlock'
 import TextIcon from '../widgets/icons/text'
 import MessageIcon from '../widgets/icons/message'
 import CheckIcon from '../widgets/icons/check'
+import CompassIcon from '../widgets/icons/compassIcon'
 import {calculateChecklistProgress} from '../checklistUtils'
 
 import './cardBadges.scss'
@@ -30,10 +31,11 @@ type Badges = {
     description: boolean
     comments: number
     checkboxes: Checkboxes
+    blocked: boolean
 }
 
 const hasBadges = (badges: Badges): boolean => {
-    return badges.description || badges.comments > 0 || badges.checkboxes.total > 0
+    return badges.description || badges.comments > 0 || badges.checkboxes.total > 0 || badges.blocked
 }
 
 type ContentsType = Array<ContentBlock | ContentBlock[]>
@@ -45,7 +47,7 @@ const hasTextContent = (contents: ContentsType): boolean => {
     })
 }
 
-const calculateBadges = (contents: ContentsType, comments: CommentBlock[]): Badges => {
+const calculateBadges = (contents: ContentsType, comments: CommentBlock[], blocked: boolean): Badges => {
     const {total, checked} = calculateChecklistProgress(contents)
     return {
         description: hasTextContent(contents),
@@ -54,11 +56,13 @@ const calculateBadges = (contents: ContentsType, comments: CommentBlock[]): Badg
             total,
             checked,
         },
+        blocked,
     }
 }
 
 const CardBadges = (props: Props) => {
     const {card, className} = props
+    const intl = useIntl()
 
     // getCardContents returns a fresh createSelector instance per call, so it's
     // memoized here to keep that selector's own cache alive across re-renders
@@ -67,14 +71,18 @@ const CardBadges = (props: Props) => {
     const contentsSelector = useMemo(() => getCardContents(card.id), [card.id])
     const contents = useAppSelector(contentsSelector)
     const comments = useAppSelector(getCardComments(card.id))
-    const badges = useMemo(() => calculateBadges(contents, comments), [contents, comments])
+    const blocked = (card.fields.blockedBy || []).length > 0
+    const badges = useMemo(() => calculateBadges(contents, comments, blocked), [contents, comments, blocked])
     if (!hasBadges(badges)) {
         return null
     }
-    const intl = useIntl()
     const {checkboxes} = badges
     return (
         <div className={`CardBadges ${className || ''}`}>
+            {badges.blocked &&
+                <span title={intl.formatMessage({id: 'CardBadges.title-blocked', defaultMessage: 'This card is blocked by another card'})}>
+                    <CompassIcon icon='lock-outline'/>
+                </span>}
             {badges.description &&
                 <span title={intl.formatMessage({id: 'CardBadges.title-description', defaultMessage: 'This card has a description'})}>
                     <TextIcon/>

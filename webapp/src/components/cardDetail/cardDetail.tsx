@@ -36,6 +36,7 @@ import CardSkeleton from '../../svg/card-skeleton'
 
 import CommentsList from './commentsList'
 import {CardDetailProvider} from './cardDetailContext'
+import CardDependencies from './cardDependencies'
 import CardDetailContents from './cardDetailContents'
 import CardDetailContentsMenu from './cardDetailContentsMenu'
 import ChecklistProgress from './checklistProgress'
@@ -289,6 +290,13 @@ const CardDetail = (props: Props): JSX.Element|null => {
                     activeView={props.activeView}
                     views={props.views}
                     readonly={props.readonly}
+                />}
+
+                {!limited &&
+                <CardDependencies
+                    board={props.board}
+                    card={props.card}
+                    readonly={props.readonly || !canEditBoardCards}
                 />}
 
                 {attachments.length !== 0 && <Fragment>

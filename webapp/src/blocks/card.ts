@@ -8,6 +8,7 @@ type CardFields = {
     isTemplate?: boolean
     properties: Record<string, string | string[]>
     contentOrder: Array<string | string[]>
+    blockedBy?: string[]
 }
 
 type Card = Block & {
@@ -35,6 +36,7 @@ function createCard(block?: Block): Card {
             properties: {...(block?.fields.properties || {})},
             contentOrder,
             isTemplate: block?.fields.isTemplate || false,
+            blockedBy: block?.fields.blockedBy?.slice() || [],
         },
     }
 }

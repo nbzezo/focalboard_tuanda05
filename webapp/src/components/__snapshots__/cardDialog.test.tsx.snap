@@ -134,6 +134,95 @@ exports[`components/cardDialog already following card 1`] = `
               </div>
             </div>
           </div>
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+              <div
+                class="CardDependencies__picker css-b62m3t-container"
+              >
+                <span
+                  class="css-1f43avz-a11yText-A11yText"
+                  id="react-select-9-live-region"
+                />
+                <span
+                  aria-atomic="false"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                  class="css-1f43avz-a11yText-A11yText"
+                  role="log"
+                />
+                <div
+                  class="CardDependencies__picker__control css-13cymwt-control"
+                >
+                  <div
+                    class="CardDependencies__picker__value-container css-1fdsijx-ValueContainer"
+                  >
+                    <div
+                      class="CardDependencies__picker__placeholder css-1jqq78o-placeholder"
+                      id="react-select-9-placeholder"
+                    >
+                      + Add
+                    </div>
+                    <div
+                      class="CardDependencies__picker__input-container css-qbdosj-Input"
+                      data-value=""
+                    >
+                      <input
+                        aria-activedescendant=""
+                        aria-autocomplete="list"
+                        aria-describedby="react-select-9-placeholder"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        autocorrect="off"
+                        class="CardDependencies__picker__input"
+                        id="react-select-9-input"
+                        role="combobox"
+                        spellcheck="false"
+                        style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                        tabindex="0"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="CardDependencies__picker__indicators css-1hb7zxy-IndicatorsContainer"
+                  >
+                    <span
+                      class="CardDependencies__picker__indicator-separator css-1u9des2-indicatorSeparator"
+                    />
+                    <div
+                      aria-hidden="true"
+                      class="CardDependencies__picker__indicator CardDependencies__picker__dropdown-indicator css-1xc3v61-indicatorContainer"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="css-tj5bde-Svg"
+                        focusable="false"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        width="20"
+                      >
+                        <path
+                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <hr />
           <div
             class="CommentsList"
@@ -548,6 +637,19 @@ exports[`components/cardDialog return a cardDialog readonly 1`] = `
           <div
             class="octo-propertylist CardDetailProperties"
           />
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+            </div>
+          </div>
           <hr />
           <div
             class="CommentsList"
@@ -876,6 +978,95 @@ exports[`components/cardDialog return cardDialog menu content 1`] = `
               </div>
             </div>
           </div>
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+              <div
+                class="CardDependencies__picker css-b62m3t-container"
+              >
+                <span
+                  class="css-1f43avz-a11yText-A11yText"
+                  id="react-select-4-live-region"
+                />
+                <span
+                  aria-atomic="false"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                  class="css-1f43avz-a11yText-A11yText"
+                  role="log"
+                />
+                <div
+                  class="CardDependencies__picker__control css-13cymwt-control"
+                >
+                  <div
+                    class="CardDependencies__picker__value-container css-1fdsijx-ValueContainer"
+                  >
+                    <div
+                      class="CardDependencies__picker__placeholder css-1jqq78o-placeholder"
+                      id="react-select-4-placeholder"
+                    >
+                      + Add
+                    </div>
+                    <div
+                      class="CardDependencies__picker__input-container css-qbdosj-Input"
+                      data-value=""
+                    >
+                      <input
+                        aria-activedescendant=""
+                        aria-autocomplete="list"
+                        aria-describedby="react-select-4-placeholder"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        autocorrect="off"
+                        class="CardDependencies__picker__input"
+                        id="react-select-4-input"
+                        role="combobox"
+                        spellcheck="false"
+                        style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                        tabindex="0"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="CardDependencies__picker__indicators css-1hb7zxy-IndicatorsContainer"
+                  >
+                    <span
+                      class="CardDependencies__picker__indicator-separator css-1u9des2-indicatorSeparator"
+                    />
+                    <div
+                      aria-hidden="true"
+                      class="CardDependencies__picker__indicator CardDependencies__picker__dropdown-indicator css-1xc3v61-indicatorContainer"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="css-tj5bde-Svg"
+                        focusable="false"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        width="20"
+                      >
+                        <path
+                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <hr />
           <div
             class="CommentsList"
@@ -1077,6 +1268,95 @@ exports[`components/cardDialog return cardDialog menu content and cancel delete 
                     + Add a property
                   </span>
                 </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+              <div
+                class="CardDependencies__picker css-b62m3t-container"
+              >
+                <span
+                  class="css-1f43avz-a11yText-A11yText"
+                  id="react-select-6-live-region"
+                />
+                <span
+                  aria-atomic="false"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                  class="css-1f43avz-a11yText-A11yText"
+                  role="log"
+                />
+                <div
+                  class="CardDependencies__picker__control css-13cymwt-control"
+                >
+                  <div
+                    class="CardDependencies__picker__value-container css-1fdsijx-ValueContainer"
+                  >
+                    <div
+                      class="CardDependencies__picker__placeholder css-1jqq78o-placeholder"
+                      id="react-select-6-placeholder"
+                    >
+                      + Add
+                    </div>
+                    <div
+                      class="CardDependencies__picker__input-container css-qbdosj-Input"
+                      data-value=""
+                    >
+                      <input
+                        aria-activedescendant=""
+                        aria-autocomplete="list"
+                        aria-describedby="react-select-6-placeholder"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        autocorrect="off"
+                        class="CardDependencies__picker__input"
+                        id="react-select-6-input"
+                        role="combobox"
+                        spellcheck="false"
+                        style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                        tabindex="0"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="CardDependencies__picker__indicators css-1hb7zxy-IndicatorsContainer"
+                  >
+                    <span
+                      class="CardDependencies__picker__indicator-separator css-1u9des2-indicatorSeparator"
+                    />
+                    <div
+                      aria-hidden="true"
+                      class="CardDependencies__picker__indicator CardDependencies__picker__dropdown-indicator css-1xc3v61-indicatorContainer"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="css-tj5bde-Svg"
+                        focusable="false"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        width="20"
+                      >
+                        <path
+                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1284,6 +1564,95 @@ exports[`components/cardDialog should match snapshot 1`] = `
               </div>
             </div>
           </div>
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+              <div
+                class="CardDependencies__picker css-b62m3t-container"
+              >
+                <span
+                  class="css-1f43avz-a11yText-A11yText"
+                  id="react-select-2-live-region"
+                />
+                <span
+                  aria-atomic="false"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                  class="css-1f43avz-a11yText-A11yText"
+                  role="log"
+                />
+                <div
+                  class="CardDependencies__picker__control css-13cymwt-control"
+                >
+                  <div
+                    class="CardDependencies__picker__value-container css-1fdsijx-ValueContainer"
+                  >
+                    <div
+                      class="CardDependencies__picker__placeholder css-1jqq78o-placeholder"
+                      id="react-select-2-placeholder"
+                    >
+                      + Add
+                    </div>
+                    <div
+                      class="CardDependencies__picker__input-container css-qbdosj-Input"
+                      data-value=""
+                    >
+                      <input
+                        aria-activedescendant=""
+                        aria-autocomplete="list"
+                        aria-describedby="react-select-2-placeholder"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        autocapitalize="none"
+                        autocomplete="off"
+                        autocorrect="off"
+                        class="CardDependencies__picker__input"
+                        id="react-select-2-input"
+                        role="combobox"
+                        spellcheck="false"
+                        style="opacity: 1; width: 100%; grid-area: 1 / 2; min-width: 2px; border: 0px; margin: 0px; outline: 0; padding: 0px;"
+                        tabindex="0"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="CardDependencies__picker__indicators css-1hb7zxy-IndicatorsContainer"
+                  >
+                    <span
+                      class="CardDependencies__picker__indicator-separator css-1u9des2-indicatorSeparator"
+                    />
+                    <div
+                      aria-hidden="true"
+                      class="CardDependencies__picker__indicator CardDependencies__picker__dropdown-indicator css-1xc3v61-indicatorContainer"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="css-tj5bde-Svg"
+                        focusable="false"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        width="20"
+                      >
+                        <path
+                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <hr />
           <div
             class="CommentsList"
@@ -1454,6 +1823,19 @@ exports[`components/cardDialog should match snapshot without permissions 1`] = `
           <div
             class="octo-propertylist CardDetailProperties"
           />
+          <div
+            class="CardDependencies"
+          >
+            <div
+              class="CardDependencies__section"
+            >
+              <div
+                class="CardDependencies__label"
+              >
+                Blocked by
+              </div>
+            </div>
+          </div>
           <hr />
           <div
             class="CommentsList"

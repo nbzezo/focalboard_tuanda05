@@ -6,6 +6,8 @@ import {TestBlockFactory} from './test/testBlockFactory'
 import 'isomorphic-fetch'
 import {FetchMock} from './test/fetchMock'
 import {mockDOM} from './testUtils'
+import store from './store'
+import {updateCards} from './store/cards'
 
 global.fetch = FetchMock.fn
 
@@ -50,5 +52,74 @@ describe('Mutator', () => {
         expect(duplicatedCard.fields.icon).toBe(card.fields.icon)
         expect(duplicatedCard.fields.contentOrder).toHaveLength(card.fields.contentOrder.length)
         expect(duplicatedCard.boardId).toBe(board.id)
+    })
+
+    test('addCardDependency adds a valid dependency', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+        const cardB = TestBlockFactory.createCard(board)
+        store.dispatch(updateCards([cardA, cardB]))
+
+        FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse('{}'))
+        await mutator.addCardDependency(board.id, cardA, cardB.id)
+
+        expect(FetchMock.fn).toBeCalledTimes(1)
+    })
+
+    test('addCardDependency refuses to create a dependency cycle', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+        const cardB = TestBlockFactory.createCard(board)
+        cardA.fields.blockedBy = [cardB.id]
+        store.dispatch(updateCards([cardA, cardB]))
+
+        // cardB is already (transitively) blocked by cardA, so blocking
+        // cardB by cardA would create a 2-cycle - must be refused.
+        await mutator.addCardDependency(board.id, cardB, cardA.id)
+
+        expect(FetchMock.fn).toBeCalledTimes(0)
+    })
+
+    test('addCardDependency is a no-op for a self-reference', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+        store.dispatch(updateCards([cardA]))
+
+        await mutator.addCardDependency(board.id, cardA, cardA.id)
+
+        expect(FetchMock.fn).toBeCalledTimes(0)
+    })
+
+    test('addCardDependency is a no-op for an already-existing dependency', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+        const cardB = TestBlockFactory.createCard(board)
+        cardA.fields.blockedBy = [cardB.id]
+        store.dispatch(updateCards([cardA, cardB]))
+
+        await mutator.addCardDependency(board.id, cardA, cardB.id)
+
+        expect(FetchMock.fn).toBeCalledTimes(0)
+    })
+
+    test('removeCardDependency removes an existing dependency', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+        const cardB = TestBlockFactory.createCard(board)
+        cardA.fields.blockedBy = [cardB.id]
+
+        FetchMock.fn.mockReturnValueOnce(FetchMock.jsonResponse('{}'))
+        await mutator.removeCardDependency(board.id, cardA, cardB.id)
+
+        expect(FetchMock.fn).toBeCalledTimes(1)
+    })
+
+    test('removeCardDependency is a no-op when the dependency does not exist', async () => {
+        const board = TestBlockFactory.createBoard()
+        const cardA = TestBlockFactory.createCard(board)
+
+        await mutator.removeCardDependency(board.id, cardA, 'nonexistent-id')
+
+        expect(FetchMock.fn).toBeCalledTimes(0)
     })
 })
