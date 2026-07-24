@@ -12,14 +12,15 @@
 
 **Bước 0 — Xác nhận baseline (chạy trước khi làm gì):**
 ```bash
-git log --oneline -4
-# Phải thấy 4 commit: "Phase 4: editor modernization...", "Phase 3: library modernization...",
-# "Phase 2: React 18 gate", "Phase 1: tooling & dependency hygiene". Đây là baseline XANH đã verify.
+git log --oneline -5
+# Phải thấy 5 commit: "Phase 5 (partial): server pagination...", "Phase 4: editor modernization...",
+# "Phase 3: library modernization...", "Phase 2: React 18 gate", "Phase 1: tooling & dependency hygiene".
+# Đây là baseline XANH đã verify.
 ```
-Phase 1–4 đã xong và commit. **Việc tiếp theo là Phase 5** (mục 5 bên dưới). Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4 "Bài học Phase 4" (đặc biệt về gotcha test browser/webpack) → mục 5 Phase 5.
+Phase 1–4 đã xong và commit. **Phase 5 mới làm MỘT PHẦN** (5a server pagination + 5b bước 1 windowed fetch + 5c một phần render memo — xem mục 4c để biết chính xác cái gì đã xong). **Việc tiếp theo là hoàn thiện phần còn lại của Phase 5** trước khi sang Phase 6, cụ thể: 5b bước 2 (defer content load — cần thiết kế lại cách gallery/cardBadges/updatedBy đọc content trước, xem lý do ở mục 4c), 5c phần còn lại (selector chain filter→search→sort, `react-window` virtualize cho table), và 5d (tách god-file `mutator.ts`/`octoClient.ts`). Đọc theo thứ tự: mục 0 (quy tắc vàng) → mục 1 (môi trường) → mục 4c (Phase 5 đã làm gì, KHÔNG làm gì, và TẠI SAO) → mục 5 (spec gốc, tham khảo phần chưa làm).
 
 **Prompt mẫu để khởi động DeepSeek** (dán nguyên văn):
-> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), và mục 5 Phase 5. Chạy `git log --oneline -4` xác nhận baseline (Phase 1–4 đã commit xanh). Sau đó triển khai **Phase 5 (hiệu năng & cấu trúc: pagination, lazy load, selectors, virtualize, tách god-file)** theo spec, giữ mỗi phase kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong.
+> Bạn tiếp nhận dự án hiện đại hoá Focalboard. Đọc `MODERNIZATION-HANDOFF.md` ở gốc repo TRƯỚC TIÊN, đặc biệt mục 0 (quy tắc vàng — KHÔNG làm bảo mật, giữ 2 run mode + 3 DB), mục 1 (môi trường build + lệnh verify), và mục 4c (Phase 5 đã làm một phần — đọc kỹ phần "KHÔNG làm" và lý do trước khi động vào gallery/cardBadges/mutator.ts/octoClient.ts). Chạy `git log --oneline -5` xác nhận baseline (Phase 1–4 xong + Phase 5 một phần, đều đã commit xanh). Sau đó hoàn thiện **phần còn lại của Phase 5** (5b bước 2, 5c phần còn lại, 5d tách god-file) theo spec ở mục 5, giữ mỗi phần kết thúc ở trạng thái compile+test xanh rồi mới commit. Không sửa file test/snapshot theo kiểu update bừa — đọc "Bài học test" ở mục 4. **Quan trọng:** jest/tsc/eslint xanh KHÔNG đủ để coi 1 phase xong nếu phase đó đụng code chạy trong browser (webpack bundle) — Phase 4 đã có 1 bug (tiptap-markdown UMD/webpack interop) mà toàn bộ automated check không bắt được, chỉ lộ ra khi build production bundle thật + mở browser thật. Luôn làm bước webpack build + manual browser smoke test trước khi coi 1 phase là xong.
 
 **Nếu chạy trên MÁY KHÁC** (không phải máy đã setup): xem mục 1 để biết yêu cầu phiên bản (Go 1.22, gcc cho CGO, Node 20+) và các cờ npm đặc thù; các đường dẫn tuyệt đối trong mục 1 là của máy gốc, cần thay bằng path máy bạn.
 
@@ -101,7 +102,7 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 | **2** | Cổng React 18 (react-intl 6, react-redux 8, jest 29, createRoot, JSX tự động) | ✅ **XONG, đã commit** | `7d4e16c7` |
 | **3** | Hiện đại hoá thư viện (router v6, dnd, dayjs, emoji-mart 5, react-day-picker v8) | ✅ **XONG, đã commit** | `edea4b07` |
 | **4** | Editor draft-js → **TipTap v3** | ✅ **XONG, đã commit** | `0c7aa346` |
-| **5** | Hiệu năng & cấu trúc (pagination, lazy load, selectors, virtualize table, tách god-file) | ⬜ Chưa làm | — |
+| **5** | Hiệu năng & cấu trúc (pagination, lazy load, selectors, virtualize table, tách god-file) | 🟡 **MỘT PHẦN, đã commit** (5a+5b bước 1+5c một phần; còn lại xem mục 4c) | `248fefa6` |
 | **6** | Quick wins (WIP limit, swimlane, checklist progress, card history UI) | ⬜ Chưa làm | — |
 | **7** | Dependencies + Timeline/Gantt view | ⬜ Chưa làm | — |
 | **8** | Automation rules engine | ⬜ Chưa làm | — |
@@ -196,11 +197,47 @@ go test -tags 'json1 sqlite3' -ldflags "-s" -count=1 ./...
 
 ---
 
-## 5. CÁC PHASE CHƯA LÀM — SPEC CHI TIẾT
+## 4c. 🟡 Phase 5 — Hiệu năng & cấu trúc — MỘT PHẦN đã xong (commit `248fefa6`)
+
+**Verify đã đạt cho phần đã làm:** go build/vet/test (server) xanh — gồm cả cycle up/down của migration 000041 (chạy 2 lần qua `foundation` test harness, mỗi test tear-down tự áp down-migration); tsc 0 lỗi; eslint sạch (trừ CRLF); **jest 140 suite / 838 test / 457 snapshot xanh** (2 test mới cho `getAllBlocks`); webpack production build OK. **Cộng với manual smoke test qua browser thật**: rebuild server binary, tạo board + card qua UI thật, reload trang, xác nhận card persist đúng qua HTTP request paginated `?all=true&page=0&per_page=500` thật (không phải chỉ mock).
+
+### Đã làm (5a — server pagination, HOÀN TẤT)
+- Migration mới `server/services/store/sqlstore/migrations/000041_blocks_pagination_index.{up,down}.sql` — index `idx_blocks_board_id_id` qua `createIndexIfNeeded` (phủ cả 3 DB).
+- `sqlstore/blocks.go` `getBlocks()`: thêm `.OrderBy("board_id", "id")` — luôn áp, kể cả khi không phân trang (vô hại, cần cho kết quả phân trang ổn định).
+- `api/blocks.go` `handleGetBlocks`: parse `page`/`per_page` từ query.
+- `app/blocks.go` `GetBlocks()`: **viết lại hoàn toàn** — thay vì định tuyến qua 3 store method riêng (`GetBlocksWithParentAndType`/`WithType`/`WithParent`, đều KHÔNG hỗ trợ phân trang), giờ luôn build `model.QueryBlocksOptions{BoardID, ParentID, BlockType, Page, PerPage}` và gọi thẳng `a.store.GetBlocks(opts)` — method này **đã tồn tại sẵn** trên interface `store.Store` (đã có Page/PerPage, đã implement, đã mock, đã dùng ở `app/cards.go`/`app/import.go`), nên **KHÔNG cần sửa interface `store.Store`, KHÔNG cần đụng `mattermostauthlayer` hay `mockstore`** — đây là lý do 5a xong nhanh và an toàn hơn spec gốc dự tính. 3 store method cũ (`GetBlocksWithParentAndType` v.v.) vẫn còn nguyên trên interface (storetests + mockstore vẫn test/mock chúng), chỉ đơn giản là app layer không gọi tới nữa.
+- `api/blocks.go` case `all != ""` (client `getAllBlocks`) cũng đổi sang gọi `a.app.GetBlocks(boardID, "", "", page, perPage)` thay vì `a.app.GetBlocksForBoard(boardID)` — hai cách này trả kết quả **giống hệt nhau** khi page/perPage=0 (đã verify bằng cách đọc `getBlocksWithParent`'s SQL: `ParentID=""` nghĩa là KHÔNG áp filter parent_id, y hệt "toàn bộ block của board"), nhưng giờ path này CÓ hỗ trợ phân trang. `app.GetBlocksForBoard` (dùng bởi `export.go`, nhiều integration test, `storetests/`) **giữ nguyên signature/hành vi cũ**, không đụng.
+- Swagger cập nhật (`page`, `per_page` query params trên `getBlocks` operation).
+
+### Đã làm (5b — CHỈ bước 1, "transparent")
+- `webapp/src/octoClient.ts` `getAllBlocks()`: viết lại thành loop `page=0,1,2,...` với `per_page=500`, dừng khi 1 trang trả về ít hơn 500 item. Không đổi return type/behavior nhìn từ ngoài (`loadBoardData` và mọi reducer nghe `loadBoardData.fulfilled` **không đổi 1 dòng nào**) — chỉ đổi CÁCH lấy dữ liệu (nhiều request nhỏ thay vì 1 request khổng lồ), giải quyết đúng rủi ro chính: 1 query/1 response không giới hạn kích thước cho board rất lớn.
+- Test mới trong `octoClient.test.ts`: verify dừng đúng khi trang ngắn, verify loop đúng khi có ≥2 trang.
+
+### ❌ CHƯA làm — 5b bước 2 (defer content load) — LÝ DO, đọc kỹ trước khi làm
+Spec gốc: "load đầu chỉ fetch `type=view/card/checkbox`; content/comment fetch khi mở card dialog." **Đã kiểm tra call site TRƯỚC khi làm và phát hiện việc này sẽ VỠ tính năng khác nếu làm ngay:**
+- `components/cardBadges.tsx`, `components/gallery/galleryCard.tsx`, `properties/updatedBy/updatedBy.tsx`, `properties/updatedTime/updatedTime.tsx` — **tất cả đọc content block của MỌI card trên board** (không chỉ card đang mở): gallery cần preview nội dung của TẤT CẢ card hiển thị; cardBadges cần đếm checkbox/text của TẤT CẢ card (không chỉ card đang mở) để hiện badge trên kanban/table; updatedBy/updatedTime tương tự.
+- Nếu defer content load như spec gốc mô tả mà KHÔNG sửa 4 consumer trên trước, gallery view sẽ mất preview và badges sẽ trống cho MỌI card trừ card đang mở — regression trực tiếp, dễ thấy.
+- **Việc cần làm trước khi defer content**: thiết kế lại 4 consumer trên để tự lazy-fetch content riêng cho từng card chúng cần hiển thị (ví dụ mỗi `GalleryCard`/`TableRow` tự gọi 1 API nhỏ lấy content của card đó nếu chưa có trong store), hoặc giữ nguyên việc luôn tải `type=checkbox` + `type=text` (không chỉ `checkbox`) trong initial load, giảm bớt lợi ích "defer" nhưng an toàn hơn. **Chưa quyết định hướng nào — để agent tiếp theo cân nhắc.**
+
+### Đã làm (5c — MỘT PHẦN: sửa bug memo bị vô hiệu hoá bởi key không ổn định)
+- **Phát hiện quan trọng:** `TableRow` (`components/table/tableRow.tsx`) và `GalleryCard` (`components/gallery/galleryCard.tsx`) **ĐÃ ĐƯỢC** bọc `React.memo` từ trước — nhưng `tableRows.tsx` và `gallery.tsx` render chúng với `key={card.id + card.updateAt}`, khiến React coi mỗi lần `updateAt` đổi là 1 element HOÀN TOÀN MỚI ⇒ unmount/remount thay vì diff props ⇒ `React.memo` KHÔNG BAO GIỜ có cơ hội chạy. Sửa: đổi key thành `card.id` ở cả 2 file — giờ sửa 1 card không còn ép re-render/re-mount các card khác không liên quan.
+- `components/cardBadges.tsx`: gọi `getCardContents(card.id)` (factory trả về 1 `createSelector` MỚI) trực tiếp trong thân render ⇒ tạo 1 Reselect selector MỚI (cache rỗng) mỗi lần render ⇒ mất hết lợi ích memoization của Reselect qua các lần render. Sửa bằng `useMemo(() => getCardContents(card.id), [card.id])` để giữ NGUYÊN 1 selector instance qua các lần render (thay vì thêm dependency `re-reselect` như spec gốc gợi ý — `useMemo` đạt hiệu quả tương đương, không cần thêm package mới). `getCardComments`/`getLastCardContent` KHÔNG cần sửa vì chúng vốn là closure thường (không dùng `createSelector`), đã trả về tham chiếu ổn định sẵn.
+
+### ❌ CHƯA làm — 5c phần còn lại
+- Tách chuỗi `createSelector` filter→search→sort trong `store/cards.ts` (`getCurrentViewCardsSortedFilteredAndGroupedWithoutLimit`). **Lý do quan trọng cần hiểu trước khi làm:** tách thành chuỗi Reselect KHÔNG tự động giải quyết "sửa 1 card re-sort cả board", vì `getCurrentBoardCards` (input đầu chuỗi) đã đổi tham chiếu output mỗi khi BẤT KỲ card nào trong board đổi (do cách `Object.values`/filter tạo mảng mới) — cache Reselect ở các bước sau vẫn miss. Muốn giảm thật sự chi phí re-sort cần: (a) hoặc chấp nhận re-sort là rẻ (so sánh vài nghìn phần tử) và tập trung tránh RE-RENDER (đã làm ở trên qua key+memo), (b) hoặc đổi cấu trúc dữ liệu sâu hơn (structural sharing tốt hơn ở tầng reducer) — việc lớn hơn nhiều so với "tách selector" đơn thuần mà spec gốc mô tả.
+- Virtualize `react-window` `VariableSizeList` cho `tableRows.tsx` khi không group.
+- Kanban virtualization (đã note "HOÃN" từ spec gốc — giữ nguyên, chưa làm).
+
+### ❌ CHƯA làm — 5d (tách god-file `mutator.ts`/`octoClient.ts`)
+Lý do: thuần refactor tổ chức file, KHÔNG có lợi ích hiệu năng/tính năng, quy mô lớn (1224 + 1091 dòng, hàng trăm import site dùng `mutator.method()`/`octoClient.method()` trực tiếp), rủi ro lỗi cơ học (sai sót khi di chuyển method, quên bind `this`, circular import giữa các file con) cao so với lợi ích. Cân nhắc kỹ thuật khi làm: nếu giữ nguyên class `Mutator`/`OctoClient` + facade export như spec gốc mô tả, cách AN TOÀN NHẤT để không phá vỡ `this` binding là dùng `Object.assign(Mutator.prototype, blocksMethods, ...)` (method thường, không phải arrow function, để `this` bind đúng khi gọi qua `mutator.method()`) thay vì cố tách thành các function độc lập nhận `this` làm tham số tường minh.
+
+---
+
+## 5. CÁC PHASE CHƯA LÀM — SPEC CHI TIẾT (phần Phase 5 dưới đây giữ nguyên bản gốc để đối chiếu — xem mục 4c ở trên để biết chính xác cái gì ĐÃ xong)
 
 > Nguồn đầy đủ hơn: `docs/modernization/PLAN-9-phases.md` (trong repo). Dưới đây là bản rút gọn đủ để thực thi.
 
-### ⬜ Phase 5 — Hiệu năng & cấu trúc (L)
+### 🟡 Phase 5 — Hiệu năng & cấu trúc (L) — spec gốc, xem mục 4c để biết phần nào ĐÃ xong
 
 **5a. Server pagination — migration `000041_blocks_pagination_index`:**
 - Tạo `server/services/store/sqlstore/migrations/000041_blocks_pagination_index.{up,down}.sql`. Index mới `{{.prefix}}blocks (board_id, id)` qua `createIndexIfNeeded` (phủ cả 3 DB); down migration drop index.
